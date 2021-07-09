@@ -12,6 +12,7 @@ html {
     box-sizing: inherit;
 }
 
+/* property class */
 .clr-transparent {
     color: transparent;
 }
@@ -22,4 +23,52 @@ html {
 
 .dp-none {
     display: none;
+}
+
+/* normal class */
+h1, h2, h3, h4, h5, h6, a, p, button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    background-color: transparent;
+}
+
+a:focus, a:active, a:hover, a:link, a:visited {
+    color: currentColor;
+    text-decoration: none;
+}
+
+/* text */
+h1 {
+    font-size: 18px;
+    font-weight: 700;
+}
+  
+h2 {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 14px;
+}
+
+button {
+    font-size: 14px;
+}
+
+p {
+    font-size: 12px;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+h1, h2, h3, button {
+    letter-spacing: 1px;
 }
