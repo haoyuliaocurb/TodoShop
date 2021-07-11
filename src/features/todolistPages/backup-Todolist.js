@@ -232,3 +232,46 @@ const Todolist = function() {
 }
 
 export default Todolist;
+
+//
+
+    /*
+    console.log('TodolistItems: ', TodolistItems);
+    useEffect(async () => {
+        if (!props.isSignIn) {
+
+        }
+        else {
+            let srcTodolistData = await firestore.collection('todolist').doc(listId).get();
+            let todolistData = srcTodolistData.data();
+            let todolistItems = todolistData.items.map((value) => (
+                <TodolistItem id={`${value.name}`} key={value.name} content={value.name} onItemClick={handleItemClick} />
+            ));
+            setTodolistItems(todolistItems);
+        }
+    }, []);
+    */
+
+    /*
+    let initTodolistItems = [];
+    initTodolistItems.push(<TodolistItem id={`${itemCounter}`} key={itemCounter} onItemClick={handleItemClick} onInputKeyUp={handleInputKeyUp} />);
+    var [TodolistItems, setTodolistItems] = useState(initTodolistItems);
+    */
+
+    // TodolistItems.push(<TodolistItem id={`${itemCounter}`} key={itemCounter} onItemClick={handleItemClick} />);
+
+    /*
+    useEffect(
+        function() {
+            itemCounter += 1;
+            console.log('itemCounter: ', itemCounter);
+        },
+        [TodolistItems]
+    );
+    */
+
+    /*
+        1. 複製 TodolistItems
+        2. 操作，CloneTodolistItems.push() 或 CloneTodolistItems[itemKey] = null
+        3. setTodolistItems(CloneTodolistItems);
+    */

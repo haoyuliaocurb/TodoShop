@@ -18,6 +18,7 @@ import {
   Route,
   Redirect,
   Switch,
+  useHistory,
 } from 'react-router-dom';
 import { 
   firebase,
@@ -222,31 +223,31 @@ const TabBar = () => {
       <Link to="/" id="home" onClick={handleIconClick}>
         <StyledIconApp disabled={iconState.disabled.home} active={iconState.active.home}>
           <IconApp.Home />
-          <p class="textIcon">首頁</p>
+          <p className="textIcon">首頁</p>
         </StyledIconApp>
       </Link>
       <Link to="/activity" id="activity" onClick={handleIconClick}>
         <StyledIconApp disabled={iconState.disabled.activity} active={iconState.active.activity}>
           <IconApp.Activity />
-          <p class="textIcon">優惠活動</p>
+          <p className="textIcon">優惠活動</p>
         </StyledIconApp>
       </Link>
       <Link to="/cart" id="cart" onClick={handleIconClick}>
         <StyledIconApp disabled={iconState.disabled.cart} active={iconState.active.cart}>
           <IconApp.Cart />
-          <p class="textIcon">購物車</p>          
+          <p className="textIcon">購物車</p>          
         </StyledIconApp>        
       </Link>
       <Link to="/auth" id="auth" onClick={handleIconClick}>
         <StyledIconApp disabled={iconState.disabled.auth} active={iconState.active.auth}>
           <IconApp.Auth />
-          <p class="textIcon">我的帳號</p>          
+          <p className="textIcon">我的帳號</p>          
         </StyledIconApp>
       </Link>
       <Link to="/todolist" id="list" onClick={handleIconClick}>
         <StyledIconApp disabled={iconState.disabled.list} active={iconState.active.list}>
           <IconApp.List />
-          <p class="textIcon">購物清單</p>          
+          <p className="textIcon">購物清單</p>          
         </StyledIconApp>        
       </Link>
     </StyledTabBar>
@@ -291,69 +292,84 @@ const StyledTodolistPages = styled.div`
 `;
 
 const TodolistPages = (props) => {
-  let breakpoint = styledVariables.todolistPages.breakpoint;
-  let {windowWidth, isSignIn} = props;
-  // console.log(windowWidth, isSignIn);
+  // console.log('render TodolistPages');
 
-  // let currentUser = isSignIn.user;
-  // let currentUser = null;
-  let currentUser = {
-    uid: 'kqXYsHFzzTN0DGlBqFdyafGtU052',
-  };
+  let breakpoint = styledVariables.todolistPages.breakpoint;
+  let { windowWidth, isSignIn} = props;
+  let currentUid = isSignIn;
+  // console.log('isSignIn when rendering TodolistPages: ', isSignIn);
 
   // 處理 todolistData
   let [todolistData, setTodolistData] = useState([]);
-  let srcTodolistData = useRef([]);
+  let srcCurrentListId = useRef('');
+  let currentListData = useRef(null);
+  let [currentListId, setCurrentListId] = useState('');
 
-  const getCurrentListId = () => {
-    // let currentListId = '';
-    let currentListId = 'xLCxgZt9Fg9wtq3SRxaF';
-
-    if (isSignIn) {
+  const getCurrentTodolistData = async (resolve) => {
+    let promiseReturned = new Promise((resolve) => {
+      if (!isSignIn) {
+        return []
+      }
+  
       // console.log('currentUser.uid: ', currentUser.uid);
-      let newTodolistData = [ ... todolistData];
+      let newTodolistData = [];
       let fetchedNewTodolistDataCounter = 0;
-
-      firestore.collection('todolist').where('uid', '==', currentUser.uid).orderBy('updateTime', 'desc').limit(15).get()
+  
+      firestore.collection('todolist').where('uid', '==', currentUid).orderBy('updateTime', 'desc').limit(15).get()
       .then((fetchedNewTodolistData) => {
         // console.log('fetchedNewTodolistData: ', fetchedNewTodolistData);
-        console.log('trigger QuerySnapshot .then');
+        // console.log('trigger QuerySnapshot .then');
         fetchedNewTodolistData.forEach((value) => {
+          // console.log('element of TodolistData');
+          // console.log('value: ', value);
           if (fetchedNewTodolistDataCounter === 0) {
             // updateTime 最新者的 doc name 為 currrentId
-            currentListId = value.id;
-            // console.log('currentListId: ', currentListId);
+            srcCurrentListId.current = value.id;
+            currentListData.current = value;
+            // console.log('srcCurrentListId: ', srcCurrentListId);
           }
-          newTodolistData.push(value.data());
+          newTodolistData.push(value);
           // console.log('newTodolistData: ', newTodolistData);
           fetchedNewTodolistDataCounter += 1;
-        });        
-      })
-      
-  
-      /*
-      // 在最後才更新 todolistData
-      setTodolistData(newTodolistData);
-      console.log('todolistData: ', todolistData);
-      */
-      srcTodolistData.current = newTodolistData;
-    }
+        });  
 
-    console.log('currentListId: ', currentListId);
-    
-    return currentListId
+        resolve(newTodolistData);
+      })
+    });
+
+    return promiseReturned
   }
 
-  let currentListId = getCurrentListId();
-
+  useEffect(async () => {
+    // 登入狀態改變時，也會重新 setTodolistData
+    let newTodolistData = await getCurrentTodolistData();
+    setTodolistData(newTodolistData);
+    // console.log('useEffect depends on isSignIn');
+  }, [isSignIn]);
 
   useEffect(() => {
-    console.log('<TodolistPages /> did mount');
+    // 當 todolistData 更改，便會更改 currentListId
+    const getCurrentListId = () => (srcCurrentListId.current);
+    setCurrentListId(getCurrentListId());
+    
+    // console.log('todolistData: ', todolistData);
+    // console.log('srcCurrentListId.current: ', srcCurrentListId.current);
+    // console.log('useEffect depends on todolistData');
+  }, [todolistData]);
 
-    return () => {
-      console.log('<TodolistPages /> did unmount');
-    }
-  }, []);
+  useEffect(() => {
+    // console.log('useEffect depends on currentListId');
+    // console.log('currentListData.current: ', currentListData.current);
+    // console.log('currentListId: ', currentListId);
+    // console.log('----------');
+  }, [currentListId]);
+
+  let history = useHistory();
+  const handleTableItemClick = async (value) => {
+    currentListData.current = value;
+    await setCurrentListId(value.id);
+    history.push(`/todolist`);
+  }
 
   return (
     <StyledTodolistPages>
@@ -385,19 +401,19 @@ const TodolistPages = (props) => {
           // 有登入
           (windowWidth <= breakpoint) ? (
             <Switch>                      
-              <Route path="/todolist/id/:listId">
-                <Todolist isSignIn={true} />
+              <Route exact path="/todolist/id/:listId">
+                <Todolist isSignIn={true} currentListData={currentListData.current} currentListId={currentListId} />
               </Route>                                  
-              <Route path="/todolist/table">
-                <TodolistTable isSignIn={true} todolistData={srcTodolistData.current} />
+              <Route exact path="/todolist/table">
+                <TodolistTable onTableItemClick={handleTableItemClick} isSignIn={true} srcTodolistData={todolistData} />
               </Route>
               <Redirect from="/todolist" to={`/todolist/id/${currentListId}`} />
             </Switch>            
           ) : (
             <Switch>
               <Route path="/todolist/id/:listId">
-                <TodolistTable isSignIn={true} todolistData={srcTodolistData.current} />
-                <Todolist isSignIn={true} />
+                <TodolistTable onTableItemClick={handleTableItemClick} isSignIn={true} srcTodolistData={todolistData} />
+                <Todolist isSignIn={true} currentListData={currentListData.current} currentListId={currentListId} />
               </Route>                      
               <Redirect from="/todolist/table" to={`/todolist/id/${currentListId}`} />
               <Redirect from="/todolist" to={`/todolist/id/${currentListId}`} />
@@ -439,30 +455,34 @@ const Main = () => {
       if (!(isResizeEventFired)) {
         isResizeEventFired = true;
         setWindowWidth(window.innerWidth);
-        console.log('window.innerWidth: ', window.innerWidth);
+        // console.log('window.innerWidth: ', window.innerWidth);
         isResizeEventFired = false;
       }
     })
   }, [])
 
   // 處理登入狀態
-  let [isSignIn, setIsSignIn] = useState(false);
-  console.log('isSignIn when render Main: ', isSignIn);
+  // let [isSignIn, setIsSignIn] = useState(null);
+  let [isSignIn, setIsSignIn] = useState('kqXYsHFzzTN0DGlBqFdyafGtU052');
 
-  let userInfoA = {
-      email: 'jeffery84115@gmail.com',
-      password: 'haoyuliao',
-  }
-
-  let userInfoB = {
-      email: 'trial@gmail.com',
-      password: 'trialtrial',
-  }
-
-  let userTest = userInfoA;
+    // test data
+    let userInfoA = {
+        email: 'jeffery84115@gmail.com',
+        password: 'haoyuliao',
+    }
+    let userInfoB = {
+        email: 'trial@gmail.com',
+        password: 'trialtrial',
+    }
+    let userTest = userInfoA;
 
   let [emailValue, setEmailValue] = useState(userTest.email);
   let [passwordValue, setPasswordValue] = useState(userTest.password);
+  // let currentUser = useRef(null);
+  useEffect(() => {
+    // console.log('isSignIn after rendering Main: ', isSignIn);
+    // console.log('currentUser when render Main: ', currentUser.current);
+  }, [isSignIn]);
 
   const onAuthEmailInput = (value) => {
       setEmailValue(value);
@@ -481,17 +501,18 @@ const Main = () => {
     );
     if (!signInResult) {
         // 顯示 sign in 失敗 modal
-        console.log('Fail to sign in');
+        // console.log('Fail to sign in');
+        // currentUser.current = null;
+        setIsSignIn(false);
+            
         return
     }
 
     // 顯示 sign in 成功 modal
-    console.log('Successfully sign in')
+    // console.log('Successfully sign in', 'signInResult: ', signInResult, 'type of signInResult: ', typeof(signInResult));
     // console.log(auth.currentUser);
-    let currentUser = signInResult.user
-    setIsSignIn(true);
-    console.log('currentUser in Main after sign in: ', currentUser);
-    console.log('isSignIn in Main after sign in: ', isSignIn);
+    // currentUser.current = signInResult.user;
+    setIsSignIn(signInResult.user.uid);
   }
 
   return (
