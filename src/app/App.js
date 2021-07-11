@@ -19,6 +19,7 @@ import {
   Redirect,
   Switch,
   useHistory,
+  useLocation,
 } from 'react-router-dom';
 import { 
   firebase,
@@ -357,18 +358,31 @@ const TodolistPages = (props) => {
     // console.log('useEffect depends on todolistData');
   }, [todolistData]);
 
+  let location = useLocation();
   useEffect(() => {
-    // console.log('useEffect depends on currentListId');
+    console.log('useEffect depends on currentListId');
     // console.log('currentListData.current: ', currentListData.current);
     // console.log('currentListId: ', currentListId);
     // console.log('----------');
+    
+    let pathArray = location.pathname.split('/');
+    if (pathArray.some((value) => ( value === 'id'))) {
+      let listId = pathArray[pathArray.length - 1];
+      if (listId === '') {
+        return
+      }
+
+      if (listId !== currentListId) {
+        history.push(`/todolist`);
+      }
+    }
   }, [currentListId]);
 
   let history = useHistory();
-  const handleTableItemClick = async (value) => {
+  const handleTableItemClick = (value) => {
+    console.log('TableItem onClick: begin to setCurrentListId');
     currentListData.current = value;
-    await setCurrentListId(value.id);
-    history.push(`/todolist`);
+    setCurrentListId(value.id);
   }
 
   return (
