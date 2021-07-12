@@ -1,14 +1,17 @@
+// script modules
 import {
     useState,
     useEffect,
 } from 'react'
 import {
-    styledVariables,
-} from './cssMaterial.js'
-import {
     auth,
-} from './firebase-services.js'
+} from '../../app/firebase-services.js'
+
+// styling modules
 import styled from '@emotion/styled'
+import {
+    styledVariables,
+} from '../../app/cssMaterial.js'
 
 const StyledAuth = styled.form`
     width: 100%;

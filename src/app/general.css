@@ -73,4 +73,8 @@ h1, h2, h3, button {
   letter-spacing: 1px;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 /*# sourceMappingURL=general.css.map */

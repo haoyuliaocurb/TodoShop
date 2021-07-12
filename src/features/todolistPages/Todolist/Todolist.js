@@ -1,21 +1,25 @@
+// script modules
 import {
     useState,
     useEffect,
     useRef,
 } from "react";
-// import cssMatl from "./cssMaterial.js";
-import styled from "@emotion/styled";
-import IconTodolistPages from "./iconTodolistPages.js";
-import "normalize.css"
-import "../../app/general.css";
-import { 
-    styledVariables,
-    styledCSS,
-} from "../../app/cssMaterial";
 import {
     useParams,
 } from 'react-router-dom'
-import { firestore } from "../../app/firebase-services";
+import { firestore } from "../../../app/firebase-services";
+
+// styling modules
+import styled from "@emotion/styled";
+import { 
+    styledVariables,
+    styledCSS,
+} from "../../../app/cssMaterial";
+import "normalize.css"
+import "../../../app/general.css";
+
+//
+import IconTodolistPages from "../iconTodolistPages.js";
 
 const model = {
     flag: {

@@ -1,12 +1,4 @@
-import Todolist from '../features/todolistPages/Todolist.js'
-import TodolistTable from '../features/todolistPages/TodolistTable.js'
-import Auth from './Auth.js'
-import styled from '@emotion/styled'
-import { 
-  styledVariables,
-  styledCSS,
-  StyledIcon,
-} from './cssMaterial.js';
+// script modules
 import {
   useState,
   useEffect,
@@ -27,7 +19,21 @@ import {
   firestore
 } from './firebase-services.js';
 
+// styling modules
+import styled from '@emotion/styled'
+import { 
+  styledVariables,
+  styledCSS,
+  StyledIcon,
+} from './cssMaterial.js';
+import "normalize.css"
+import "./general.css";
+
+//
 import IconApp from './IconApp.js'
+import TodolistPages from '../features/TodolistPages/TodolistPages.js'
+import Auth from '../features/Auth/Auth.js'
+import SearchPages from '../features/SearchPages/SearchPages.js'
 
 let data = [
   {
@@ -66,7 +72,7 @@ let data = [
 ]
 
 const StyledNavBar = styled.nav`
-  position: absolute;
+  position: fixed;
   top: 0;
   width: 100%;
   height: ${styledVariables.shared.barHeight};
@@ -74,7 +80,7 @@ const StyledNavBar = styled.nav`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 0;
   padding: 0 ${styledVariables.shared.contentPadding};
 
   > a {
@@ -123,7 +129,7 @@ const NavBar = () => {
 }
 
 const StyledTabBar = styled.div`
-  position: absolute;
+  position: fixed;
   bottom: 0px;
   width: 100%;
   height: ${styledVariables.shared.barHeight};
@@ -256,7 +262,7 @@ const TabBar = () => {
 }
 
 const StyledToolBar = styled.div`
-  position: absolute;
+  position: fixed;
   bottom: ${styledVariables.shared.barHeight};
   width: 100%;
   height: ${styledVariables.shared.barHeight};
@@ -286,159 +292,6 @@ const ToolBar = () => {
   )
 }
 
-const StyledTodolistPages = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-`;
-
-const TodolistPages = (props) => {
-  // console.log('render TodolistPages');
-
-  let breakpoint = styledVariables.todolistPages.breakpoint;
-  let { windowWidth, isSignIn} = props;
-  let currentUid = isSignIn;
-  // console.log('isSignIn when rendering TodolistPages: ', isSignIn);
-
-  // 處理 todolistData
-  let [todolistData, setTodolistData] = useState([]);
-  let srcCurrentListId = useRef('');
-  let currentListData = useRef(null);
-  let [currentListId, setCurrentListId] = useState('');
-
-  const getCurrentTodolistData = async (resolve) => {
-    let promiseReturned = new Promise((resolve) => {
-      if (!isSignIn) {
-        return []
-      }
-  
-      // console.log('currentUser.uid: ', currentUser.uid);
-      let newTodolistData = [];
-      let fetchedNewTodolistDataCounter = 0;
-  
-      firestore.collection('todolist').where('uid', '==', currentUid).orderBy('updateTime', 'desc').limit(15).get()
-      .then((fetchedNewTodolistData) => {
-        // console.log('fetchedNewTodolistData: ', fetchedNewTodolistData);
-        // console.log('trigger QuerySnapshot .then');
-        fetchedNewTodolistData.forEach((value) => {
-          // console.log('element of TodolistData');
-          // console.log('value: ', value);
-          if (fetchedNewTodolistDataCounter === 0) {
-            // updateTime 最新者的 doc name 為 currrentId
-            srcCurrentListId.current = value.id;
-            currentListData.current = value;
-            // console.log('srcCurrentListId: ', srcCurrentListId);
-          }
-          newTodolistData.push(value);
-          // console.log('newTodolistData: ', newTodolistData);
-          fetchedNewTodolistDataCounter += 1;
-        });  
-
-        resolve(newTodolistData);
-      })
-    });
-
-    return promiseReturned
-  }
-
-  useEffect(async () => {
-    // 登入狀態改變時，也會重新 setTodolistData
-    let newTodolistData = await getCurrentTodolistData();
-    setTodolistData(newTodolistData);
-    // console.log('useEffect depends on isSignIn');
-  }, [isSignIn]);
-
-  useEffect(() => {
-    // 當 todolistData 更改，便會更改 currentListId
-    const getCurrentListId = () => (srcCurrentListId.current);
-    setCurrentListId(getCurrentListId());
-    
-    // console.log('todolistData: ', todolistData);
-    // console.log('srcCurrentListId.current: ', srcCurrentListId.current);
-    // console.log('useEffect depends on todolistData');
-  }, [todolistData]);
-
-  let location = useLocation();
-  useEffect(() => {
-    console.log('useEffect depends on currentListId');
-    // console.log('currentListData.current: ', currentListData.current);
-    // console.log('currentListId: ', currentListId);
-    // console.log('----------');
-    
-    let pathArray = location.pathname.split('/');
-    if (pathArray.some((value) => ( value === 'id'))) {
-      let listId = pathArray[pathArray.length - 1];
-      if (listId === '') {
-        return
-      }
-
-      if (listId !== currentListId) {
-        history.push(`/todolist`);
-      }
-    }
-  }, [currentListId]);
-
-  let history = useHistory();
-  const handleTableItemClick = (value) => {
-    console.log('TableItem onClick: begin to setCurrentListId');
-    currentListData.current = value;
-    setCurrentListId(value.id);
-  }
-
-  return (
-    <StyledTodolistPages>
-      {
-        // 判斷登入與否
-        (!(isSignIn)) ? (
-          // 未登入
-          // 判斷螢幕尺寸
-          (windowWidth <= breakpoint) ? (
-            <Switch>                                  
-              <Route path="/todolist/table">
-                <TodolistTable isSignIn={false} />
-              </Route>
-              <Route exact path="/todolist/id/">
-                <Todolist isSignIn={false} />
-              </Route>  
-              <Redirect from="/todolist" to={"/todolist/id/"} />
-            </Switch>            
-          ) : (
-            <Switch>
-              <Route exact path="/todolist/id/">
-                <TodolistTable isSignIn={false} />
-                <Todolist isSignIn={false} />  
-              </Route>
-              <Redirect from="/todolist" to="/todolist/id/" />                   
-            </Switch>          
-          )
-        ) : (
-          // 有登入
-          (windowWidth <= breakpoint) ? (
-            <Switch>                      
-              <Route exact path="/todolist/id/:listId">
-                <Todolist isSignIn={true} currentListData={currentListData.current} currentListId={currentListId} />
-              </Route>                                  
-              <Route exact path="/todolist/table">
-                <TodolistTable onTableItemClick={handleTableItemClick} isSignIn={true} srcTodolistData={todolistData} />
-              </Route>
-              <Redirect from="/todolist" to={`/todolist/id/${currentListId}`} />
-            </Switch>            
-          ) : (
-            <Switch>
-              <Route path="/todolist/id/:listId">
-                <TodolistTable onTableItemClick={handleTableItemClick} isSignIn={true} srcTodolistData={todolistData} />
-                <Todolist isSignIn={true} currentListData={currentListData.current} currentListId={currentListId} />
-              </Route>                      
-              <Redirect from="/todolist/table" to={`/todolist/id/${currentListId}`} />
-              <Redirect from="/todolist" to={`/todolist/id/${currentListId}`} />
-            </Switch>          
-          )          
-        )
-      }
-    </StyledTodolistPages>
-  )
-}
-
 const StyledHome = styled.div`
 
 `;
@@ -456,7 +309,7 @@ const StyledMain = styled.main`
   position: relative;
   padding: ${styledVariables.shared.barHeight} 0;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   z-index: 0;
 `;
 
@@ -538,9 +391,12 @@ const Main = () => {
         <Route path="/auth">
           <Auth isSignIn={isSignIn} onAuthSubmit={onAuthSubmit} onAuthEmailInput={onAuthEmailInput} emailValue={emailValue} onAuthPasswordInput={onAuthPasswordInput} passwordValue={passwordValue} />
         </Route>
+        <Route path="/activity">
+          <SearchPages />
+        </Route>
         <Route path="/">
           <Home />
-        </Route>        
+        </Route>     
       </Switch>
     </StyledMain>
   )
