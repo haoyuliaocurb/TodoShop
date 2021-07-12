@@ -43,26 +43,6 @@ export const StyledNavBar = styled.nav`
   }
 `;
 
-export const StyledTabBar = styled.div`
-  position: fixed;
-  bottom: 0px;
-  width: 100%;
-  height: ${styledVariables.shared.barHeight};
-  background-color: ${styledVariables.color.gray100};
-  display: flex;
-  flex-wrap: nowrap;
-  z-index: 10;
-  padding: 0 ${styledVariables.shared.contentPadding};
-
-  > a {
-    margin-top: 7px;
-    display: inline-block;
-    flex: 100px 1 1;
-    // border: solid blue 1px;
-    // display: flex;
-  }
-`;
-
 export const StyledIconApp = styled.span`
   ${styledCSS.iconColorState};
   position: relative;
@@ -107,16 +87,6 @@ export const StyledToolBar = styled.div`
     border-radius: 100px;
   }
 `;
-
-export const StyledMain = styled.main`
-  position: relative;
-  padding: ${styledVariables.shared.barHeight} 0;
-  width: 100%;
-  min-height: 100%;
-  z-index: 0;
-`;
-
-export const StyledHome = styled.div``;
 
 export const StyledApp = styled.div`
   position: relative;
