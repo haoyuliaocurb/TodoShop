@@ -1,7 +1,7 @@
 import Todolist from '../features/todolistPages/Todolist.js'
 import TodolistTable from '../features/todolistPages/TodolistTable.js'
 import Auth from './Auth.js'
-import styled from '@emotion/styled'
+import styled from '@emotion/styled/macro'
 import { 
   styledVariables,
   styledCSS,

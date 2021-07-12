@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
 // import cssMatl from "./cssMaterial.js";
-import styled from "@emotion/styled";
+import styled from "@emotion/styled/macro";
 import { ReactComponent as IconClose } from './images/icon_close.svg';
 import "normalize.css"
 import "./general.css";

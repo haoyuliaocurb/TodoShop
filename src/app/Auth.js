@@ -8,7 +8,7 @@ import {
 import {
     auth,
 } from './firebase-services.js'
-import styled from '@emotion/styled'
+import styled from '@emotion/styled/macro'
 
 const StyledAuth = styled.form`
     width: 100%;
