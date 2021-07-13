@@ -1,6 +1,7 @@
 // script
-import { React, useState, useEffect, useRef } from 'react';
-import { Route, Redirect, Switch, useHistory, useLocation } from 'react-router-dom';
+import { React, useState, useEffect } from 'react';
+// import { Route, Redirect, Switch, useHistory, useLocation } from 'react-router-dom';
+import { Route, Redirect, Switch } from 'react-router-dom';
 import { firestore } from '../utils/firebase/firebase-services';
 import Todolist from '../components/TodolistPage/Todolist/Todolist';
 import TodolistTable from '../components/TodolistPage/TodolistTable/TodolistTable';
@@ -14,44 +15,37 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
 
   const { breakpoint } = styledVariables.todolistPages;
   const currentUid = isSignIn;
-  // console.log('isSignIn when rendering TodolistPages: ', isSignIn);
+  console.log('currentUid when rendering TodolistPages: ', currentUid);
 
   // 處理 todolistData
-  const [todolistData, setTodolistData] = useState([]);
-  const srcCurrentListId = useRef('');
-  const currentListData = useRef(null);
-  const [currentListId, setCurrentListId] = useState('');
+  const [todolistData, setTodolistData] = useState(null);
+  // const srcCurrentListId = useRef('');
+  // const currentListData = useRef(null);
+  // const [currentListId, setCurrentListId] = useState('');
 
-  const getCurrentTodolistData = async () => {
+  const fetchTodolistData = async () => {
     // eslint-disable-next-line consistent-return
     const promiseReturned = new Promise((resolve) => {
       if (!isSignIn) {
         return [];
       }
-      // console.log('currentUser.uid: ', currentUser.uid);
       const newTodolistData = [];
-      let fetchedNewTodolistDataCounter = 0;
+      // let fetchedTodolistDataCounter = 0;
       firestore
         .collection('todolist')
         .where('uid', '==', currentUid)
         .orderBy('updateTime', 'desc')
         .limit(15)
         .get()
-        .then((fetchedNewTodolistData) => {
-          // console.log('fetchedNewTodolistData: ', fetchedNewTodolistData);
+        .then((fetchedTodolistData) => {
+          // console.log('fetchedTodolistData: ', fetchedTodolistData);
           // console.log('trigger QuerySnapshot .then');
-          fetchedNewTodolistData.forEach((value) => {
+          fetchedTodolistData.forEach((value) => {
             // console.log('element of TodolistData');
             // console.log('value: ', value);
-            if (fetchedNewTodolistDataCounter === 0) {
-              // updateTime 最新者的 doc name 為 currrentId
-              srcCurrentListId.current = value.id;
-              currentListData.current = value;
-              // console.log('srcCurrentListId: ', srcCurrentListId);
-            }
             newTodolistData.push(value);
             // console.log('newTodolistData: ', newTodolistData);
-            fetchedNewTodolistDataCounter += 1;
+            // fetchedTodolistDataCounter += 1;
           });
         });
       resolve(newTodolistData);
@@ -60,52 +54,71 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
   };
 
   useEffect(() => {
-    const fetchTodolistData = async () => {
+    // console.log('isSignIn: ', isSignIn);
+    const getCurrentTodolistData = async () => {
       // 登入狀態改變時，也會重新 setTodolistData
-      const newTodolistData = await getCurrentTodolistData();
-      setTodolistData(newTodolistData);
+      const newTodolistData = await fetchTodolistData();
+      setTodolistData({ currentListIdx: 0, dataArray: newTodolistData });
       // console.log('useEffect depends on isSignIn');
     };
-    fetchTodolistData();
+    if (!isSignIn) {
+      return;
+    }
+    getCurrentTodolistData();
   }, [isSignIn]);
 
+  // const history = useHistory();
+  // const location = useLocation();
   useEffect(() => {
-    // 當 todolistData 更改，便會更改 currentListId
-    const getCurrentListId = () => srcCurrentListId.current;
-    setCurrentListId(getCurrentListId());
-    // console.log('todolistData: ', todolistData);
-    // console.log('srcCurrentListId.current: ', srcCurrentListId.current);
     // console.log('useEffect depends on todolistData');
-  }, [todolistData]);
-
-  const history = useHistory();
-  const location = useLocation();
-  useEffect(() => {
-    console.log('useEffect depends on currentListId');
-    // console.log('currentListData.current: ', currentListData.current);
-    // console.log('currentListId: ', currentListId);
+    console.log('todolistData: ', todolistData);
     // console.log('----------');
-    const pathArray = location.pathname.split('/');
-    if (pathArray.some((value) => value === 'id')) {
-      const listId = pathArray[pathArray.length - 1];
-      if (listId === '') {
-        return;
-      }
 
-      if (listId !== currentListId) {
-        history.push(`/todolist`);
-      }
-    }
-  }, [currentListId]);
+    // const { currentListIdx } = todolistData;
+    // const currentListId = todolistData.dataArray[currentListIdx].id;
+    // const currentListId = 'test';
+
+    // const pathArray = location.pathname.split('/');
+    // if (pathArray.some((value) => value === 'id')) {
+    //   const listId = pathArray[pathArray.length - 1];
+    //   if (listId === '') {
+    //     return;
+    //   }
+
+    //   /*
+    //   if (listId !== currentListId) {
+    //     history.push(`/todolist`);
+    //   }
+    //   */
+    // }
+  }, [todolistData]);
 
   const handleTableItemClick = (value) => {
     console.log('TableItem onClick: begin to setCurrentListId');
-    currentListData.current = value;
-    setCurrentListId(value.id);
+    setTodolistData({ ...todolistData, currentListIdx: value.id });
   };
 
   // eslint-disable-next-line consistent-return
   const getTodolistPageContent = () => {
+    const getCurrentListData = () => {
+      console.log('!todolistData: ', !todolistData, 'todolistData: ', todolistData);
+      if (!todolistData) {
+        return null;
+      }
+      const { dataArray, currentListIdx } = todolistData;
+      return dataArray[currentListIdx];
+    };
+    const getCurrentListId = () => {
+      console.log('!todolistData: ', !todolistData, 'todolistData: ', todolistData);
+      if (!todolistData) {
+        return '';
+      }
+      const { dataArray, currentListIdx } = todolistData;
+      return dataArray[currentListIdx].id;
+    };
+    const currentListData = getCurrentListData();
+    const currentListId = getCurrentListId();
+
     if (!isSignIn && windowWidth <= breakpoint) {
       // 判斷登入與否
       return (
@@ -138,7 +151,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
             <Todolist
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}
-              currentListData={currentListData.current}
+              currentListData={currentListData}
               currentListId={currentListId}
             />
           </Route>
@@ -147,7 +160,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               onTableItemClick={handleTableItemClick}
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}
-              srcTodolistData={todolistData}
+              todolistData={todolistData}
             />
           </Route>
           <Redirect from="/todolist" to={`/todolist/id/${currentListId}`} />
@@ -155,6 +168,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
       );
     }
     if (isSignIn && !(windowWidth <= breakpoint)) {
+      console.log('getTodolistPageContent: isSignIn && !(windowWidth <= breakpoint)');
       return (
         <Switch>
           <Route path="/todolist/id/:listId">
@@ -162,12 +176,12 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               onTableItemClick={handleTableItemClick}
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}
-              srcTodolistData={todolistData}
+              todolistData={todolistData}
             />
             <Todolist
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}
-              currentListData={currentListData.current}
+              currentListData={currentListData}
               currentListId={currentListId}
             />
           </Route>

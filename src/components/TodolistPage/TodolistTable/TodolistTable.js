@@ -1,5 +1,5 @@
 // script
-import { React, useState, useEffect } from 'react';
+import { React, useEffect } from 'react';
 // import { Link } from 'react-router-dom';
 // import { auth } from '../../../utils/firebase/firebase-services.js';
 import TodolistTableItem from './TodolistTableItem';
@@ -42,23 +42,15 @@ let data = [
 ]
 */
 
-const TodolistTable = ({ isSignIn, srcTodolistData, onTableItemClick }) => {
-  const [todolistData, setTodolistData] = useState(null);
+const TodolistTable = ({ isSignIn, todolistData, onTableItemClick }) => {
   // console.log('render TodolistTable.');
-
-  useEffect(() => {
-    // console.log('srcTodolistData: ', srcTodolistData);
-    setTodolistData(srcTodolistData);
-    // console.log('TodolistTable: useEffect depends on srcTodolistData.');
-  }, [srcTodolistData]);
 
   useEffect(() => {
     // console.log('todolistData: ', todolistData);
     // console.log('TodolistTable: useEffect depends on todolistData.');
   }, [todolistData]);
-
-  const getTodolistTableItem = (itemArray) => {
-    return itemArray.map((value) => {
+  const getTodolistTableItem = (dataArray) => {
+    return dataArray.map((value) => {
       const updateTime = value.data().updateTime.toDate().valueOf();
       // console.log('updateTime: ', updateTime);
       return (
@@ -72,13 +64,14 @@ const TodolistTable = ({ isSignIn, srcTodolistData, onTableItemClick }) => {
   };
 
   const getTodolistTableContent = () => {
-    if (!todolistData) {
-      return '';
-    }
     if (!isSignIn) {
       return <p>請登入以瀏覽頁面</p>;
     }
-    return getTodolistTableItem(todolistData);
+    if (!todolistData) {
+      return <p>無購物清單資料</p>;
+    }
+    const { dataArray } = todolistData;
+    return getTodolistTableItem(dataArray);
   };
 
   return (
