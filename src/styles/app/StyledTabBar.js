@@ -11,6 +11,7 @@ const StyledTabBar = styled.div`
   flex-wrap: nowrap;
   z-index: 10;
   padding: 0 ${styledVariables.shared.contentPadding};
+  max-width: ${styledVariables.shared.contentTabBarMaxWidth};
 
   > a {
     margin-top: 7px;
@@ -18,6 +19,10 @@ const StyledTabBar = styled.div`
     flex: 100px 1 1;
     // border: solid blue 1px;
     // display: flex;
+  }
+
+  @media (min-width: ${styledVariables.shared.contentTabBarMaxWidth}) {
+    border-radius: 100px;
   }
 `;
 

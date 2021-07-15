@@ -88,8 +88,10 @@ export const StyledToolBar = styled.div`
   }
 `;
 
-export const StyledApp = styled.div`
+export const StyledAppContent = styled.div`
   position: relative;
   width: 100vw;
   height: 100vh;
+  display: flex;
+  justify-content: center;
 `;

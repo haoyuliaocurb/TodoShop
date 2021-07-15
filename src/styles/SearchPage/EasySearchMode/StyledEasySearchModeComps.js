@@ -100,7 +100,7 @@ export const StyledSearchCards = styled.div`
 export const StyledSearchItem = styled.div`
   position: relative;
   width: 100%;
-  padding: 0 10px;
+  padding: 0 ${styledVariables.SearchItem.SelfPaddingHor};
   padding-top: ${styledVariables.SearchItem.TitleHeight};
   margin-top: 6px;
   background-color: ${styledVariables.color.white};
@@ -126,6 +126,7 @@ export const StyledSearchItem = styled.div`
 
 export const StyledEasySearchPage = styled.div`
   overflow-y: scroll;
+  max-width: ${styledVariables.shared.contentMaxWidth};
 
   > div:last-of-type {
     margin-bottom: 10px;

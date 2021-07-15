@@ -14,6 +14,8 @@ export const styledVariables = {
   shared: {
     barHeight: '50px',
     contentPadding: '2%',
+    contentMaxWidth: '800px',
+    contentTabBarMaxWidth: '700px',
   },
   app: {},
   tabBar: {
@@ -37,6 +39,7 @@ export const styledVariables = {
   },
   SearchItem: {
     TitleHeight: '25px',
+    SelfPaddingHor: '10px',
   },
   SearchCard: {
     SelfPaddingBottom: '6px',

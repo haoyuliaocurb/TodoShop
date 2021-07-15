@@ -136,7 +136,12 @@ export default Todolist;
 //   useEffect(() => {
 //     setTodolistItems(createListItemfromProps());
 //     // console.log('Todolist: useEffect depends on currentListData, currentListId.')
-//   }, [currentListData, currentListId, createListItemfromProps]);
+//   }, []);
+
+// //   useEffect(() => {
+// //     setTodolistItems(createListItemfromProps());
+// //     // console.log('Todolist: useEffect depends on currentListData, currentListId.')
+// //   }, [currentListData, currentListId, createListItemfromProps]);
 
 //   useEffect(() => {
 //     // console.log('Todolist: useEffect depends on TodolistItems.')

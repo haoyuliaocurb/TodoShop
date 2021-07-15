@@ -26,7 +26,7 @@ const FeatureBar = () => {
   return (
     <StyledFeatureBar>
       <StyledFeatureTags>
-        {Array.from({ length: 10 }).map(() => (
+        {Array.from({ length: 20 }).map(() => (
           <FeatureTag />
         ))}
       </StyledFeatureTags>
@@ -59,7 +59,7 @@ const SearchItem = () => {
       </div>
       <FeatureBar />
       <StyledSearchCards>
-        {Array.from({ length: 10 }).map(() => (
+        {Array.from({ length: 20 }).map(() => (
           <SearchCard />
         ))}
       </StyledSearchCards>

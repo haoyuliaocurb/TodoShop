@@ -25,7 +25,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
 
   const fetchTodolistData = async () => {
     // eslint-disable-next-line consistent-return
-    const promiseReturned = new Promise((resolve) => {
+    const innerFetchTodolistData = new Promise((resolve) => {
       if (!isSignIn) {
         return [];
       }
@@ -50,11 +50,12 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
         });
       resolve(newTodolistData);
     });
+    const promiseReturned = Promise.resolve(innerFetchTodolistData);
     return promiseReturned;
   };
 
   useEffect(() => {
-    // console.log('isSignIn: ', isSignIn);
+    console.log('isSignIn: ', isSignIn);
     const getCurrentTodolistData = async () => {
       // 登入狀態改變時，也會重新 setTodolistData
       const newTodolistData = await fetchTodolistData();
@@ -101,15 +102,21 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
   // eslint-disable-next-line consistent-return
   const getTodolistPageContent = () => {
     const getCurrentListData = () => {
-      console.log('!todolistData: ', !todolistData, 'todolistData: ', todolistData);
+      console.log('!todolistData: ', !todolistData);
+      // console.log('!todolistData: ', !todolistData, 'todolistData: ', todolistData);
       if (!todolistData) {
         return null;
       }
+      console.log('todolistData.dataArray: ', todolistData.dataArray);
+      if (!todolistData.dataArray) {
+        return null;
+      }
+
       const { dataArray, currentListIdx } = todolistData;
       return dataArray[currentListIdx];
     };
     const getCurrentListId = () => {
-      console.log('!todolistData: ', !todolistData, 'todolistData: ', todolistData);
+      // console.log('!todolistData: ', !todolistData, 'todolistData: ', todolistData);
       if (!todolistData) {
         return '';
       }
