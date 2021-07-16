@@ -11,7 +11,7 @@ import { styledVariables } from '../styles/app/cssMaterial';
 import StyledTodolistPage from '../styles/TodolistPage/StyledTodolistPage';
 
 const TodolistPages = ({ windowWidth, isSignIn }) => {
-  // console.log('render TodolistPages');
+  console.log('render TodolistPages');
   const { breakpoint } = styledVariables.todolistPages;
   // console.log('currentUid when rendering TodolistPages: ', currentUid);
 
@@ -111,11 +111,11 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
   // eslint-disable-next-line prefer-const
   let history = useHistory();
   useEffect(() => {
-    console.log('currentListInfo: ', currentListInfo);
+    // console.log('currentListInfo: ', currentListInfo);
   }, [currentListInfo]);
 
   const handleTableItemClick = (value) => {
-    console.log('TableItem onClick: begin to setCurrentListInfo');
+    // console.log('TableItem onClick: begin to setCurrentListInfo');
     // console.log('todolistData: ', todolistData);
     // console.log('listIdxObj.current[value.id]: ', listIdxObj.current[value.id]);
 
@@ -137,7 +137,10 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
   };
 
   const handleTodolistClick = () => {
-    console.log('trigger handleTodolistClick.');
+    // console.log('trigger handleTodolistClick.');
+    if (!todolistData) {
+      return;
+    }
     setCurrentListInfo((prevCurrentListInfo) => ({ ...prevCurrentListInfo, itemButtonState: 2 }));
   };
 
@@ -158,7 +161,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
             <TodolistTable isSignIn={false} />
           </Route>
           <Route exact path="/todolist/id/">
-            <Todolist isSignIn={false} />
+            <Todolist isSignIn={false} handleTodolistClick={handleTodolistClick} />
           </Route>
           <Redirect from="/todolist" to="/todolist/id/" />
         </Switch>
@@ -169,7 +172,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
         <Switch>
           <Route exact path="/todolist/id/">
             <TodolistTable isSignIn={false} />
-            <Todolist isSignIn={false} />
+            <Todolist isSignIn={false} handleTodolistClick={handleTodolistClick} />
           </Route>
           <Redirect from="/todolist" to="/todolist/id/" />
         </Switch>

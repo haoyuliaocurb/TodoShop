@@ -118,9 +118,9 @@ const Todolist = ({ currentListData, currentListId, handleTodolistClick }) => {
   };
   const { listId } = useParams();
   const filterCurrentListData = useCallback(() => {
-    console.log('Todolist: trigger filterCurrentListData');
+    // console.log('Todolist: trigger filterCurrentListData');
     if (currentListData) {
-      console.log('currentListData.data() in filterCurrentListData', currentListData.data());
+      // console.log('currentListData.data() in filterCurrentListData', currentListData.data());
     }
     if (!currentListData) {
       // console.log('currentListData is falsy.')
@@ -143,7 +143,7 @@ const Todolist = ({ currentListData, currentListId, handleTodolistClick }) => {
   }, [currentListData]);
 
   useEffect(() => {
-    console.log('Todolist: useEffect depends on filterCurrentListData.');
+    // console.log('Todolist: useEffect depends on filterCurrentListData.');
     setTodolistItems(filterCurrentListData());
   }, [filterCurrentListData]);
 
@@ -153,11 +153,11 @@ const Todolist = ({ currentListData, currentListId, handleTodolistClick }) => {
   //   }, [currentListData, currentListId, filterCurrentListData]);
 
   useEffect(() => {
-    console.log('Todolist: useEffect depends on currentListData.');
+    // console.log('Todolist: useEffect depends on currentListData.');
   }, [currentListData]);
 
   useEffect(() => {
-    console.log('Todolist: useEffect depends on TodolistItems.');
+    // console.log('Todolist: useEffect depends on TodolistItems.');
   }, [TodolistItems]);
 
   const handleSubmit = (e) => {

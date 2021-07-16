@@ -81,7 +81,7 @@ export const StyledTodolistTableItem = styled.div`
 
   &.currentList {
     background-color: ${(props) => {
-      console.log('props.isCurrentList: ', props.isCurrentList);
+      // console.log('props.isCurrentList: ', props.isCurrentList);
       switch (props.isCurrentList) {
         case 1:
           return styledVariables.color.pink100;
