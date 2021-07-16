@@ -7,41 +7,6 @@ import TodolistTableItem from './TodolistTableItem';
 // styling
 import StyledTodolistTable from '../../../styles/TodolistPage/TodolistTable/StyledTodolistTable';
 
-/*
-let data = [
-    {
-        name: 'A',
-        updateTime: '2020/01/28',
-        items: [
-            {
-                name: '洗髮精',
-            },
-            {
-                name: '橘子'
-            },
-            {
-                name: '蘋果',
-            },
-        ]
-    },
-    {
-        name: 'B',
-        updateTime: '2019/01/28',
-        items: [
-            {
-                name: '衛生紙',
-            },
-            {
-                name: '凡士林'
-            },
-            {
-                name: '衛生紙',
-            },
-        ]
-    }
-]
-*/
-
 const TodolistTable = ({ isSignIn, todolistData, currentListInfo, onTableItemClick }) => {
   // console.log('render TodolistTable.');
 

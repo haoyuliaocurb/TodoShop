@@ -17,6 +17,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
 
   // 處理 todolistData
   const [todolistData, setTodolistData] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [currentListInfo, setCurrentListInfo] = useState({ idx: 0, itemButtonState: 2 });
   // const lastListId = useRef('');
   // const srcCurrentListId = useRef('');
@@ -106,6 +107,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
 
   // eslint-disable-next-line prefer-const
   let pathArray = useLocation().pathname.split('/');
+  pathArray.shift();
   // eslint-disable-next-line prefer-const
   let history = useHistory();
   useEffect(() => {
@@ -138,21 +140,20 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     // console.log('todolistData: ', todolistData);
     // console.log('listIdxObj.current[value.id]: ', listIdxObj.current[value.id]);
 
-    setCurrentListInfo({ idx: listIdxObj.current[value.id], itemButtonState: 1 });
-    if (!todolistData) {
-      return;
-    }
-    pathArray.shift();
-    // const currentListId = getCurrentListId();
-    // console.log('pathArray: ', pathArray);
-    const currentListId = todolistData[currentListInfo.idx].id;
+    const clickedListId = value.id;
     // console.log('currentListId: ', currentListId);
-    if (pathArray.some((pathArrayValue) => pathArrayValue !== currentListId)) {
+    if (pathArray.some((pathArrayValue) => pathArrayValue !== clickedListId)) {
       const listId = pathArray[pathArray.length - 1];
       if (listId === '') {
         return;
       }
-      history.push(`/todolist/id/${currentListId}`);
+      history.push(`/todolist/id/${clickedListId}`);
+    }
+
+    setCurrentListInfo({ idx: listIdxObj.current[value.id], itemButtonState: 1 });
+    if (!todolistData) {
+      // eslint-disable-next-line no-useless-return
+      return;
     }
   };
 
