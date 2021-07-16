@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+
 // script
 import { React } from 'react';
 import { Link } from 'react-router-dom';
@@ -38,13 +41,14 @@ const TodolistTableItem = ({ listItemData, onTableItemClick, isCurrentList }) =>
 
   return (
     <StyledTodolistTableItem
-      onClick={() => {
-        handleClick(listItemData);
-      }}
       className={isCurrentList ? 'currentList' : ''}
       isCurrentList={isCurrentList}
     >
-      <div>
+      <div
+        onClick={() => {
+          handleClick(listItemData);
+        }}
+      >
         <h2>{`${uptimeTime.getFullYear()}/${String(uptimeTime.getMonth()).padStart(
           2,
           '0',
