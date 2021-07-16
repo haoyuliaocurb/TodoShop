@@ -53,7 +53,7 @@ const TodolistInput = ({ inputDisplayContent, onInputElInput, onInputKeyUp }) =>
   );
 };
 
-const Todolist = ({ currentListData, currentListId }) => {
+const Todolist = ({ currentListData, currentListId, handleTodolistClick }) => {
   console.log('render Todolist.');
   // console.log('currentListId: ', currentListId);
   if (currentListData) {
@@ -202,8 +202,16 @@ const Todolist = ({ currentListData, currentListId }) => {
     }
   };
 
+  const handleSelfClick = () => {
+    handleTodolistClick();
+  };
+
   return (
-    <StyledTodolist>
+    <StyledTodolist
+      onClick={() => {
+        handleSelfClick();
+      }}
+    >
       <form onSubmit={handleSubmit}>
         {TodolistItems}
         {/*

@@ -80,7 +80,17 @@ export const StyledTodolistTableItem = styled.div`
   }};
 
   &.currentList {
-    background-color: ${styledVariables.color.gray200};
+    background-color: ${(props) => {
+      console.log('props.isCurrentList: ', props.isCurrentList);
+      switch (props.isCurrentList) {
+        case 1:
+          return styledVariables.color.pink100;
+        case 2:
+          return styledVariables.color.gray200;
+        default:
+          return styledVariables.color.gray200;
+      }
+    }};
   }
 
   > div {

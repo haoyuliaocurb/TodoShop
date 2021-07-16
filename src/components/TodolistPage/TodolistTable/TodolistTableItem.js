@@ -42,6 +42,7 @@ const TodolistTableItem = ({ listItemData, onTableItemClick, isCurrentList }) =>
         handleClick(listItemData);
       }}
       className={isCurrentList ? 'currentList' : ''}
+      isCurrentList={isCurrentList}
     >
       <div>
         <h2>{`${uptimeTime.getFullYear()}/${String(uptimeTime.getMonth()).padStart(

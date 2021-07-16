@@ -111,28 +111,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
   // eslint-disable-next-line prefer-const
   let history = useHistory();
   useEffect(() => {
-    // console.log(
-    //   'listIdxObj.current in useEffect on todolistData in TodolistPage: ',
-    //   listIdxObj.current,
-    // );
-    /*
-    if (!todolistData) {
-      return;
-    }
-
-    pathArray.unshift();
-    // const currentListId = getCurrentListId();
-    console.log('pathArray: ', pathArray);
-    const currentListId = todolistData[currentListInfo.idx].id;
-    console.log('currentListId: ', currentListId);
-    if (pathArray.some((value) => value !== currentListId)) {
-      const listId = pathArray[pathArray.length - 1];
-      if (listId === '') {
-        return;
-      }
-      history.push(`/todolist/id/${currentListId}`);
-    }
-    */
+    console.log('currentListInfo: ', currentListInfo);
   }, [currentListInfo]);
 
   const handleTableItemClick = (value) => {
@@ -155,6 +134,11 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
       // eslint-disable-next-line no-useless-return
       return;
     }
+  };
+
+  const handleTodolistClick = () => {
+    console.log('trigger handleTodolistClick.');
+    setCurrentListInfo((prevCurrentListInfo) => ({ ...prevCurrentListInfo, itemButtonState: 2 }));
   };
 
   // eslint-disable-next-line consistent-return
@@ -201,6 +185,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               currentListData={currentListData}
               currentListId={currentListId}
               currentListInfo={currentListInfo}
+              handleTodolistClick={handleTodolistClick}
             />
           </Route>
           <Route exact path="/todolist/table">
@@ -232,6 +217,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               isSignIn={true}
               currentListData={currentListData}
               currentListId={currentListId}
+              handleTodolistClick={handleTodolistClick}
             />
           </Route>
           <Redirect from="/todolist/table" to={`/todolist/id/${currentListId}`} />

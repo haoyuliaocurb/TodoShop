@@ -25,7 +25,7 @@ const TodolistTable = ({ isSignIn, todolistData, currentListInfo, onTableItemCli
           listItemData={value}
           onTableItemClick={onTableItemClick}
           // eslint-disable-next-line no-unneeded-ternary
-          isCurrentList={currentListIdx === index ? true : false}
+          isCurrentList={currentListIdx === index ? currentListInfo.itemButtonState : false}
         />
       );
     });
