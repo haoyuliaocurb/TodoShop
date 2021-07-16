@@ -42,15 +42,16 @@ let data = [
 ]
 */
 
-const TodolistTable = ({ isSignIn, todolistData, onTableItemClick }) => {
+const TodolistTable = ({ isSignIn, todolistData, currentListInfo, onTableItemClick }) => {
   // console.log('render TodolistTable.');
 
   useEffect(() => {
     // console.log('todolistData: ', todolistData);
     // console.log('TodolistTable: useEffect depends on todolistData.');
   }, [todolistData]);
-  const getTodolistTableItem = (dataArray) => {
-    return dataArray.map((value) => {
+
+  const getTodolistTableItem = (dataArray, currentListIdx) => {
+    return dataArray.map((value, index) => {
       const updateTime = value.data().updateTime.toDate().valueOf();
       // console.log('updateTime: ', updateTime);
       return (
@@ -58,6 +59,8 @@ const TodolistTable = ({ isSignIn, todolistData, onTableItemClick }) => {
           key={`${updateTime}`}
           listItemData={value}
           onTableItemClick={onTableItemClick}
+          // eslint-disable-next-line no-unneeded-ternary
+          isCurrentList={currentListIdx === index ? true : false}
         />
       );
     });
@@ -70,8 +73,7 @@ const TodolistTable = ({ isSignIn, todolistData, onTableItemClick }) => {
     if (!todolistData) {
       return <p>無購物清單資料</p>;
     }
-    const { dataArray } = todolistData;
-    return getTodolistTableItem(dataArray);
+    return getTodolistTableItem(todolistData, currentListInfo.idx);
   };
 
   return (

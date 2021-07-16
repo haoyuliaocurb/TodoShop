@@ -1,5 +1,5 @@
 // script
-import { React, useState, useEffect } from 'react';
+import { React } from 'react';
 import { Link } from 'react-router-dom';
 import IconTodolistPages from '../../../styles/TodolistPage/IconTodolistPage';
 
@@ -9,7 +9,7 @@ import {
   StyledTodolistTableItem,
 } from '../../../styles/TodolistPage/TodolistTable/StyledTodolistTableItemComps';
 
-const TodolistTableItem = ({ listItemData, onTableItemClick }) => {
+const TodolistTableItem = ({ listItemData, onTableItemClick, isCurrentList }) => {
   const uptimeTime = listItemData.data().updateTime.toDate();
   const getTodolistTableItemSpan = (itemArray) => {
     let itemString = '';
@@ -30,25 +30,18 @@ const TodolistTableItem = ({ listItemData, onTableItemClick }) => {
     */
   };
 
-  const [clickState, setClickState] = useState(2);
-
   const handleClick = (value) => {
     // console.log('trigger handleClick of TodolistTableItem.');
     // console.log('props.key: ', props.key);
     onTableItemClick(value);
-    setClickState(1);
   };
-
-  useEffect(() => {
-    // console.log('clickState of ', listItemData.data().updateTime.valueOf(), ' :' , clickState);
-  }, [clickState]);
 
   return (
     <StyledTodolistTableItem
-      clickState={clickState}
       onClick={() => {
         handleClick(listItemData);
       }}
+      className={isCurrentList ? 'currentList' : ''}
     >
       <div>
         <h2>{`${uptimeTime.getFullYear()}/${String(uptimeTime.getMonth()).padStart(

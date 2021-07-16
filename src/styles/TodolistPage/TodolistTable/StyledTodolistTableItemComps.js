@@ -4,6 +4,7 @@ import { styledVariables } from '../../app/cssMaterial';
 
 const getStyledIcon2SearchLinkBgColor = ({ disabled }) => {
   if (disabled) {
+    // console.log('disabled in getStyledIcon2SearchLinkBgColor');
     return styledVariables.color.gray200;
   }
   return styledVariables.color.gray300;
@@ -30,7 +31,7 @@ export const StyledIcon2Search = styled.span`
     justify-content: flex-end;
     align-items: center;
     background-color: ${(props) => {
-      getStyledIcon2SearchLinkBgColor(props);
+      return getStyledIcon2SearchLinkBgColor(props);
     }};
     color: ${styledVariables.color.white};
 
@@ -77,6 +78,10 @@ export const StyledTodolistTableItem = styled.div`
         return 'transparent';
     }
   }};
+
+  &.currentList {
+    background-color: ${styledVariables.color.gray200};
+  }
 
   > div {
     display: inline-block;
