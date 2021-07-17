@@ -49,6 +49,10 @@ const Main = () => {
     });
   }, []);
 
+  // SearchPage 搜尋資訊
+  // eslint-disable-next-line no-unused-vars
+  const [searchInfo, setSearchInfo] = useState({ searchKeyword: [], isEasySearchMode: 1 });
+
   return (
     <StyledMain>
       <Switch>
@@ -59,7 +63,7 @@ const Main = () => {
           <AuthPage isSignIn={isSignIn} />
         </Route>
         <Route path="/activity">
-          <SearchPage />
+          <SearchPage searchInfo={searchInfo} />
         </Route>
         <Route path="/">
           <HomePage />

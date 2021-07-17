@@ -86,7 +86,7 @@ const StyledSearchPage = styled.div`
       position: absolute;
       top: 0;
       bottom: 0;
-      left: ${styledVariables.SearchItem.SelfPaddingHor};
+      left: ${styledVariables.EasySearchMode.SearchItem.SelfPaddingHor};
       margin: auto 0;
       width: 24px;
       height: 24px;
@@ -103,7 +103,7 @@ const StyledSearchPage = styled.div`
       top: 0;
       bottom: 8px;
       margin: auto 0;
-      right: ${styledVariables.SearchItem.SelfPaddingHor};
+      right: ${styledVariables.EasySearchMode.SearchItem.SelfPaddingHor};
       width: 40px;
       height: 27px;
       // border: black solid 1px;

@@ -37,12 +37,22 @@ export const styledVariables = {
   todolistPages: {
     breakpoint: '800',
   },
-  SearchItem: {
-    TitleHeight: '25px',
-    SelfPaddingHor: '10px',
+  EasySearchMode: {
+    SearchItem: {
+      TitleHeight: '25px',
+      SelfPaddingHor: '10px',
+    },
+    SearchCard: {
+      SelfPaddingBottom: '6px',
+      SelfMarginRight: '10px',
+      SelfWidth: '116px',
+    },
   },
-  SearchCard: {
-    SelfPaddingBottom: '6px',
+  NormalSearchMode: {
+    SearchCard: {
+      SelfPaddingBottom: '26px',
+      SelfPaddingHor: '18px',
+    },
   },
 };
 

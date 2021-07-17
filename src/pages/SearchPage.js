@@ -3,6 +3,7 @@ import styled from '@emotion/styled/macro';
 // import { Link } from 'react-router-dom';
 
 import EasySearchMode from '../components/SearchPage/EasySearchMode/EasySearchMode';
+import NormalSearchMode from '../components/SearchPage/NormalSearchMode/NormalSearchMode';
 import { styledVariables } from '../styles/app/cssMaterial';
 import IconSearchPage from '../styles/SearchPage/IconSearchPage';
 import StyledSearchPage from '../styles/SearchPage/StyledSearchPage';
@@ -47,16 +48,13 @@ const SearchNavBar = () => {
   );
 };
 
-const FilterBar = () => {
-  return <div />;
-};
+const SearchPages = ({ searchInfo }) => {
+  const { isEasySearchMode } = searchInfo;
 
-const SearchPages = () => {
   return (
     <StyledSearchPage>
       <SearchNavBar />
-      {false ? <div /> : <FilterBar />}
-      <EasySearchMode />
+      {isEasySearchMode ? <EasySearchMode /> : <NormalSearchMode />}
     </StyledSearchPage>
   );
 };
