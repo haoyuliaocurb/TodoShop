@@ -51,6 +51,47 @@ const SearchNavBar = () => {
 const SearchPages = ({ searchInfo }) => {
   const { isEasySearchMode } = searchInfo;
 
+  /*
+      const searchResult = ['SWUNApoWStoWaW7RP4hh', 'SeFCJJMAzLXBxbJ2MdI1'];
+    const UID_TEST = 'kqXYsHFzzTN0DGlBqFdyafGtU052';
+    const results = await firestore
+      .collectionGroup('productAction')
+      .where('uid', '==', UID_TEST)
+      .limit(15)
+      .get();
+    // console.log('end promise');
+    const productAction = { bookmark: {}, like: {}, cart: {} };
+    results.forEach((srcValue) => {
+      const value = srcValue.data();
+      const { pid } = value;
+      if (value.bookmark) {
+        productAction.bookmark[pid] = true;
+      }
+      if (value.like) {
+        productAction.like[pid] = true;
+      }
+      if (value.cart) {
+        productAction.cart[pid] = true;
+      }
+    });
+    const newSearchResult = searchResult.map((pid) => {
+      const objReturned = {};
+      if (productAction.bookmark[pid]) {
+        objReturned.bookmark = true;
+      }
+      if (productAction.like[pid]) {
+        objReturned.like = true;
+      }
+      if (productAction.cart[pid]) {
+        objReturned.cart = true;
+      }
+      return objReturned;
+    });
+    console.log('newSearchResult: ', newSearchResult);
+  };
+  getData();
+  */
+
   return (
     <StyledSearchPage>
       <SearchNavBar />

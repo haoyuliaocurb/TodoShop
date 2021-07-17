@@ -38,7 +38,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
       const newListIdxObj = {};
       // let fetchedTodolistDataCounter = 0;
       firestore
-        .collection('todolist')
+        .collection('todolists')
         .where('uid', '==', currentUid)
         .orderBy('updateTime', 'desc')
         .limit(15)
