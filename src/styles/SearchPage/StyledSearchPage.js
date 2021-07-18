@@ -54,7 +54,7 @@ const StyledSearchPage = styled.div`
         flex-wrap: nowrap;
         overflow-x: scroll;
 
-        > span {
+        > button {
           display: inline-block;
           padding: 6px 12px;
           border-radius: 100px;

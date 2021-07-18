@@ -10,7 +10,7 @@ import { styledVariables } from '../styles/app/cssMaterial';
 // styling
 import StyledTodolistPage from '../styles/TodolistPage/StyledTodolistPage';
 
-const TodolistPages = ({ windowWidth, isSignIn }) => {
+const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
   console.log('render TodolistPages');
   const { breakpoint } = styledVariables.todolistPages;
   // console.log('currentUid when rendering TodolistPages: ', currentUid);
@@ -193,6 +193,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
           </Route>
           <Route exact path="/todolist/table">
             <TodolistTable
+              handleIcon2SearchClick={handleIcon2SearchClick}
               onTableItemClick={handleTableItemClick}
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}
@@ -209,6 +210,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
         <Switch>
           <Route path="/todolist/id/:listId">
             <TodolistTable
+              handleIcon2SearchClick={handleIcon2SearchClick}
               onTableItemClick={handleTableItemClick}
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}

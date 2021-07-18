@@ -7,7 +7,7 @@ export const styledVariables = {
     gray200: '#dddddd',
     gray300: '#575757',
     gray700: '#000000',
-    pink100: '#ffe8ee',
+    pink100: '#ffe8ee≈',
     pink400: '#fb457b',
     white: 'white',
   },
@@ -88,4 +88,13 @@ export const styledCSS = {
       color: ${getIconColor(disabled, active)};
     }
   `,
+};
+
+export const getRGBFromColorCode = (colorCode) => {
+  const colorCodeArray = colorCode.split();
+  colorCodeArray.shift();
+  const red = `${colorCodeArray[0]}${colorCodeArray[1]}`;
+  const green = `${colorCodeArray[2]}${colorCodeArray[3]}`;
+  const blue = `${colorCodeArray[4]}${colorCodeArray[5]}`;
+  return { red, green, blue };
 };

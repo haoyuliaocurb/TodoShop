@@ -3,6 +3,7 @@ import styled from '@emotion/styled/macro';
 import { styledVariables } from '../../app/cssMaterial';
 
 const StyledEasySearchMode = styled.div`
+  position: relative;
   width: 100%;
   max-width: ${styledVariables.shared.contentMaxWidth};
   min-height: 100%;
@@ -10,6 +11,28 @@ const StyledEasySearchMode = styled.div`
 
   > div:last-of-type {
     margin-bottom: 10px;
+  }
+
+  > button {
+    display: inline-block;
+    position: fixed;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    z-index: 5;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100px 0 0 100px;
+    > svg {
+      width: 36%;
+      height: 36%;
+      fill: ${styledVariables.color.white};
+      * {
+        fill: ${styledVariables.color.white};
+      }
+    }
   }
 `;
 

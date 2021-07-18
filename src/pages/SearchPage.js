@@ -1,54 +1,20 @@
 import { React, useState, useEffect } from 'react';
-import styled from '@emotion/styled/macro';
 import { firestore } from '../utils/firebase/firebase-services';
 // import { Link } from 'react-router-dom';
 
 import EasySearchMode from '../components/SearchPage/EasySearchMode/EasySearchMode';
+import SearchNavBar from '../components/SearchPage/SearchNavBar';
 import NormalSearchMode from '../components/SearchPage/NormalSearchMode/NormalSearchMode';
-import { styledVariables } from '../styles/app/cssMaterial';
-import IconSearchPage from '../styles/SearchPage/IconSearchPage';
 import StyledSearchPage from '../styles/SearchPage/StyledSearchPage';
 
-const SearchNavBarItem = ({ content, selected }) => {
-  return <span className={selected ? 'selected' : ''}>{content}</span>;
-};
-
-const getSearchNavBarItems = (searchInfo) => {
-  // eslint-disable-next-line prettier/prettier
-  return searchInfo.map((value, index) => {
-    // console.log('value.keyword: ', value.keyword);
-    if (index === 0) {
-      // eslint-disable-next-line react/jsx-boolean-value
-      return <SearchNavBarItem content={value.keyword} selected={true} />;
-    }
-    return <SearchNavBarItem content={value.keyword} selected={false} />;
-  });
-};
-
-const StyledSearchNavBarItems = styled.div`
-  display: inline-block;
-  width: 400px;
-  max-width: ${styledVariables.shared.contentMaxWidth};
-`;
-
-const SearchNavBar = ({ searchInfo }) => {
-  // console.log('searchInfo: ', searchInfo);
-  return (
-    <nav>
-      <div>
-        <span>1</span>
-        <StyledSearchNavBarItems className="container">
-          {searchInfo ? getSearchNavBarItems(searchInfo) : ''}
-        </StyledSearchNavBarItems>
-        <IconSearchPage.Add className="iconAdd" />
-      </div>
-      <IconSearchPage.ChenvronLeft className="iconChenvronLeft" />
-      <span className="iconCart">
-        <IconSearchPage.Cart />
-        <span>1</span>
-      </span>
-    </nav>
-  );
+const SEARCH_META_INFO_TEST = {
+  isEasySearchMode: 1,
+  currentSearchKeywordsIdx: 0,
+  filterButtonState: {
+    generalSort: 0,
+    priceSort: 0,
+    hit: 0,
+  },
 };
 
 const SEARCH_INFO_WITH_PID_TEST = [
@@ -118,11 +84,13 @@ const SEARCH_INFO_WITH_PID_TEST = [
   },
 ];
 
-const SearchPages = ({ isSignIn, searchMetaInfo }) => {
+const SearchPages = ({ isSignIn }) => {
   const currentUid = isSignIn;
   // console.log('currentUid in SearchPages: ', currentUid);
-  const { searchKeywords, isEasySearchMode } = searchMetaInfo;
   // eslint-disable-next-line no-unused-vars
+  const [searchMetaInfo, setSearchMetaInfo] = useState(SEARCH_META_INFO_TEST);
+  // eslint-disable-next-line no-unused-vars
+  const { isEasySearchMode, currentSearchKeywordsIdx, filterButtonState } = searchMetaInfo;
   const [searchInfo, setSearchInfo] = useState(null);
   const updateSearchInfo = async () => {
     const newSearchInfo = JSON.parse(JSON.stringify(SEARCH_INFO_WITH_PID_TEST));
@@ -182,19 +150,119 @@ const SearchPages = ({ isSignIn, searchMetaInfo }) => {
   useEffect(() => {
     // console.log('useEffect on updateSearchInfo');
     updateSearchInfo();
-  }, [isSignIn, searchKeywords]);
+  }, [isSignIn, searchMetaInfo]);
 
   useEffect(() => {
     // console.log('searchInfo in useEffect on searchInfo: ', searchInfo);
   }, [searchInfo]);
 
+  const handleNavBarItemClick = (idx) => {
+    // console.log('idx: ', idx);
+    setSearchMetaInfo((preValue) => ({ ...preValue, currentSearchKeywordsIdx: idx }));
+  };
+  const handleGeneralSortButtonClick = () => {
+    // console.log('trigger handleGeneralSortButtonClick');
+    setSearchMetaInfo((preValue) => {
+      switch (preValue.filterButtonState.generalSort) {
+        case 0:
+          return {
+            ...preValue,
+            filterButtonState: { ...preValue.filterButtonState, generalSort: 1 },
+          };
+        case 1:
+          return {
+            ...preValue,
+            filterButtonState: { ...preValue.filterButtonState, generalSort: 2 },
+          };
+        case 2:
+          return {
+            ...preValue,
+            filterButtonState: { ...preValue.filterButtonState, generalSort: 0 },
+          };
+        default:
+          return {
+            ...preValue,
+            filterButtonState: { ...preValue.filterButtonState, generalSort: 0 },
+          };
+      }
+    });
+  };
+  const handlePriceSortButtonClick = () => {
+    setSearchMetaInfo((preValue) => {
+      switch (preValue.filterButtonState.priceSort) {
+        case 0:
+          return {
+            ...preValue,
+            filterButtonState: { ...preValue.filterButtonState, priceSort: 1 },
+          };
+        case 1:
+          return {
+            ...preValue,
+            filterButtonState: { ...preValue.filterButtonState, priceSort: 2 },
+          };
+        case 2:
+          return {
+            ...preValue,
+            filterButtonState: { ...preValue.filterButtonState, priceSort: 0 },
+          };
+        default:
+          return {
+            ...preValue,
+            filterButtonState: { ...preValue.filterButtonState, priceSort: 0 },
+          };
+      }
+    });
+  };
+  const handleHitButtonClick = () => {
+    setSearchMetaInfo((preValue) => {
+      if (!preValue.filterButtonState.hit) {
+        return {
+          ...preValue,
+          filterButtonState: { ...preValue.filterButtonState, hit: 1 },
+        };
+      }
+      return {
+        ...preValue,
+        filterButtonState: { ...preValue.filterButtonState, hit: 0 },
+      };
+    });
+  };
+  const handleEasySearchButtonClick = () => {
+    setSearchMetaInfo((preValue) => {
+      if (!preValue.isEasySearchMode) {
+        return {
+          ...preValue,
+          isEasySearchMode: 1,
+        };
+      }
+      return {
+        ...preValue,
+        isEasySearchMode: 0,
+      };
+    });
+  };
+
   return (
     <StyledSearchPage>
-      <SearchNavBar searchInfo={searchInfo} />
+      <SearchNavBar
+        currentSearchKeywordsIdx={currentSearchKeywordsIdx}
+        handleNavBarItemClick={handleNavBarItemClick}
+        searchInfo={searchInfo}
+      />
       {isEasySearchMode ? (
-        <EasySearchMode searchInfo={searchInfo} />
+        <EasySearchMode
+          handleEasySearchButtonClick={handleEasySearchButtonClick}
+          searchInfo={searchInfo}
+        />
       ) : (
-        <NormalSearchMode searchInfo={searchInfo} />
+        <NormalSearchMode
+          currentSearchInfo={searchInfo ? searchInfo[currentSearchKeywordsIdx] : null}
+          filterButtonState={filterButtonState}
+          handleGeneralSortButtonClick={handleGeneralSortButtonClick}
+          handlePriceSortButtonClick={handlePriceSortButtonClick}
+          handleHitButtonClick={handleHitButtonClick}
+          handleEasySearchButtonClick={handleEasySearchButtonClick}
+        />
       )}
     </StyledSearchPage>
   );

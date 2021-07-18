@@ -57,7 +57,9 @@ const TodolistTableItem = ({ listItemData, onTableItemClick, isCurrentList }) =>
       </div>
       <StyledIcon2Search disabled={false}>
         <Link to="/search">
-          <p className="textIcon">輕鬆選</p>
+          <p type="button" className="textIcon">
+            輕鬆選
+          </p>
           <IconTodolistPages.ChevronRight />
         </Link>
       </StyledIcon2Search>

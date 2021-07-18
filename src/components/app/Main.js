@@ -10,11 +10,6 @@ import HomePage from '../../pages/HomePage';
 // styling
 import StyledMain from '../../styles/app/StyledMain';
 
-const SEARCH_META_INFO_TEST = {
-  searchKeywords: ['衛生紙', '牙線', '漱口水'],
-  isEasySearchMode: 1,
-};
-
 const Main = () => {
   // 處理視窗大小變化
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -56,19 +51,26 @@ const Main = () => {
 
   // SearchPage 搜尋資訊
   // eslint-disable-next-line no-unused-vars
-  const [searchMetaInfo, setSearchMetaInfo] = useState(SEARCH_META_INFO_TEST);
+  const handleIcon2SearchClick = () => {};
 
   return (
     <StyledMain>
       <Switch>
         <Route path="/todolist">
-          <TodolistPage isSignIn={isSignIn} windowWidth={windowWidth} />
+          <TodolistPage
+            isSignIn={isSignIn}
+            windowWidth={windowWidth}
+            handleIcon2SearchClick={handleIcon2SearchClick}
+          />
         </Route>
         <Route path="/auth">
           <AuthPage isSignIn={isSignIn} />
         </Route>
         <Route path="/activity">
-          <SearchPage isSignIn={isSignIn} searchMetaInfo={searchMetaInfo} />
+          <SearchPage isSignIn={isSignIn} />
+        </Route>
+        <Route path="/search">
+          <SearchPage isSignIn={isSignIn} />
         </Route>
         <Route path="/">
           <HomePage />

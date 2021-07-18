@@ -7,7 +7,13 @@ import TodolistTableItem from './TodolistTableItem';
 // styling
 import StyledTodolistTable from '../../../styles/TodolistPage/TodolistTable/StyledTodolistTable';
 
-const TodolistTable = ({ isSignIn, todolistData, currentListInfo, onTableItemClick }) => {
+const TodolistTable = ({
+  handleIcon2SearchClick,
+  isSignIn,
+  todolistData,
+  currentListInfo,
+  onTableItemClick,
+}) => {
   // console.log('render TodolistTable.');
 
   useEffect(() => {
@@ -21,6 +27,7 @@ const TodolistTable = ({ isSignIn, todolistData, currentListInfo, onTableItemCli
       // console.log('updateTime: ', updateTime);
       return (
         <TodolistTableItem
+          handleIcon2SearchClick={handleIcon2SearchClick}
           key={`${updateTime}`}
           listItemData={value}
           onTableItemClick={onTableItemClick}

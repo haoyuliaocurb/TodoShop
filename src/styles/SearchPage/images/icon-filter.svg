@@ -1,6 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="21.266" height="21.266" viewBox="0 0 21.266 21.266">
-  <g id="icon_filter" transform="translate(0 -0.02)">
-    <rect id="Rectangle_98" data-name="Rectangle 98" width="21.266" height="21.266" transform="translate(0 0.02)" fill="none"/>
-    <path id="Path_18" data-name="Path 18" d="M9.082,20.322a.747.747,0,0,1-.751-.751V12.638L1.164,3.472A.748.748,0,0,1,1.752,2.26H20.1a.748.748,0,0,1,.588,1.212l-7.167,9.166v4.7a.751.751,0,0,1-1.5,0V12.376a.717.717,0,0,1,.163-.461l6.38-8.159H3.29l6.38,8.159a.746.746,0,0,1,.163.461v7.2A.747.747,0,0,1,9.082,20.322Z" transform="translate(-0.292 -0.652)" fill="#707070" stroke="#fff" stroke-width="0.2"/>
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 21.3 21.3" style="enable-background:new 0 0 21.3 21.3;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#707070;stroke:#FFFFFF;stroke-width:0.2;}
+</style>
+<path id="Path_18" class="st0" d="M8.8,19.6c-0.4,0-0.7-0.3-0.8-0.7c0,0,0,0,0,0V12L0.9,2.8C0.6,2.5,0.7,2,1,1.7
+	c0.1-0.1,0.3-0.2,0.5-0.2h18.3c0.4,0,0.7,0.3,0.7,0.7c0,0.2-0.1,0.3-0.2,0.5L13.2,12v4.7c0,0.4-0.4,0.7-0.8,0.7
+	c-0.4,0-0.7-0.3-0.7-0.7v-5c0-0.2,0.1-0.3,0.2-0.5l6.4-8.2H3l6.4,8.2c0.1,0.1,0.2,0.3,0.2,0.5v7.2C9.5,19.3,9.2,19.7,8.8,19.6
+	C8.8,19.7,8.8,19.6,8.8,19.6z"/>
 </svg>
