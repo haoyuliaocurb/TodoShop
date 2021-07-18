@@ -10,6 +10,11 @@ import HomePage from '../../pages/HomePage';
 // styling
 import StyledMain from '../../styles/app/StyledMain';
 
+const SEARCH_META_INFO_TEST = {
+  searchKeywords: ['衛生紙', '牙線', '漱口水'],
+  isEasySearchMode: 1,
+};
+
 const Main = () => {
   // 處理視窗大小變化
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -37,7 +42,7 @@ const Main = () => {
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
-      // console.log('trigger onAuthStateChanged');
+      console.log('trigger onAuthStateChanged');
       // console.log('user: ', user);
       if (!user) {
         setIsSignIn(false);
@@ -51,7 +56,7 @@ const Main = () => {
 
   // SearchPage 搜尋資訊
   // eslint-disable-next-line no-unused-vars
-  const [searchInfo, setSearchInfo] = useState({ searchKeyword: [], isEasySearchMode: 1 });
+  const [searchMetaInfo, setSearchMetaInfo] = useState(SEARCH_META_INFO_TEST);
 
   return (
     <StyledMain>
@@ -63,7 +68,7 @@ const Main = () => {
           <AuthPage isSignIn={isSignIn} />
         </Route>
         <Route path="/activity">
-          <SearchPage searchInfo={searchInfo} />
+          <SearchPage isSignIn={isSignIn} searchMetaInfo={searchMetaInfo} />
         </Route>
         <Route path="/">
           <HomePage />

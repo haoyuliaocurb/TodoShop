@@ -6,10 +6,10 @@ import SearchItems from './SearchItems';
 
 import StyledEasySearchMode from '../../../styles/SearchPage/EasySearchMode/StyledEasySearchMode';
 
-const EasySearchPage = () => {
+const EasySearchPage = ({ searchInfo }) => {
   return (
     <StyledEasySearchMode>
-      <SearchItems />
+      <SearchItems searchInfo={searchInfo} />
     </StyledEasySearchMode>
   );
 };
