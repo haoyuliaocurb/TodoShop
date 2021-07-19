@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import { auth } from '../../utils/firebase/firebase-services';
+import { auth, firestore, firebase } from '../../utils/firebase/firebase-services';
 import TodolistPage from '../../pages/TodolistPage';
 import AuthPage from '../../pages/AuthPage';
 import SearchPage from '../../pages/SearchPage';
@@ -9,6 +9,15 @@ import HomePage from '../../pages/HomePage';
 
 // styling
 import StyledMain from '../../styles/app/StyledMain';
+
+const setSearchKeywordsLog = async (isSignInValue, keywordsValue, sourceValue) => {
+  await firestore.collection('users').doc(isSignInValue).collection('searchKeywordsLog').add({
+    updateTime: firebase.firestore.Timestamp.now(),
+    source: sourceValue,
+    keywords: keywordsValue,
+  });
+  // console.log('complete setSearchKeywordsLog');
+};
 
 const Main = () => {
   // 處理視窗大小變化
@@ -51,7 +60,10 @@ const Main = () => {
 
   // SearchPage 搜尋資訊
   // eslint-disable-next-line no-unused-vars
-  const handleIcon2SearchClick = () => {};
+  const handleIcon2SearchClick = (keywordsValue, sourceValue) => {
+    console.log('trigger handleIcon2SearchClick');
+    setSearchKeywordsLog(isSignIn, keywordsValue, sourceValue);
+  };
 
   return (
     <StyledMain>

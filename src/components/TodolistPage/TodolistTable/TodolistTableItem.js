@@ -12,8 +12,15 @@ import {
   StyledTodolistTableItem,
 } from '../../../styles/TodolistPage/TodolistTable/StyledTodolistTableItemComps';
 
-const TodolistTableItem = ({ listItemData, onTableItemClick, isCurrentList }) => {
+const TodolistTableItem = ({
+  handleIcon2SearchClick,
+  listItemData,
+  onTableItemClick,
+  isCurrentList,
+}) => {
+  // console.log('isCurrentList: ', isCurrentList);
   const uptimeTime = listItemData.data().updateTime.toDate();
+  const productItems = listItemData.data().items;
   const getTodolistTableItemSpan = (itemArray) => {
     let itemString = '';
     itemArray.forEach((srcValue, index) => {
@@ -53,10 +60,15 @@ const TodolistTableItem = ({ listItemData, onTableItemClick, isCurrentList }) =>
           2,
           '0',
         )}/${String(uptimeTime.getDate()).padStart(2, '0')}`}</h2>
-        <p>{getTodolistTableItemSpan(listItemData.data().items)}</p>
+        <p>{getTodolistTableItemSpan(productItems)}</p>
       </div>
       <StyledIcon2Search disabled={false}>
-        <Link to="/search">
+        <Link
+          to="/search"
+          onClick={() => {
+            handleIcon2SearchClick(productItems, 1);
+          }}
+        >
           <p type="button" className="textIcon">
             輕鬆選
           </p>

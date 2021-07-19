@@ -7,7 +7,7 @@ export const styledVariables = {
     gray200: '#dddddd',
     gray300: '#575757',
     gray700: '#000000',
-    pink100: '#ffe8ee≈',
+    pink100: '#ffe8ee',
     pink400: '#fb457b',
     white: 'white',
   },
