@@ -7,7 +7,9 @@ import StyledHomePage from '../styles/HomePage/StyledHomePage';
 const HomePage = () => {
   return (
     <StyledHomePage>
-      <p>This is Home.</p>
+      <div className="content">
+        <p>This is Home.</p>
+      </div>
     </StyledHomePage>
   );
 };

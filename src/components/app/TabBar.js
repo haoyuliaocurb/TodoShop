@@ -25,6 +25,7 @@ const INIT_ICONSTATE = {
 };
 
 const TabBar = ({
+  pageYOffsetInfo,
   tabBarState,
   handleTabBarSearchTabClick,
   handleTabBarHomeTabClick,
@@ -123,7 +124,7 @@ const TabBar = ({
   }, [iconState]);
 
   return (
-    <StyledTabBar className={tabBarState ? '' : 'vb-hidden'}>
+    <StyledTabBar pageYOffsetInfo={pageYOffsetInfo} className={tabBarState ? '' : 'vb-hidden'}>
       <Link to="/" id="home" onClick={handleHomeTabClick}>
         <StyledIconApp disabled={iconState.disabled.home} active={iconState.active.home}>
           <IconApp.Home />

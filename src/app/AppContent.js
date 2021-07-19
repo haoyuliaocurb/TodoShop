@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 // script
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 // import { auth } from '../utils/firebase/firebase-services';
 
@@ -42,7 +43,10 @@ const INIT_BARSTATE = {
 
 function AppContent() {
   const [barState, setBarState] = useState(INIT_BARSTATE);
+  const [pageYOffsetInfo, setPageYOffsetInfo] = useState(0);
   const { navBar: navBarState, toolBar: toolBarState, tabBar: tabBarState } = barState;
+  const isOnScroll = useRef(false);
+  const prePageYOffset = useRef(0);
   const handleTabBarSearchTabClick = () => {
     setBarState({ ...INIT_BARSTATE, navBar: false, toolBar: false });
   };
@@ -91,12 +95,34 @@ function AppContent() {
     // console.log('barState: ', barState);
   }, [barState]);
 
+  window.addEventListener('scroll', () => {
+    if (isOnScroll.current) {
+      return;
+    }
+    isOnScroll.current = true;
+    const { pageYOffset } = window;
+    const prePageYOffsetValue = prePageYOffset.current;
+    prePageYOffset.current = pageYOffset;
+    setPageYOffsetInfo({
+      // eslint-disable-next-line object-shorthand
+      prePageYOffset: prePageYOffsetValue,
+      // eslint-disable-next-line object-shorthand
+      pageYOffset: pageYOffset,
+    });
+  });
+
+  useEffect(() => {
+    isOnScroll.current = false;
+    // console.log('pageYOffsetInfo: ', pageYOffsetInfo);
+  }, [pageYOffsetInfo]);
+
   return (
     <StyledAppContent>
-      <NavBar navBarState={navBarState} />
+      <NavBar pageYOffsetInfo={pageYOffsetInfo} navBarState={navBarState} />
       <Main />
-      <ToolBar toolBarState={toolBarState} />
+      <ToolBar pageYOffsetInfo={pageYOffsetInfo} toolBarState={toolBarState} />
       <TabBar
+        pageYOffsetInfo={pageYOffsetInfo}
         handleTabBarSearchTabClick={handleTabBarSearchTabClick}
         handleTabBarHomeTabClick={handleTabBarHomeTabClick}
         handleTabBarActivityTabClick={handleTabBarActivityTabClick}

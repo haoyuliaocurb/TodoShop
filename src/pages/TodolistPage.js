@@ -2,7 +2,7 @@
 import { React, useState, useEffect, useRef } from 'react';
 // import { Route, Redirect, Switch, useHistory, useLocation } from 'react-router-dom';
 import { Route, Redirect, Switch, useLocation, useHistory } from 'react-router-dom';
-import { firestore } from '../utils/firebase/firebase-services';
+import { firestore, firebase } from '../utils/firebase/firebase-services';
 import Todolist from '../components/TodolistPage/Todolist/Todolist';
 import TodolistTable from '../components/TodolistPage/TodolistTable/TodolistTable';
 import { styledVariables } from '../styles/app/cssMaterial';
@@ -168,6 +168,22 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
     });
   };
 
+  // eslint-disable-next-line no-unused-vars
+  const createTodolist = async (currentUid) => {
+    if (!currentUid) {
+      return;
+    }
+    firestore
+      .collection('todolists')
+      .add({
+        uid: currentUid,
+        updateTime: firebase.firestore.Timestamp.now(),
+      })
+      .then(() => {
+        console.log('succefully create new Todolist on DB');
+      });
+  };
+
   // eslint-disable-next-line consistent-return
   const getTodolistPageContent = () => {
     const currentListData = getCurrentListData();
@@ -272,3 +288,13 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
 };
 
 export default TodolistPages;
+
+// const ToolBar = ({ toolBarState }) => {
+//   return (
+//     <StyledToolBar className={toolBarState ? '' : 'vb-hidden'}>
+//       <button type="button" className="buttonAddTodolist">
+//         新增購物清單 +
+//       </button>
+//     </StyledToolBar>
+//   );
+// };
