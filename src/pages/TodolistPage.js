@@ -156,27 +156,13 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
     setCurrentListInfo((prevCurrentListInfo) => ({ ...prevCurrentListInfo, itemButtonState: 2 }));
   };
 
-  const handleTodolistInputKeyUp = async (currentListId, currentListIdx) => {
+  const updateTodolistData = async (currentListId, currentListIdx) => {
     console.log('trigger handleTodolistInputKeyUp');
     // console.log('currentListId: ', currentListId);
     const newCertainTodolistData = await firestore.collection('todolists').doc(currentListId).get();
     setTodolistData((oldTodolistData) => {
       const newTodolistData = [...oldTodolistData];
       newTodolistData[currentListIdx] = newCertainTodolistData;
-
-      return newTodolistData;
-    });
-  };
-
-  const handleTodolistItemClick = async (currentListId, currentListIdx) => {
-    console.log('trigger handleTodolistItemClick');
-    // console.log('currentListId: ', currentListId);
-    const newCertainTodolistData = await firestore.collection('todolists').doc(currentListId).get();
-    setTodolistData((oldTodolistData) => {
-      console.log('oldTodolistData: ', oldTodolistData);
-      const newTodolistData = [...oldTodolistData];
-      newTodolistData[currentListIdx] = newCertainTodolistData;
-      console.log('newTodolistData: ', newTodolistData);
 
       return newTodolistData;
     });
@@ -200,8 +186,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
           </Route>
           <Route exact path="/todolist/id/">
             <Todolist
-              handleTodolistInputKeyUp={handleTodolistInputKeyUp}
-              handleTodolistItemClick={handleTodolistItemClick}
+              updateTodolistData={updateTodolistData}
               isSignIn={false}
               handleTodolistClick={handleTodolistClick}
             />
@@ -216,8 +201,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
           <Route exact path="/todolist/id/">
             <TodolistTable isSignIn={false} />
             <Todolist
-              handleTodolistInputKeyUp={handleTodolistInputKeyUp}
-              handleTodolistItemClick={handleTodolistItemClick}
+              updateTodolistData={updateTodolistData}
               isSignIn={false}
               handleTodolistClick={handleTodolistClick}
             />
@@ -233,8 +217,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
             <Todolist
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}
-              handleTodolistInputKeyUp={handleTodolistInputKeyUp}
-              handleTodolistItemClick={handleTodolistItemClick}
+              updateTodolistData={updateTodolistData}
               currentListData={currentListData}
               currentListInfo={currentListInfo}
               currentListIdx={currentListInfo.idx}
@@ -270,8 +253,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
             <Todolist
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}
-              handleTodolistInputKeyUp={handleTodolistInputKeyUp}
-              handleTodolistItemClick={handleTodolistItemClick}
+              updateTodolistData={updateTodolistData}
               currentListData={currentListData}
               currentListIdx={currentListInfo.idx}
               currentListId={currentListId}

@@ -1,16 +1,4 @@
-// import { React } from 'react';
-// import { StyledTodolist } from '../../../styles/TodolistPage/Todolist/StyledTodolistComps';
-
-// const Todolist = () => {
-//   return <StyledTodolist />;
-// };
-
-// export default Todolist;
-
-// 以上將 <Todolist /> 簡易化以測試
-
-// script
-import { React, useState, useEffect, useRef, useCallback } from 'react';
+import { React, useState, useEffect, useRef } from 'react';
 // import { firestore } from '../../../utils/firebase/firebase-services';
 import { useParams } from 'react-router-dom';
 
@@ -56,12 +44,11 @@ const TodolistInput = ({ inputDisplayContent, onInputElInput, onInputKeyUp }) =>
 };
 
 // eslint-disable-next-line no-unused-vars
-const mapTodolistItemsContent = (todolistItemsContentValue) =>
+const maptodolistItemsContent = (todolistItemsContentValue) =>
   todolistItemsContentValue.map((itemContent) => ({ name: itemContent }));
 
 const Todolist = ({
-  // handleTodolistInputKeyUp,
-  handleTodolistItemClick,
+  updateTodolistData,
   currentListData,
   currentListIdx,
   currentListId,
@@ -72,10 +59,8 @@ const Todolist = ({
   if (currentListData) {
     // console.log('currentListData.data(): ', currentListData.data());
   }
-  const TodolistItemsContent = useRef([]);
-  const [TodolistItems, setTodolistItems] = useState([]);
+  const todolistItemsContent = useRef([]);
   const [inputDisplayContent, setInputDisplayContent] = useState('');
-  const updateTodolistData = useRef(false);
   const { listId } = useParams();
 
   // console.log('isSignIn in Todolist: ', isSignIn);
@@ -89,44 +74,47 @@ const Todolist = ({
       return srcItemKey;
     };
     const itemKey = getItemkey();
-    setTodolistItems((oldItems) => {
-      const newItems = [];
-      const newItemsContent = [];
-      oldItems.forEach((value) => {
-        // console.log('value.key: ', value.key);
-        if (value.key !== itemKey) {
-          newItemsContent.push(value.props.content);
-          newItems.push(value);
-        }
-      });
-      // console.log('newItems: ', newItems);
-      TodolistItemsContent.current = newItemsContent;
-      // console.log('TodolistItemsContent.current: ', TodolistItemsContent.current);
 
-      return newItems;
+    // console.log('itemKey: ', itemKey);
+    // console.log('before: todolistItemsContent.current: ', todolistItemsContent.current);
+    const newTodolistItemsContent = [];
+    todolistItemsContent.current.forEach((value, index) => {
+      console.log('index', index, 'index !== itemKey: ', index !== itemKey);
+      if (index !== Number(itemKey)) {
+        newTodolistItemsContent.push(value);
+      }
     });
+    todolistItemsContent.current = newTodolistItemsContent;
+    // console.log('after: todolistItemsContent.current: ', todolistItemsContent.current);
 
-    console.log('updateTodolistData.current: ', updateTodolistData.current);
-    updateTodolistData.current = true;
-    console.log('toggle updateTodolistData.current: ', updateTodolistData.current);
+    // 更新資料庫
+    const newTodolistDataItemsPart = maptodolistItemsContent(todolistItemsContent.current);
+    firestore
+      .collection('todolists')
+      .doc(listId)
+      .update({
+        items: newTodolistDataItemsPart,
+        updateTime: firebase.firestore.Timestamp.now(),
+      })
+      .then(() => {
+        console.log('successfully update todolist ', listId);
+        updateTodolistData(currentListId, currentListIdx);
+      });
   };
-  const itemCounter = useRef(-1);
-  const createTodolistItem = (itemData) => {
-    itemCounter.current += 1;
-    // console.log('itemData.name: ', itemData.name, '; itemCounter.current: ', itemCounter.current);
+  const createTodolistItem = (itemData, index) => {
     return (
       <TodolistItem
-        id={`${itemCounter.current}`}
-        key={`${itemCounter.current}`}
+        id={index}
+        key={itemData.name}
         content={itemData.name}
         onItemClick={handleItemClick}
       />
     );
   };
-  const filterCurrentListData = useCallback(() => {
-    // console.log('Todolist: trigger filterCurrentListData');
+  const getTodolistItems = () => {
+    // console.log('Todolist: trigger getTodolistItems');
     if (currentListData) {
-      // console.log('currentListData.data() in filterCurrentListData', currentListData.data());
+      // console.log('currentListData.data() in getTodolistItems', currentListData.data());
     }
     if (!currentListData) {
       // console.log('currentListData is falsy.')
@@ -140,70 +128,22 @@ const Todolist = ({
       return [];
     }
 
-    const newTodolistItemsContent = [];
+    const newtodolistItemsContent = [];
     // console.log('currentListData: ', currentListData);
-    const newTodolistItems = currentListData.data().items.map((value) => {
-      // console.log('value: ', value);
+    const newTodolistItems = currentListData.data().items.map((value, index) => {
       const { name } = value;
-      newTodolistItemsContent.push(name);
+      newtodolistItemsContent.push(name);
 
-      return createTodolistItem(value);
+      return createTodolistItem(value, index);
     });
-    TodolistItemsContent.current = newTodolistItemsContent;
-    // console.log('TodolistItemsContent.current: ', TodolistItemsContent.current);
+    todolistItemsContent.current = newtodolistItemsContent;
+    // console.log('todolistItemsContent.current: ', todolistItemsContent.current);
     return newTodolistItems;
-  }, [currentListData]);
-
-  useEffect(() => {
-    // console.log('Todolist: useEffect depends on filterCurrentListData.');
-    setTodolistItems(filterCurrentListData());
-  }, [filterCurrentListData]);
-
-  //   useEffect(() => {
-  //     setTodolistItems(filterCurrentListData());
-  //     // console.log('Todolist: useEffect depends on currentListData, currentListId.')
-  //   }, [currentListData, currentListId, filterCurrentListData]);
-
-  useEffect(() => {
-    console.log('Todolist: useEffect depends on currentListData.');
-    // if (!currentListData) {
-    //   return;
-    // }
-    console.log('updateTodolistData.current: ', updateTodolistData.current);
-    updateTodolistData.current = false;
-    console.log('toggle updateTodolistData.current: ', updateTodolistData.current);
-    console.log('==========');
-  }, [currentListData]);
-
-  useEffect(() => {
-    console.log('Todolist: useEffect depends on TodolistItems.');
-    console.log('updateTodolistData.current: ', updateTodolistData.current);
-    if (!updateTodolistData.current) {
-      return;
-    }
-
-    // 更新資料庫
-    const newTodolistDataItemsPart = mapTodolistItemsContent(TodolistItemsContent.current);
-    firestore
-      .collection('todolists')
-      .doc(listId)
-      .update({
-        items: newTodolistDataItemsPart,
-        updateTime: firebase.firestore.Timestamp.now(),
-      })
-      .then(() => {
-        console.log('successfully update todolist ', listId);
-      });
-
-    // setTodolistData
-    handleTodolistItemClick(currentListId, currentListIdx);
-  }, [TodolistItems]);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-
-  // handleInputKeyUp
   const handleInputKeyUp = (e) => {
     // console.log('keyDown: ', 'e.key: ', e.key, 'e.keyCode: ', e.keyCode);
     if (e.key === 'Enter') {
@@ -213,40 +153,26 @@ const Todolist = ({
 
       // console.log('trigger keydown 'enter' event');
       const inputValue = e.target.value;
-      const newItems = TodolistItems.slice();
-      newItems.push(
-        createTodolistItem({
-          name: inputValue,
-        }),
-      );
-      TodolistItemsContent.current.push(inputValue);
-      // console.log('TodolistItemsContent.current: ', TodolistItemsContent.current);
-      setTodolistItems(newItems);
-      itemCounter.current += 1;
+      const newTodolistContent = [...todolistItemsContent.current];
+      todolistItemsContent.current = newTodolistContent.concat([inputValue]);
       e.target.value = '';
       setInputDisplayContent('');
 
-      // // 更新資料庫
-      // const newTodolistDataItemsPart = mapTodolistItemsContent(TodolistItemsContent.current);
-      // firestore
-      //   .collection('todolists')
-      //   .doc(listId)
-      //   .update({
-      //     items: newTodolistDataItemsPart,
-      //     updateTime: firebase.firestore.Timestamp.now(),
-      //   })
-      //   .then(() => {
-      //     console.log('successfully update todolist ', listId);
-      //   });
-      // // setTodolistData
-      // // handleTodolistInputKeyUp(currentListId, currentListIdx);
-
-      console.log('updateTodolistData.current: ', updateTodolistData.current);
-      updateTodolistData.current = true;
-      console.log('toggle updateTodolistData.current: ', updateTodolistData.current);
+      // 更新資料庫
+      const newTodolistDataItemsPart = maptodolistItemsContent(todolistItemsContent.current);
+      firestore
+        .collection('todolists')
+        .doc(listId)
+        .update({
+          items: newTodolistDataItemsPart,
+          updateTime: firebase.firestore.Timestamp.now(),
+        })
+        .then(() => {
+          console.log('successfully update todolist ', listId);
+          updateTodolistData(currentListId, currentListIdx);
+        });
     }
   };
-
   const handleInputElInput = (e) => {
     let { enterEvent } = model.flag;
     // console.log('trigger input event', 'enterEvent: ', enterEvent);
@@ -259,12 +185,21 @@ const Todolist = ({
       // console.log('enterEvent: ', enterEvent);
     }
   };
-
   const handleSelfClick = () => {
     handleTodolistClick();
   };
 
-  console.log('====================');
+  useEffect(() => {
+    console.log('Todolist: useEffect depends on currentListData.');
+    // if (!currentListData) {
+    //   return;
+    // }
+    console.log('updateTodolistData.current: ', updateTodolistData.current);
+    console.log('toggle updateTodolistData.current: ', updateTodolistData.current);
+    console.log('==========');
+  }, [currentListData]);
+
+  // console.log('====================');
   return (
     <StyledTodolist
       onClick={() => {
@@ -272,7 +207,7 @@ const Todolist = ({
       }}
     >
       <form onSubmit={handleSubmit}>
-        {TodolistItems}
+        {getTodolistItems()}
         <TodolistInput
           inputDisplayContent={inputDisplayContent}
           // ifClrTransparent={ifClrTransparent}
@@ -282,9 +217,9 @@ const Todolist = ({
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor="input" />
         <div className="grid">
-          <div />
-          <div />
-          <div />
+          {Array.from({ length: 12 }).map(() => (
+            <div />
+          ))}
         </div>
       </form>
     </StyledTodolist>
