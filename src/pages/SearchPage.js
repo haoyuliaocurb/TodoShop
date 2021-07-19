@@ -236,17 +236,13 @@ const getSearchInfo = (searchMetaInfo) => {
     return;
   }
   const { length } = searchMetaInfo.keywords;
-  switch (length) {
-    case 3:
-      // eslint-disable-next-line consistent-return
-      return SEARCH_INFO_WITH_PID_TEST1;
-    case 9:
-      // eslint-disable-next-line consistent-return
-      return SEARCH_INFO_WITH_PID_TEST2;
-    default:
-      // eslint-disable-next-line consistent-return
-      return SEARCH_INFO_WITH_PID_TEST2;
+  if (length > 5) {
+    // eslint-disable-next-line consistent-return
+    return SEARCH_INFO_WITH_PID_TEST2;
   }
+
+  // eslint-disable-next-line consistent-return
+  return SEARCH_INFO_WITH_PID_TEST1;
 };
 
 const SearchPages = ({ isSignIn }) => {

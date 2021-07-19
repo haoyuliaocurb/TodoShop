@@ -23,6 +23,8 @@ const TodolistTable = ({
 
   const getTodolistTableItem = (dataArray, currentListIdx) => {
     return dataArray.map((value, index) => {
+      // console.log('value: ', value);
+      // console.log('value.data(): ', value.data());
       const updateTime = value.data().updateTime.toDate().valueOf();
       // console.log('updateTime: ', updateTime);
       return (

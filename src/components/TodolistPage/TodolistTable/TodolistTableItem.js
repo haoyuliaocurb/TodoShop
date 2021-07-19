@@ -18,7 +18,6 @@ const TodolistTableItem = ({
   onTableItemClick,
   isCurrentList,
 }) => {
-  // console.log('isCurrentList: ', isCurrentList);
   const uptimeTime = listItemData.data().updateTime.toDate();
   const productItems = listItemData.data().items;
   const getTodolistTableItemSpan = (itemArray) => {

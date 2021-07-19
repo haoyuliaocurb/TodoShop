@@ -1,5 +1,5 @@
 // script
-import { React, useState, useEffect, useCallback, useRef } from 'react';
+import { React, useState, useEffect, useRef } from 'react';
 // import { Route, Redirect, Switch, useHistory, useLocation } from 'react-router-dom';
 import { Route, Redirect, Switch, useLocation, useHistory } from 'react-router-dom';
 import { firestore } from '../utils/firebase/firebase-services';
@@ -19,6 +19,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
   const [todolistData, setTodolistData] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [currentListInfo, setCurrentListInfo] = useState({ idx: 0, itemButtonState: 2 });
+  // eslint-disable-next-line no-unused-vars
   // const lastListId = useRef('');
   // const srcCurrentListId = useRef('');
   // const currentListData = useRef(null);
@@ -26,7 +27,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
 
   const listIdxObj = useRef({});
   // console.log('listIdxObj.current: ', listIdxObj.current);
-  const fetchTodolistData = useCallback(async () => {
+  const fetchTodolistData = async () => {
     // eslint-disable-next-line consistent-return
     const innerFetchTodolistData = new Promise((resolve) => {
       const currentUid = isSignIn;
@@ -58,11 +59,14 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
     });
     const promiseReturned = Promise.resolve(innerFetchTodolistData);
     return promiseReturned;
-  }, [isSignIn]);
+  };
 
   // const getIdxByListId = (listId) => listIdxObj.current[listId];
 
   useEffect(() => {
+    if (!isSignIn) {
+      return;
+    }
     const getCurrentTodolistData = async () => {
       // 登入狀態改變時，也會重新 setTodolistData
       const newTodolistData = await fetchTodolistData();
@@ -73,10 +77,18 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
       setTodolistData(newTodolistData);
     };
     getCurrentTodolistData();
-  }, [fetchTodolistData]);
+  }, [isSignIn]);
 
   useEffect(() => {
-    // console.log('useEffect depends on todolistData');
+    console.log('TodolistPage: useEffect depends on todolistData');
+    // console.log('!todolistData: ', !todolistData);
+    // if (!todolistData) {
+    //   return;
+    // }
+    // todolistData.forEach((srcValue) => {
+    //   const value = srcValue.data();
+    //   console.log('value: ', value);
+    // });
     // console.log('todolistData in useEffect on todolistData in TodolistPage: ', todolistData);
     // console.log(
     //   'listIdxObj.current in useEffect on todolistData in TodolistPage: ',
@@ -144,6 +156,32 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
     setCurrentListInfo((prevCurrentListInfo) => ({ ...prevCurrentListInfo, itemButtonState: 2 }));
   };
 
+  const handleTodolistInputKeyUp = async (currentListId, currentListIdx) => {
+    console.log('trigger handleTodolistInputKeyUp');
+    // console.log('currentListId: ', currentListId);
+    const newCertainTodolistData = await firestore.collection('todolists').doc(currentListId).get();
+    setTodolistData((oldTodolistData) => {
+      const newTodolistData = [...oldTodolistData];
+      newTodolistData[currentListIdx] = newCertainTodolistData;
+
+      return newTodolistData;
+    });
+  };
+
+  const handleTodolistItemClick = async (currentListId, currentListIdx) => {
+    console.log('trigger handleTodolistItemClick');
+    // console.log('currentListId: ', currentListId);
+    const newCertainTodolistData = await firestore.collection('todolists').doc(currentListId).get();
+    setTodolistData((oldTodolistData) => {
+      console.log('oldTodolistData: ', oldTodolistData);
+      const newTodolistData = [...oldTodolistData];
+      newTodolistData[currentListIdx] = newCertainTodolistData;
+      console.log('newTodolistData: ', newTodolistData);
+
+      return newTodolistData;
+    });
+  };
+
   // eslint-disable-next-line consistent-return
   const getTodolistPageContent = () => {
     const currentListData = getCurrentListData();
@@ -161,7 +199,12 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
             <TodolistTable isSignIn={false} />
           </Route>
           <Route exact path="/todolist/id/">
-            <Todolist isSignIn={false} handleTodolistClick={handleTodolistClick} />
+            <Todolist
+              handleTodolistInputKeyUp={handleTodolistInputKeyUp}
+              handleTodolistItemClick={handleTodolistItemClick}
+              isSignIn={false}
+              handleTodolistClick={handleTodolistClick}
+            />
           </Route>
           <Redirect from="/todolist" to="/todolist/id/" />
         </Switch>
@@ -172,7 +215,12 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
         <Switch>
           <Route exact path="/todolist/id/">
             <TodolistTable isSignIn={false} />
-            <Todolist isSignIn={false} handleTodolistClick={handleTodolistClick} />
+            <Todolist
+              handleTodolistInputKeyUp={handleTodolistInputKeyUp}
+              handleTodolistItemClick={handleTodolistItemClick}
+              isSignIn={false}
+              handleTodolistClick={handleTodolistClick}
+            />
           </Route>
           <Redirect from="/todolist" to="/todolist/id/" />
         </Switch>
@@ -185,9 +233,11 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
             <Todolist
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}
+              handleTodolistInputKeyUp={handleTodolistInputKeyUp}
+              handleTodolistItemClick={handleTodolistItemClick}
               currentListData={currentListData}
-              currentListId={currentListId}
               currentListInfo={currentListInfo}
+              currentListIdx={currentListInfo.idx}
               handleTodolistClick={handleTodolistClick}
             />
           </Route>
@@ -220,7 +270,10 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
             <Todolist
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}
+              handleTodolistInputKeyUp={handleTodolistInputKeyUp}
+              handleTodolistItemClick={handleTodolistItemClick}
               currentListData={currentListData}
+              currentListIdx={currentListInfo.idx}
               currentListId={currentListId}
               handleTodolistClick={handleTodolistClick}
             />
@@ -232,15 +285,8 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
     }
   };
 
+  console.log('========================================');
   return <StyledTodolistPage>{getTodolistPageContent()}</StyledTodolistPage>;
 };
 
 export default TodolistPages;
-
-/*
-click 了之後 -> setTodolistData( 改 { currentListIdx })
-getIdxByListId(ListId)
-
-listIdxObj
-
-*/
