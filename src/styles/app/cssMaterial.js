@@ -22,7 +22,7 @@ export const styledVariables = {
     iconWidth: '23px',
   },
   navBar: {
-    iconWidth: '30px',
+    iconWidth: '24px',
     buttonWidth: '40px',
   },
   todolistTable: {

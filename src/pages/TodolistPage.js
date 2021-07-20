@@ -1,4 +1,3 @@
-// script
 import { React, useState, useEffect, useRef } from 'react';
 // import { Route, Redirect, Switch, useHistory, useLocation } from 'react-router-dom';
 import { Route, Redirect, Switch, useLocation, useHistory } from 'react-router-dom';
@@ -7,10 +6,17 @@ import Todolist from '../components/TodolistPage/Todolist/Todolist';
 import TodolistTable from '../components/TodolistPage/TodolistTable/TodolistTable';
 import { styledVariables } from '../styles/app/cssMaterial';
 
-// styling
+import NavBar from '../components/app/NavBar';
+import ToolBar from '../components/app/ToolBar';
+import TabBar from '../components/app/TabBar';
+import TodolistPageNavBar from '../components/TodolistPage/TodolistPageNavBar';
+import TodolistPageToolBar from '../components/TodolistPage/TodolistPageToolBar';
+import GeneralTabBar from '../components/app/GeneralTabBar';
+
 import StyledTodolistPage from '../styles/TodolistPage/StyledTodolistPage';
 
 const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
+  // Todolist、TodolistPage 切換及資料
   console.log('render TodolistPages');
   const { breakpoint } = styledVariables.todolistPages;
   // console.log('currentUid when rendering TodolistPages: ', currentUid);
@@ -282,9 +288,38 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
       );
     }
   };
-
-  console.log('========================================');
-  return <StyledTodolistPage>{getTodolistPageContent()}</StyledTodolistPage>;
+  return (
+    <StyledTodolistPage>
+      <NavBar
+        navBarState={{
+          content: <TodolistPageNavBar />,
+          visibility: 2,
+        }}
+      />
+      {getTodolistPageContent()}
+      <ToolBar
+        navBarState={{
+          content: <TodolistPageToolBar />,
+          visibility: 2,
+        }}
+      />
+      <TabBar
+        backgroundColor={styledVariables.color.gray100}
+        tabBarState={{
+          content: (
+            <GeneralTabBar
+            // handleTabBarSearchTabClick={handleTabBarSearchTabClick}
+            // handleTabBarHomeTabClick={handleTabBarHomeTabClick}
+            // handleTabBarCartTabClick={handleTabBarCartTabClick}
+            // handleTabBarAuthTabClick={handleTabBarAuthTabClick}
+            // handleTabBarListTabClick={handleTabBarListTabClick}
+            />
+          ),
+          visibility: 2,
+        }}
+      />
+    </StyledTodolistPage>
+  );
 };
 
 export default TodolistPages;

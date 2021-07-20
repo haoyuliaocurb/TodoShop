@@ -3,7 +3,10 @@ import { styledVariables, removePx } from './cssMaterial';
 
 const StyledTabBar = styled.div`
   position: fixed;
-  bottom: ${({ windowOffset, scrollOffset, isScrollEnd }) => {
+  bottom: ${({ visibility, windowOffset, scrollOffset, isScrollEnd }) => {
+    if (visibility === 2) {
+      return '0';
+    }
     const barHeight = removePx(styledVariables.shared.barHeight);
     // console.log('windowOffset: ', windowOffset);
     if (windowOffset <= 0 || isScrollEnd) {
@@ -21,6 +24,7 @@ const StyledTabBar = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 5;
 
   &.transition {
     transition-property: bottom;
@@ -33,7 +37,7 @@ const StyledTabBar = styled.div`
     content: '';
     width: 100%;
     height: 100%;
-    background-color: ${styledVariables.color.white};
+    background-color: ${({ backgroundColor }) => backgroundColor};
   }
 
   > * {

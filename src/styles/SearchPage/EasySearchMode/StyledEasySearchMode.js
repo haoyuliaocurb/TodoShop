@@ -14,7 +14,7 @@ const StyledEasySearchMode = styled.div`
     max-width: ${styledVariables.shared.contentMaxWidth};
     // min-height: 100%;
     overflow-y: scroll;
-    padding-top: ${styledVariables.shared.barHeight};
+    padding: ${styledVariables.shared.barHeight} 0;
 
     > div:last-of-type {
       margin-bottom: 10px;
@@ -42,12 +42,12 @@ const StyledEasySearchMode = styled.div`
       }
     }
 
-    > :last-child::after {
+    /* > :last-child::after {
       content: '';
       display: inline-block;
       // width: 100%;
       height: ${styledVariables.shared.barHeight};
-    }
+    } */
   }
 `;
 

@@ -71,11 +71,12 @@ export const StyledTodolistInput = styled.span`
 export const StyledTodolist = styled.div`
   width: 100%;
   height: 100%;
+  overflow-y: hidden;
 
   @media (min-width: ${styledVariables.todolistPages.breakpoint}px) {
-    position: absolute;
+    // position: absolute;
     width: 50%;
-    right: 0;
+    // right: 0;
   }
 
   > form {

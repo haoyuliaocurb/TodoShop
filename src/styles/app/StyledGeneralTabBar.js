@@ -22,6 +22,8 @@ const StyledGeneralTabBar = styled.div`
   @media (min-width: ${styledVariables.shared.contentTabBarMaxWidth}) {
     border-radius: 100px;
   }
+
+
 `;
 
 export default StyledGeneralTabBar;

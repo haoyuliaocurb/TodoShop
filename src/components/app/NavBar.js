@@ -1,16 +1,17 @@
-/* eslint-disable no-unused-vars */
 import { React } from 'react';
-import { Link } from 'react-router-dom';
-import IconApp from '../../styles/app/IconAppContent';
 import StyledNavBar from '../../styles/app/StyledNavBar';
 
 const NavBar = ({ scrollOffsetInfo, navBarState }) => {
   const { content, visibility } = navBarState;
-  const { preScrollOffset, scrollOffset, isScrollEnd } = scrollOffsetInfo;
+  // const { preScrollOffset, scrollOffset, isScrollEnd } = scrollOffsetInfo;
+  const preScrollOffset = visibility === 2 ? null : scrollOffsetInfo.preScrollOffset;
+  const scrollOffset = visibility === 2 ? null : scrollOffsetInfo.scrollOffset;
+  const isScrollEnd = visibility === 2 ? null : scrollOffsetInfo.isScrollEnd;
   // console.log('preScrollOffset: ', preScrollOffset, 'scrollOffset: ', scrollOffset);
-  const windowOffset = scrollOffset - preScrollOffset;
+  const windowOffset = visibility === 2 ? null : scrollOffset - preScrollOffset;
   return (
     <StyledNavBar
+      visibility={visibility}
       windowOffset={windowOffset}
       scrollOffset={scrollOffset}
       isScrollEnd={isScrollEnd}
@@ -24,9 +25,3 @@ const NavBar = ({ scrollOffsetInfo, navBarState }) => {
 };
 
 export default NavBar;
-
-/*
-  <Link to="/todolist/table">
-    <IconApp.ChevronLeft />
-  </Link>
-*/

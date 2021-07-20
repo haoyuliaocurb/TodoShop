@@ -97,7 +97,6 @@ const EasySearchPage = ({
       scrollOffset: scrollOffsetValue,
       isScrollEnd: isScrollEnd.current,
     });
-    console.log('==========================');
   };
 
   useEffect(() => {

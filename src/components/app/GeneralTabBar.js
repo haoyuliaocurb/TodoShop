@@ -1,9 +1,7 @@
-// script
 import { React, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import IconApp from '../../styles/app/IconAppContent';
 
-// styling
 import StyledGeneralTabBar from '../../styles/app/StyledGeneralTabBar';
 import StyledIconApp from '../../styles/app/StyledIconApp';
 

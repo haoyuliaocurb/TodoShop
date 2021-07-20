@@ -11,9 +11,10 @@ const StyledTodolistTable = styled.div`
   padding: 0 ${styledVariables.shared.contentPadding};
 
   @media (min-width: ${styledVariables.todolistPages.breakpoint}px) {
-    position: absolute;
+    // position: absolute;
     width: 50%;
-    left: 0;
+    // height: 100%;
+    // left: 0;
   }
 
   > .dividingLine {
