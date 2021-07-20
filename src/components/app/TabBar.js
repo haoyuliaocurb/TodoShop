@@ -1,16 +1,19 @@
 import { React } from 'react';
 import StyledTabBar from '../../styles/app/StyledTabBar';
 
-const TabBar = ({ pageYOffsetInfo, tabBarState }) => {
+const TabBar = ({ scrollOffsetInfo, tabBarState }) => {
   const { content, visibility } = tabBarState;
-  const { prePageYOffset, pageYOffset } = pageYOffsetInfo;
-  // console.log('prePageYOffset: ', prePageYOffset, 'pageYOffset: ', pageYOffset);
-  const windowOffset = pageYOffset - prePageYOffset;
+  const { preScrollOffset, scrollOffset, isScrollEnd } = scrollOffsetInfo;
+  // console.log('preScrollOffset: ', preScrollOffset, 'scrollOffset: ', scrollOffset);
+  const windowOffset = scrollOffset - preScrollOffset;
   return (
     <StyledTabBar
       windowOffset={windowOffset}
-      pageYOffset={pageYOffset}
-      className={`${visibility ? '' : 'vb-hidden'} ${windowOffset < 0 ? 'transition' : ''}`}
+      scrollOffset={scrollOffset}
+      isScrollEnd={isScrollEnd}
+      className={`${visibility ? '' : 'vb-hidden'} ${
+        windowOffset < 0 || isScrollEnd ? 'transition' : ''
+      }`}
     >
       {content}
     </StyledTabBar>

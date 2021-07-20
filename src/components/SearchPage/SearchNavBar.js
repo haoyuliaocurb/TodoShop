@@ -1,6 +1,7 @@
 import { React } from 'react';
 
 import IconSearchPage from '../../styles/SearchPage/IconSearchPage';
+import StyledSearchNavBar from '../../styles/SearchPage/StyledSearchNavBar';
 import StyledSearchNavBarItems from '../../styles/SearchPage/StyledSearchNavBarItems';
 
 const SearchNavBarItem = ({ index, handleNavBarItemClick, content, selected }) => {
@@ -49,7 +50,7 @@ const SearchNavBar = ({ currentSearchKeywordsIdx, handleNavBarItemClick, searchI
     });
   };
   return (
-    <nav>
+    <StyledSearchNavBar>
       <div>
         <span>1</span>
         <StyledSearchNavBarItems className="container">
@@ -62,7 +63,7 @@ const SearchNavBar = ({ currentSearchKeywordsIdx, handleNavBarItemClick, searchI
         <IconSearchPage.Cart />
         <span>1</span>
       </span>
-    </nav>
+    </StyledSearchNavBar>
   );
 };
 

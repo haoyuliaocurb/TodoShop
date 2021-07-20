@@ -12,8 +12,9 @@ const StyledEasySearchMode = styled.div`
     position: relative;
     width: 100%;
     max-width: ${styledVariables.shared.contentMaxWidth};
-    min-height: 100%;
+    // min-height: 100%;
     overflow-y: scroll;
+    padding-top: ${styledVariables.shared.barHeight};
 
     > div:last-of-type {
       margin-bottom: 10px;
@@ -39,6 +40,13 @@ const StyledEasySearchMode = styled.div`
           fill: ${styledVariables.color.white};
         }
       }
+    }
+
+    > :last-child::after {
+      content: '';
+      display: inline-block;
+      // width: 100%;
+      height: ${styledVariables.shared.barHeight};
     }
   }
 `;

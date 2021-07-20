@@ -6,11 +6,18 @@ import NavBar from '../../app/NavBar';
 import TabBar from '../../app/TabBar';
 import SearchNavBar from '../SearchNavBar';
 import GeneralTabBar from '../../app/GeneralTabBar';
-import usePageYOffsetInfo from '../../app/usePageYOffsetInfo';
 
 import SearchItems from './SearchItems';
 import IconSearchPage from '../../../styles/SearchPage/IconSearchPage';
 import StyledEasySearchMode from '../../../styles/SearchPage/EasySearchMode/StyledEasySearchMode';
+
+import { styledVariables, removePx } from '../../../styles/app/cssMaterial';
+
+const INIT_SCROLLOFFSET = {
+  preScrollOffset: 0,
+  pageYOffset: 0,
+  isScrollEnd: true,
+};
 
 const EasySearchPage = ({
   currentSearchKeywordsIdx,
@@ -18,26 +25,97 @@ const EasySearchPage = ({
   handleEasySearchButtonClick,
   searchInfo,
 }) => {
-  const scrollTargetValue = useRef(null);
-  const [scrollTarget, setScrollTarget] = useState(null);
-  const pageYOffsetInfo = usePageYOffsetInfo(scrollTarget);
+  const [scrollOffsetInfo, setScrollOffsetInfo] = useState(INIT_SCROLLOFFSET);
+  const preScrollOffset = useRef(0);
+  const isOnScroll = useRef(false);
+  const isScrollEnd = useRef(false);
+  const isScrollBackward = useRef(false);
+  const scrollTarget = useRef(null);
+  const windowOffset = useRef(0);
+
+  const handleScroll = (scrollTargetValue) => {
+    if (!scrollTargetValue) {
+      return;
+    }
+    if (isOnScroll.current) {
+      return;
+    }
+
+    // console.log('trigger addEventListener');
+    // console.log('windowOffset.current: ', windowOffset.current);
+    // console.log('isScrollBackward.current: ', isScrollBackward.current);
+    console.log('scrollOffsetInfo.isScrollEnd: ', scrollOffsetInfo.isScrollEnd);
+    console.log('scrollTarget.current.offsetHeight: ', scrollTarget.current.offsetHeight);
+    console.log('scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
+    console.log('scrollTarget.current.scrollHeight: ', scrollTarget.current.scrollHeight);
+    console.log('window.innerHeight: ', window.innerHeight);
+
+    const scrollOffsetValue = scrollTargetValue.scrollTop;
+    const preScrollOffsetValue = preScrollOffset.current;
+    windowOffset.current = scrollOffsetValue - preScrollOffsetValue;
+    preScrollOffset.current = scrollOffsetValue;
+
+    if (windowOffset.current < 0) {
+      if (isScrollBackward.current) {
+        return;
+      }
+
+      isOnScroll.current = true;
+      isScrollBackward.current = true;
+      // console.log('trigger backward scrollTarget');
+      // console.log('before: scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
+      setTimeout(() => {
+        scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight);
+      }, 300);
+      // scrollTarget.scrollTo(0, scrollTarget.scrollTop - styledVariables.shared.barHeight);
+      // console.log('after: scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
+
+      setScrollOffsetInfo({
+        preScrollOffset: preScrollOffsetValue,
+        scrollOffset: scrollOffsetValue,
+        isScrollEnd: isScrollEnd.current,
+      });
+      return;
+    }
+    // windowOffset.current >= 0
+
+    isOnScroll.current = true;
+    isScrollBackward.current = false;
+
+    // 若滑到底
+    if (
+      scrollTargetValue.offsetHeight + scrollTargetValue.scrollTop >=
+      scrollTargetValue.scrollHeight - removePx(styledVariables.shared.barHeight) / 2
+    ) {
+      isScrollEnd.current = true;
+    } else {
+      isScrollEnd.current = false;
+    }
+
+    setScrollOffsetInfo({
+      preScrollOffset: preScrollOffsetValue,
+      scrollOffset: scrollOffsetValue,
+      isScrollEnd: isScrollEnd.current,
+    });
+    console.log('==========================');
+  };
 
   useEffect(() => {
-    setScrollTarget(scrollTargetValue.current);
-  }, [scrollTargetValue.current]);
+    // console.log('scrollTarget.current: ', scrollTarget.current);
+    // console.log('windowOffset.current: ', windowOffset.current);
+    // console.log('scrollTarget.current.clientHeight: ', scrollTarget.current.clientHeight);
+    // console.log('scrollOffsetInfo: ', scrollOffsetInfo);
+  });
 
-  // useEffect(() => {
-  //   if (!scrollTarget) {
-  //     return;
-  //   }
-  //   console.log('scrollTarget.classList: ', scrollTarget.classList);
-  // }, [scrollTarget]);
+  useEffect(() => {
+    isOnScroll.current = false;
+  }, [scrollOffsetInfo]);
 
   return (
     <StyledEasySearchMode>
       <NavBar
-        pageYOffsetInfo={pageYOffsetInfo}
-        tabBarState={{
+        scrollOffsetInfo={scrollOffsetInfo}
+        navBarState={{
           content: (
             <SearchNavBar
               currentSearchKeywordsIdx={currentSearchKeywordsIdx}
@@ -48,14 +126,20 @@ const EasySearchPage = ({
           visibility: 1,
         }}
       />
-      <div className="container" ref={scrollTargetValue}>
+      <div
+        className="container"
+        onScroll={() => {
+          handleScroll(scrollTarget.current);
+        }}
+        ref={scrollTarget}
+      >
         <button onClick={handleEasySearchButtonClick} type="button">
           <IconSearchPage.NormalSearch />
         </button>
         <SearchItems searchInfo={searchInfo} />
       </div>
       <TabBar
-        pageYOffsetInfo={pageYOffsetInfo}
+        scrollOffsetInfo={scrollOffsetInfo}
         tabBarState={{
           content: (
             <GeneralTabBar

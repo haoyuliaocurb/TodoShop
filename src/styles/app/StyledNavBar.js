@@ -1,17 +1,34 @@
 import styled from '@emotion/styled/macro';
-import { styledVariables } from './cssMaterial';
+import { styledVariables, removePx } from './cssMaterial';
 
-const StyledNavBar = styled.nav`
+const StyledNavBar = styled.div`
   position: fixed;
-  top: 0;
+  top: ${({ windowOffset, scrollOffset, isScrollEnd }) => {
+    const barHeight = removePx(styledVariables.shared.barHeight);
+    // console.log('windowOffset: ', windowOffset);
+    if (windowOffset <= 0 || isScrollEnd) {
+      return '0';
+    }
+    if (Math.abs(scrollOffset) < barHeight) {
+      // console.log(`${-scrollOffset}px`);
+      return `${-scrollOffset}px`;
+    }
+    // console.log(`${0 - barHeight}px`);
+    return `${-barHeight}px`;
+  }};
   width: 100%;
   height: ${styledVariables.shared.barHeight};
   background-color: ${styledVariables.color.gray100};
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 0;
+  z-index: 5;
   padding: 0 ${styledVariables.shared.contentPadding};
+
+  &.transition {
+    transition-property: top;
+    transition-duration: 0.5s;
+  }
 
   > a {
     > img {
