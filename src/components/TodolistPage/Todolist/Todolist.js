@@ -48,25 +48,20 @@ const maptodolistItemsContent = (todolistItemsContentValue) =>
   todolistItemsContentValue.map((itemContent) => ({ name: itemContent }));
 
 const Todolist = ({
-  updateTodolistData,
+  getCurrentTodolistData,
+  currentUid,
+  // updateTodolistData,
   currentListData,
-  currentListIdx,
-  currentListId,
+  // currentListIdx,
   handleTodolistClick,
 }) => {
   console.log('render Todolist.');
   // console.log('currentListId: ', currentListId);
-  if (currentListData) {
-    // console.log('currentListData.data(): ', currentListData.data());
-  }
   const todolistItemsContent = useRef([]);
   const [inputDisplayContent, setInputDisplayContent] = useState('');
+  const currentListId = !currentListData ? '' : currentListData.id;
+  const decodedCurrentListData = !currentListData ? null : currentListData.data();
   const { listId } = useParams();
-
-  // console.log('isSignIn in Todolist: ', isSignIn);
-  // console.log('currentListData in Todolist: ', currentListData);
-  // console.log('currentListId in Todolist: ', currentListId);
-  // TodolistItems
   const handleItemClick = (e) => {
     // console.log('trigger click event');
     const getItemkey = () => {
@@ -98,39 +93,42 @@ const Todolist = ({
       })
       .then(() => {
         console.log('successfully update todolist ', listId);
-        updateTodolistData(currentListId, currentListIdx);
+        getCurrentTodolistData(currentUid);
+        // updateTodolistData(currentListId, currentListIdx);
       });
   };
   const createTodolistItem = (itemData, index) => {
     return (
       <TodolistItem
         id={index}
-        key={itemData.name}
+        key={`${itemData.name}${index}`}
         content={itemData.name}
         onItemClick={handleItemClick}
       />
     );
   };
-  const getTodolistItems = () => {
-    // console.log('Todolist: trigger getTodolistItems');
-    if (currentListData) {
-      // console.log('currentListData.data() in getTodolistItems', currentListData.data());
-    }
-    if (!currentListData) {
+  const getTodolistItems = (decodedCurrentListDataValue) => {
+    console.log('Todolist: trigger getTodolistItems');
+    if (!decodedCurrentListDataValue) {
       // console.log('currentListData is falsy.')
-      return [];
+      return <div />;
     }
 
     if (listId !== currentListId) {
       // console.log('List id in url is not belong to current user.')
       // 防止直接輸入 listId 在 url 的情況
       // 可以做 redirect
-      return [];
+      return <div />;
+    }
+
+    const todolistItems = decodedCurrentListData.items;
+    if (!todolistItems) {
+      todolistItemsContent.current = [];
+      return <div />;
     }
 
     const newtodolistItemsContent = [];
-    // console.log('currentListData: ', currentListData);
-    const newTodolistItems = currentListData.data().items.map((value, index) => {
+    const newTodolistItems = todolistItems.map((value, index) => {
       const { name } = value;
       newtodolistItemsContent.push(name);
 
@@ -140,7 +138,6 @@ const Todolist = ({
     // console.log('todolistItemsContent.current: ', todolistItemsContent.current);
     return newTodolistItems;
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
   };
@@ -169,7 +166,8 @@ const Todolist = ({
         })
         .then(() => {
           console.log('successfully update todolist ', listId);
-          updateTodolistData(currentListId, currentListIdx);
+          // updateTodolistData(currentListId, currentListIdx);
+          getCurrentTodolistData(currentUid);
         });
     }
   };
@@ -191,15 +189,14 @@ const Todolist = ({
 
   useEffect(() => {
     console.log('Todolist: useEffect depends on currentListData.');
-    // if (!currentListData) {
-    //   return;
-    // }
-    console.log('updateTodolistData.current: ', updateTodolistData.current);
-    console.log('toggle updateTodolistData.current: ', updateTodolistData.current);
-    console.log('==========');
   }, [currentListData]);
 
-  // console.log('====================');
+  useEffect(() => {
+    return () => {
+      console.log('Todolist: unmount');
+    };
+  }, []);
+
   return (
     <StyledTodolist
       onClick={() => {

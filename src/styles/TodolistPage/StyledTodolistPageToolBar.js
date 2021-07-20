@@ -18,6 +18,7 @@ const StyledTodolistPageToolBar = styled.div`
     margin-right: 10px;
     background-color: ${styledVariables.color.pink100};
     border-radius: 100px;
+    filter: drop-shadow(4px 2px 4px ${styledVariables.color.gray200});
   }
 `;
 

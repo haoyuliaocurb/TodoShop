@@ -17,6 +17,7 @@ import StyledTodolistPage from '../styles/TodolistPage/StyledTodolistPage';
 
 const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
   // Todolist、TodolistPage 切換及資料
+  const currentUid = isSignIn;
   console.log('render TodolistPages');
   const { breakpoint } = styledVariables.todolistPages;
   // console.log('currentUid when rendering TodolistPages: ', currentUid);
@@ -25,68 +26,63 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
   const [todolistData, setTodolistData] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [currentListInfo, setCurrentListInfo] = useState({ idx: 0, itemButtonState: 2 });
-  // eslint-disable-next-line no-unused-vars
-  // const lastListId = useRef('');
-  // const srcCurrentListId = useRef('');
-  // const currentListData = useRef(null);
-  // const [currentListId, setCurrentListId] = useState('');
-
   const listIdxObj = useRef({});
   // console.log('listIdxObj.current: ', listIdxObj.current);
-  const fetchTodolistData = async () => {
-    // eslint-disable-next-line consistent-return
-    const innerFetchTodolistData = new Promise((resolve) => {
-      const currentUid = isSignIn;
-      if (!isSignIn) {
-        return resolve(null);
-      }
-
-      const newTodolistData = [];
-      const newListIdxObj = {};
-      // let fetchedTodolistDataCounter = 0;
-      firestore
-        .collection('todolists')
-        .where('uid', '==', currentUid)
-        .orderBy('updateTime', 'desc')
-        .limit(15)
-        .get()
-        .then((fetchedTodolistData) => {
-          // console.log(typeof fetchedTodolistData);
-          let counter = 0;
-          fetchedTodolistData.forEach((value) => {
-            // console.log(value.data());
-            newTodolistData.push(value);
-            newListIdxObj[value.id] = counter;
-            counter += 1;
-          });
-          listIdxObj.current = newListIdxObj;
-          resolve(newTodolistData);
-        });
-    });
-    const promiseReturned = Promise.resolve(innerFetchTodolistData);
-    return promiseReturned;
-  };
-
   // const getIdxByListId = (listId) => listIdxObj.current[listId];
+
+  const getCurrentTodolistData = async (currentUidValue) => {
+    const fetchTodolistData = async (innerCurrentUidValue) => {
+      // eslint-disable-next-line consistent-return
+      const innerFetchTodolistData = new Promise((resolve) => {
+        if (!innerCurrentUidValue) {
+          return resolve(null);
+        }
+
+        const newTodolistData = [];
+        const newListIdxObj = {};
+        // let fetchedTodolistDataCounter = 0;
+        firestore
+          .collection('todolists')
+          .where('uid', '==', innerCurrentUidValue)
+          .orderBy('updateTime', 'desc')
+          .limit(15)
+          .get()
+          .then((fetchedTodolistData) => {
+            // console.log(typeof fetchedTodolistData);
+            let counter = 0;
+            fetchedTodolistData.forEach((value) => {
+              // console.log(value.data());
+              newTodolistData.push(value);
+              newListIdxObj[value.id] = counter;
+              counter += 1;
+            });
+            listIdxObj.current = newListIdxObj;
+            resolve(newTodolistData);
+          });
+      });
+      const promiseReturned = Promise.resolve(innerFetchTodolistData);
+      return promiseReturned;
+    };
+
+    // 登入狀態改變時，也會重新 setTodolistData
+    const newTodolistData = await fetchTodolistData(currentUidValue);
+    if (!newTodolistData) {
+      setTodolistData(null);
+      return;
+    }
+    setTodolistData(newTodolistData);
+  };
 
   useEffect(() => {
     if (!isSignIn) {
       return;
     }
-    const getCurrentTodolistData = async () => {
-      // 登入狀態改變時，也會重新 setTodolistData
-      const newTodolistData = await fetchTodolistData();
-      if (!newTodolistData) {
-        setTodolistData(null);
-        return;
-      }
-      setTodolistData(newTodolistData);
-    };
-    getCurrentTodolistData();
+    getCurrentTodolistData(currentUid);
   }, [isSignIn]);
 
   useEffect(() => {
     console.log('TodolistPage: useEffect depends on todolistData');
+    setCurrentListInfo({ idx: 0, itemButtonState: 2 });
     // console.log('!todolistData: ', !todolistData);
     // if (!todolistData) {
     //   return;
@@ -173,10 +169,9 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
       return newTodolistData;
     });
   };
-
   // eslint-disable-next-line no-unused-vars
-  const createTodolist = async (currentUid) => {
-    if (!currentUid) {
+  const createTodolist = async (currentUidValue) => {
+    if (!currentUidValue) {
       return;
     }
     firestore
@@ -187,6 +182,24 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
       })
       .then(() => {
         console.log('succefully create new Todolist on DB');
+        firestore
+          .collection('todolists')
+          .where('uid', '==', currentUidValue)
+          .orderBy('updateTime', 'desc')
+          .limit(15)
+          .get()
+          .then((fetchedTodolistData) => {
+            if (!fetchedTodolistData) {
+              return;
+            }
+            const newTodolistData = [];
+            fetchedTodolistData.forEach((value) => {
+              console.log('value.data(): ', value.data());
+              newTodolistData.push(value);
+            });
+            console.log('newTodolistData: ', newTodolistData);
+            setTodolistData(newTodolistData);
+          });
       });
   };
 
@@ -197,7 +210,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
       // console.log('currentListData.data(): ', currentListData.data());
     }
     const currentListId = getCurrentListId();
-    // console.log('currentListId: ', currentListId);
+    console.log('currentListId: ', currentListId);
 
     if (!isSignIn && windowWidth <= breakpoint) {
       // 判斷登入與否
@@ -260,7 +273,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
       );
     }
     if (isSignIn && !(windowWidth <= breakpoint)) {
-      // console.log('getTodolistPageContent: isSignIn && !(windowWidth <= breakpoint)');
+      console.log('getTodolistPageContent: isSignIn && !(windowWidth <= breakpoint)');
       return (
         <Switch>
           <Route path="/todolist/id/:listId">
@@ -275,6 +288,8 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
             <Todolist
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}
+              getCurrentTodolistData={getCurrentTodolistData}
+              currentUid={currentUid}
               updateTodolistData={updateTodolistData}
               currentListData={currentListData}
               currentListIdx={currentListInfo.idx}
@@ -299,7 +314,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
       {getTodolistPageContent()}
       <ToolBar
         navBarState={{
-          content: <TodolistPageToolBar />,
+          content: <TodolistPageToolBar createTodolist={createTodolist} currentUid={currentUid} />,
           visibility: 2,
         }}
       />
@@ -323,13 +338,3 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
 };
 
 export default TodolistPages;
-
-// const ToolBar = ({ toolBarState }) => {
-//   return (
-//     <StyledToolBar className={toolBarState ? '' : 'vb-hidden'}>
-//       <button type="button" className="buttonAddTodolist">
-//         新增購物清單 +
-//       </button>
-//     </StyledToolBar>
-//   );
-// };

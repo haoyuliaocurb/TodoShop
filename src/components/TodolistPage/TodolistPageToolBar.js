@@ -1,10 +1,16 @@
 import { React } from 'react';
 import StyledTodolistPageToolBar from '../../styles/TodolistPage/StyledTodolistPageToolBar';
 
-const TodolistPageToolBar = () => {
+const TodolistPageToolBar = ({ createTodolist, currentUid }) => {
   return (
     <StyledTodolistPageToolBar>
-      <button type="button" className="buttonAddTodolist">
+      <button
+        onClick={() => {
+          createTodolist(currentUid);
+        }}
+        type="button"
+        className="buttonAddTodolist"
+      >
         新增購物清單 +
       </button>
     </StyledTodolistPageToolBar>

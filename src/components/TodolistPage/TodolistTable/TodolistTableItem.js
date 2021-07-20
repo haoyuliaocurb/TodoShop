@@ -21,6 +21,9 @@ const TodolistTableItem = ({
   const uptimeTime = listItemData.data().updateTime.toDate();
   const productItems = listItemData.data().items;
   const getTodolistTableItemSpan = (itemArray) => {
+    if (!itemArray) {
+      return;
+    }
     let itemString = '';
     itemArray.forEach((srcValue, index) => {
       const value = srcValue.name;
@@ -31,12 +34,8 @@ const TodolistTableItem = ({
       itemString += `、${value}`;
     });
 
+    // eslint-disable-next-line consistent-return
     return itemString;
-    /*
-    return itemArray.map((value) => (
-        <span key={`${encodeURI(value.name)}`}>{value.name}</span>
-    ))
-    */
   };
 
   const handleClick = (value) => {
