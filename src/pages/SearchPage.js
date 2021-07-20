@@ -3,7 +3,6 @@ import { firestore } from '../utils/firebase/firebase-services';
 // import { Link } from 'react-router-dom';
 
 import EasySearchMode from '../components/SearchPage/EasySearchMode/EasySearchMode';
-import SearchNavBar from '../components/SearchPage/SearchNavBar';
 import NormalSearchMode from '../components/SearchPage/NormalSearchMode/NormalSearchMode';
 import StyledSearchPage from '../styles/SearchPage/StyledSearchPage';
 
@@ -16,7 +15,6 @@ const SEARCH_META_INFO_TEMPLATE = {
     hit: 0,
   },
 };
-
 const SEARCH_INFO_WITH_PID_TEST1 = [
   {
     keyword: '衛生紙',
@@ -83,7 +81,6 @@ const SEARCH_INFO_WITH_PID_TEST1 = [
     ],
   },
 ];
-
 // eslint-disable-next-line no-unused-vars
 const SEARCH_INFO_WITH_PID_TEST2 = [
   {
@@ -230,7 +227,6 @@ const SEARCH_INFO_WITH_PID_TEST2 = [
     ],
   },
 ];
-
 const getSearchInfo = (searchMetaInfo) => {
   if (!searchMetaInfo.keywords) {
     return;
@@ -254,6 +250,7 @@ const SearchPages = ({ isSignIn }) => {
   // eslint-disable-next-line no-unused-vars
   const { isEasySearchMode, currentSearchKeywordsIdx, filterButtonState } = searchMetaInfo;
   const [searchInfo, setSearchInfo] = useState(null);
+
   const updateSearchInfo = async () => {
     // console.log('getSearchInfo(searchMetaInfo): ', getSearchInfo(searchMetaInfo));
     const newSearchInfo = JSON.parse(JSON.stringify(getSearchInfo(searchMetaInfo)));
@@ -309,62 +306,6 @@ const SearchPages = ({ isSignIn }) => {
     // console.log('newSearchInfo: ', newSearchInfo);
     setSearchInfo(newSearchInfo);
   };
-
-  useEffect(() => {
-    const updateSearchMetaInfo = async () => {
-      // eslint-disable-next-line no-unused-vars
-      const getSearchKeywordsLog = async (isSignInValue) => {
-        const promiseReturned = new Promise((resolve) => {
-          // eslint-disable-next-line consistent-return
-          const innerGetSearchKeywordsLog = async (innerIsSignInValue) => {
-            // console.log('innerIsSignInValue: ', innerIsSignInValue);
-            if (!innerIsSignInValue) {
-              // 若未登入，則從 localStorage 取搜尋紀錄，若沒有則導回首頁
-              return [];
-            }
-            const srcSearchKeywordsLog = await firestore
-              .collection('users')
-              .doc(innerIsSignInValue)
-              .collection('searchKeywordsLog')
-              .orderBy('updateTime', 'desc')
-              .limit(1)
-              .get();
-            let searchKeywordsLog = {};
-            // console.log('srcSearchKeywordsLog: ', srcSearchKeywordsLog);
-            // searchKeywordsLog = srcSearchKeywordsLog.data();
-            srcSearchKeywordsLog.forEach((searchKeywordsLogValue) => {
-              // console.log('searchKeywordsLogValue.data(): ', searchKeywordsLogValue.data());
-              searchKeywordsLog = searchKeywordsLogValue.data();
-            });
-            // console.log('searchKeywordsLog: ', searchKeywordsLog);
-            resolve(searchKeywordsLog);
-          };
-          innerGetSearchKeywordsLog(isSignInValue);
-        });
-        return promiseReturned;
-      };
-      const { keywords } = await getSearchKeywordsLog(isSignIn);
-      setSearchMetaInfo((preValue) => ({
-        ...preValue,
-        keywords,
-      }));
-    };
-    updateSearchMetaInfo();
-  }, [isSignIn]);
-
-  useEffect(() => {
-    // console.log('useEffect on updateSearchInfo');
-    // console.log('searchMetaInfo: ', searchMetaInfo);
-    // console.log('!searchMetaInfo.searchKeywordsLog: ', !searchMetaInfo.searchKeywordsLog);
-    if (!searchMetaInfo.keywords) {
-      return;
-    }
-    updateSearchInfo();
-  }, [searchMetaInfo]);
-
-  useEffect(() => {
-    // console.log('searchInfo in useEffect on searchInfo: ', searchInfo);
-  }, [searchInfo]);
 
   const handleNavBarItemClick = (idx) => {
     // console.log('idx: ', idx);
@@ -452,15 +393,68 @@ const SearchPages = ({ isSignIn }) => {
     });
   };
 
+  useEffect(() => {
+    const updateSearchMetaInfo = async () => {
+      // eslint-disable-next-line no-unused-vars
+      const getSearchKeywordsLog = async (isSignInValue) => {
+        const promiseReturned = new Promise((resolve) => {
+          // eslint-disable-next-line consistent-return
+          const innerGetSearchKeywordsLog = async (innerIsSignInValue) => {
+            // console.log('innerIsSignInValue: ', innerIsSignInValue);
+            if (!innerIsSignInValue) {
+              // 若未登入，則從 localStorage 取搜尋紀錄，若沒有則導回首頁
+              return [];
+            }
+            const srcSearchKeywordsLog = await firestore
+              .collection('users')
+              .doc(innerIsSignInValue)
+              .collection('searchKeywordsLog')
+              .orderBy('updateTime', 'desc')
+              .limit(1)
+              .get();
+            let searchKeywordsLog = {};
+            // console.log('srcSearchKeywordsLog: ', srcSearchKeywordsLog);
+            // searchKeywordsLog = srcSearchKeywordsLog.data();
+            srcSearchKeywordsLog.forEach((searchKeywordsLogValue) => {
+              // console.log('searchKeywordsLogValue.data(): ', searchKeywordsLogValue.data());
+              searchKeywordsLog = searchKeywordsLogValue.data();
+            });
+            // console.log('searchKeywordsLog: ', searchKeywordsLog);
+            resolve(searchKeywordsLog);
+          };
+          innerGetSearchKeywordsLog(isSignInValue);
+        });
+        return promiseReturned;
+      };
+      const { keywords } = await getSearchKeywordsLog(isSignIn);
+      setSearchMetaInfo((preValue) => ({
+        ...preValue,
+        keywords,
+      }));
+    };
+    updateSearchMetaInfo();
+  }, [isSignIn]);
+
+  useEffect(() => {
+    // console.log('useEffect on updateSearchInfo');
+    // console.log('searchMetaInfo: ', searchMetaInfo);
+    // console.log('!searchMetaInfo.searchKeywordsLog: ', !searchMetaInfo.searchKeywordsLog);
+    if (!searchMetaInfo.keywords) {
+      return;
+    }
+    updateSearchInfo();
+  }, [searchMetaInfo]);
+
+  useEffect(() => {
+    // console.log('searchInfo in useEffect on searchInfo: ', searchInfo);
+  }, [searchInfo]);
+
   return (
     <StyledSearchPage>
-      <SearchNavBar
-        currentSearchKeywordsIdx={currentSearchKeywordsIdx}
-        handleNavBarItemClick={handleNavBarItemClick}
-        searchInfo={searchInfo}
-      />
       {isEasySearchMode ? (
         <EasySearchMode
+          currentSearchKeywordsIdx={currentSearchKeywordsIdx}
+          handleNavBarItemClick={handleNavBarItemClick}
           handleEasySearchButtonClick={handleEasySearchButtonClick}
           searchInfo={searchInfo}
         />
