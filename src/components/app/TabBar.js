@@ -6,11 +6,11 @@ import { styledVariables } from '../../styles/app/cssMaterial';
 const TabBar = ({ backgroundColor, scrollOffsetInfo, tabBarState }) => {
   const { content, visibility } = tabBarState;
   // const { preScrollOffset, scrollOffset, isScrollEnd } = scrollOffsetInfo;
-  const preScrollOffset = visibility === 2 ? null : scrollOffsetInfo.preScrollOffset;
-  const scrollOffset = visibility === 2 ? null : scrollOffsetInfo.scrollOffset;
-  const isScrollEnd = visibility === 2 ? null : scrollOffsetInfo.isScrollEnd;
+  const preScrollOffset = visibility !== 1 ? null : scrollOffsetInfo.preScrollOffset;
+  const scrollOffset = visibility !== 1 ? null : scrollOffsetInfo.scrollOffset;
+  const isScrollEnd = visibility !== 1 ? null : scrollOffsetInfo.isScrollEnd;
   // console.log('preScrollOffset: ', preScrollOffset, 'scrollOffset: ', scrollOffset);
-  const windowOffset = visibility === 2 ? null : scrollOffset - preScrollOffset;
+  const windowOffset = visibility !== 1 ? null : scrollOffset - preScrollOffset;
   return (
     <StyledTabBar
       backgroundColor={!backgroundColor ? styledVariables.color.white : backgroundColor}

@@ -203,6 +203,30 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
       });
   };
 
+  const INIT_BARSTATE = {
+    navBar: {
+      content: <TodolistPageNavBar />,
+      visibility: 2,
+    },
+    tabBar: {
+      content: (
+        <GeneralTabBar
+        // handleTabBarSearchTabClick={handleTabBarSearchTabClick}
+        // handleTabBarHomeTabClick={handleTabBarHomeTabClick}
+        // handleTabBarCartTabClick={handleTabBarCartTabClick}
+        // handleTabBarAuthTabClick={handleTabBarAuthTabClick}
+        // handleTabBarListTabClick={handleTabBarListTabClick}
+        />
+      ),
+      visibility: 2,
+    },
+    toolBar: {
+      content: <TodolistPageToolBar createTodolist={createTodolist} currentUid={currentUid} />,
+      visibility: 2,
+    },
+  };
+  const [barState, setBarState] = useState(INIT_BARSTATE);
+
   // eslint-disable-next-line consistent-return
   const getTodolistPageContent = () => {
     const currentListData = getCurrentListData();
@@ -303,36 +327,58 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
       );
     }
   };
+
+  // eslint-disable-next-line no-unused-vars
+  const location = useLocation();
+  useEffect(() => {
+    const updateBarStateByPath = (pathArrayValue) => {
+      console.log('trigger updateBarStateByPath');
+      console.log('pathArrayValue[1]: ', pathArrayValue[1]);
+      if (!(windowWidth <= breakpoint)) {
+        console.log('fault');
+        setBarState({
+          ...INIT_BARSTATE,
+          toolBar: {
+            ...INIT_BARSTATE.toolBar,
+            visibility: 2,
+          },
+        });
+        return;
+      }
+      if (pathArrayValue[1] === 'table') {
+        setBarState({
+          ...INIT_BARSTATE,
+          toolBar: {
+            ...INIT_BARSTATE.toolBar,
+            visibility: 2,
+          },
+        });
+        return;
+      }
+      if (pathArrayValue[1] === 'id') {
+        console.log('trigger toolBarState.visibility = 0');
+        setBarState({
+          ...INIT_BARSTATE,
+          toolBar: {
+            ...INIT_BARSTATE.toolBar,
+            visibility: 0,
+          },
+        });
+      }
+    };
+    updateBarStateByPath(pathArray);
+  }, [windowWidth]);
+
+  useEffect(() => {
+    console.log('barState.toolBar: ', barState.toolBar);
+  }, [barState]);
+
   return (
     <StyledTodolistPage>
-      <NavBar
-        navBarState={{
-          content: <TodolistPageNavBar />,
-          visibility: 2,
-        }}
-      />
+      <NavBar navBarState={barState.navBar} />
       {getTodolistPageContent()}
-      <ToolBar
-        navBarState={{
-          content: <TodolistPageToolBar createTodolist={createTodolist} currentUid={currentUid} />,
-          visibility: 2,
-        }}
-      />
-      <TabBar
-        backgroundColor={styledVariables.color.gray100}
-        tabBarState={{
-          content: (
-            <GeneralTabBar
-            // handleTabBarSearchTabClick={handleTabBarSearchTabClick}
-            // handleTabBarHomeTabClick={handleTabBarHomeTabClick}
-            // handleTabBarCartTabClick={handleTabBarCartTabClick}
-            // handleTabBarAuthTabClick={handleTabBarAuthTabClick}
-            // handleTabBarListTabClick={handleTabBarListTabClick}
-            />
-          ),
-          visibility: 2,
-        }}
-      />
+      <ToolBar toolBarState={barState.toolBar} />
+      <TabBar backgroundColor={styledVariables.color.gray100} tabBarState={barState.tabBar} />
     </StyledTodolistPage>
   );
 };

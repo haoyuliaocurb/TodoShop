@@ -1,14 +1,14 @@
 import { React } from 'react';
 import StyledToolBar from '../../styles/app/StyledToolBar';
 
-const ToolBar = ({ scrollOffsetInfo, navBarState }) => {
-  const { content, visibility } = navBarState;
+const ToolBar = ({ scrollOffsetInfo, toolBarState }) => {
+  const { content, visibility } = toolBarState;
   // const { preScrollOffset, scrollOffset, isScrollEnd } = scrollOffsetInfo;
-  const preScrollOffset = visibility === 2 ? null : scrollOffsetInfo.preScrollOffset;
-  const scrollOffset = visibility === 2 ? null : scrollOffsetInfo.scrollOffset;
-  const isScrollEnd = visibility === 2 ? null : scrollOffsetInfo.isScrollEnd;
+  const preScrollOffset = visibility !== 1 ? null : scrollOffsetInfo.preScrollOffset;
+  const scrollOffset = visibility !== 1 ? null : scrollOffsetInfo.scrollOffset;
+  const isScrollEnd = visibility !== 1 ? null : scrollOffsetInfo.isScrollEnd;
   // console.log('preScrollOffset: ', preScrollOffset, 'scrollOffset: ', scrollOffset);
-  const windowOffset = visibility === 2 ? null : scrollOffset - preScrollOffset;
+  const windowOffset = visibility !== 1 ? null : scrollOffset - preScrollOffset;
   return (
     <StyledToolBar
       visibility={visibility}
