@@ -2,45 +2,17 @@ import { React, useState, useEffect, useRef } from 'react';
 // import { firestore } from '../../../utils/firebase/firebase-services';
 import { useParams } from 'react-router-dom';
 
-import IconTodolistPages from '../../../styles/TodolistPage/IconTodolistPage';
+import TodolistItem from './TodolistItem';
+import TodolistInput from './TodolistInput';
 
 // styling
-import {
-  StyledTodolist,
-  StyledTodolistItem,
-  StyledTodolistInput,
-} from '../../../styles/TodolistPage/Todolist/StyledTodolistComps';
+import StyledTodolist from '../../../styles/TodolistPage/Todolist/StyledTodolist';
 import { firestore, firebase } from '../../../utils/firebase/firebase-services';
 
 const model = {
   flag: {
     enterEvent: false,
   },
-};
-
-const TodolistItem = ({ id, onItemClick, content }) => {
-  // console.log('ref: ', ref);
-  return (
-    <StyledTodolistItem id={id} onClick={onItemClick}>
-      {content}
-      <IconTodolistPages.Close />
-    </StyledTodolistItem>
-  );
-};
-
-const TodolistInput = ({ inputDisplayContent, onInputElInput, onInputKeyUp }) => {
-  return (
-    <StyledTodolistInput>
-      <span>{inputDisplayContent}</span>
-      <input
-        type="text"
-        id="input"
-        // className={`${ifClrTransparent ? ' clr-transparent ' : ''}`}
-        onInput={onInputElInput}
-        onKeyUp={onInputKeyUp}
-      />
-    </StyledTodolistInput>
-  );
 };
 
 // eslint-disable-next-line no-unused-vars
