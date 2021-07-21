@@ -1,7 +1,11 @@
 import { React } from 'react';
 import StyledTodolistInput from '../../../styles/TodolistPage/Todolist/StyledTodolistInput';
 
-const TodolistInput = ({ inputDisplayContent, onInputElInput, onInputKeyUp }) => {
+const TodolistInput = ({
+  inputDisplayContent,
+  handleTodolistInputInput,
+  handleTodolistInputKeyUp,
+}) => {
   return (
     <StyledTodolistInput>
       <span>{inputDisplayContent}</span>
@@ -9,8 +13,8 @@ const TodolistInput = ({ inputDisplayContent, onInputElInput, onInputKeyUp }) =>
         type="text"
         id="input"
         // className={`${ifClrTransparent ? ' clr-transparent ' : ''}`}
-        onInput={onInputElInput}
-        onKeyUp={onInputKeyUp}
+        onInput={handleTodolistInputInput}
+        onKeyUp={handleTodolistInputKeyUp}
       />
     </StyledTodolistInput>
   );

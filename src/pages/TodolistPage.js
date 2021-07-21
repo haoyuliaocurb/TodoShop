@@ -30,7 +30,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
   // console.log('listIdxObj.current: ', listIdxObj.current);
   // const getIdxByListId = (listId) => listIdxObj.current[listId];
 
-  const getCurrentTodolistData = async (currentUidValue) => {
+  const readDBTodolistsData = async (currentUidValue) => {
     const fetchTodolistData = async (innerCurrentUidValue) => {
       // eslint-disable-next-line consistent-return
       const innerFetchTodolistData = new Promise((resolve) => {
@@ -77,7 +77,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
     if (!isSignIn) {
       return;
     }
-    getCurrentTodolistData(currentUid);
+    readDBTodolistsData(currentUid);
   }, [isSignIn]);
 
   useEffect(() => {
@@ -312,7 +312,7 @@ const TodolistPages = ({ handleIcon2SearchClick, windowWidth, isSignIn }) => {
             <Todolist
               // eslint-disable-next-line react/jsx-boolean-value
               isSignIn={true}
-              getCurrentTodolistData={getCurrentTodolistData}
+              readDBTodolistsData={readDBTodolistsData}
               currentUid={currentUid}
               updateTodolistData={updateTodolistData}
               currentListData={currentListData}

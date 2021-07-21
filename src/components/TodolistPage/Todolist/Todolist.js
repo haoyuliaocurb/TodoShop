@@ -5,183 +5,167 @@ import { useParams } from 'react-router-dom';
 import TodolistItem from './TodolistItem';
 import TodolistInput from './TodolistInput';
 
-// styling
 import StyledTodolist from '../../../styles/TodolistPage/Todolist/StyledTodolist';
 import { firestore, firebase } from '../../../utils/firebase/firebase-services';
 
-const model = {
-  flag: {
-    enterEvent: false,
-  },
+const convertTodolistItemsContent = (todolistItemsContentValue) => {
+  const todolistItemsContentArray = todolistItemsContentValue.keys().map((itemKey) => {
+    const name = todolistItemsContentValue[itemKey];
+    return { name };
+  });
+  return todolistItemsContentArray;
 };
 
-// eslint-disable-next-line no-unused-vars
-const maptodolistItemsContent = (todolistItemsContentValue) =>
-  todolistItemsContentValue.map((itemContent) => ({ name: itemContent }));
-
 const Todolist = ({
-  getCurrentTodolistData,
+  currentTodolistData,
+  handleTodolistClick,
+  readDBTodolistsData,
   currentUid,
   // updateTodolistData,
-  currentListData,
   // currentListIdx,
-  handleTodolistClick,
 }) => {
-  console.log('render Todolist.');
-  // console.log('currentListId: ', currentListId);
-  const todolistItemsContent = useRef([]);
-  const [inputDisplayContent, setInputDisplayContent] = useState('');
-  const currentListId = !currentListData ? '' : currentListData.id;
-  const decodedCurrentListData = !currentListData ? null : currentListData.data();
-  const { listId } = useParams();
-  const handleItemClick = (e) => {
-    // console.log('trigger click event');
-    const getItemkey = () => {
-      const srcItemKey = e.currentTarget.id;
-      return srcItemKey;
-    };
-    const itemKey = getItemkey();
+  // console.log('<Todolist />: render');
 
-    // console.log('itemKey: ', itemKey);
-    // console.log('before: todolistItemsContent.current: ', todolistItemsContent.current);
-    const newTodolistItemsContent = [];
-    todolistItemsContent.current.forEach((value, index) => {
-      console.log('index', index, 'index !== itemKey: ', index !== itemKey);
-      if (index !== Number(itemKey)) {
-        newTodolistItemsContent.push(value);
-      }
-    });
-    todolistItemsContent.current = newTodolistItemsContent;
-    // console.log('after: todolistItemsContent.current: ', todolistItemsContent.current);
+  const todolistItemsContent = useRef({});
+  const isKeyUpTriggered = useRef(false);
+  const [inputDisplayContent, setInputDisplayContent] = useState('');
+  const currentTodolistId = !currentTodolistData ? '' : currentTodolistData.id;
+  const decodedCurrentTodolistData = !currentTodolistData ? null : currentTodolistData.data();
+  const pathListId = useParams().listId;
+
+  const handleTodolistItemClick = (createTimeValue) => {
+    const preTodolistItemsContent = { ...todolistItemsContent.current };
+    delete preTodolistItemsContent[createTimeValue];
+
+    const newTodolistItemsContent = preTodolistItemsContent;
+    todolistItemsContent.current = { ...newTodolistItemsContent };
 
     // 更新資料庫
-    const newTodolistDataItemsPart = maptodolistItemsContent(todolistItemsContent.current);
+    const newTodolistDataItems = convertTodolistItemsContent(newTodolistItemsContent);
     firestore
       .collection('todolists')
-      .doc(listId)
+      .doc(pathListId)
       .update({
-        items: newTodolistDataItemsPart,
+        items: newTodolistDataItems,
         updateTime: firebase.firestore.Timestamp.now(),
       })
       .then(() => {
-        console.log('successfully update todolist ', listId);
-        getCurrentTodolistData(currentUid);
-        // updateTodolistData(currentListId, currentListIdx);
+        console.log(
+          '<Todolist />: handleTodolistItemClick: successfully update DB todolists doc ',
+          pathListId,
+        );
+
+        readDBTodolistsData(currentUid);
       });
   };
-  const createTodolistItem = (itemData, index) => {
-    return (
-      <TodolistItem
-        id={index}
-        key={`${itemData.name}${index}`}
-        content={itemData.name}
-        onItemClick={handleItemClick}
-      />
-    );
-  };
-  const getTodolistItems = (decodedCurrentListDataValue) => {
-    console.log('Todolist: trigger getTodolistItems');
-    if (!decodedCurrentListDataValue) {
-      // console.log('currentListData is falsy.')
+  const getTodolistItems = (decodedCurrentTodolistDataValue) => {
+    // console.log('<Todolist />: trigger getTodolistItems');
+    if (!decodedCurrentTodolistDataValue) {
       return <div />;
     }
-
-    if (listId !== currentListId) {
-      // console.log('List id in url is not belong to current user.')
-      // 防止直接輸入 listId 在 url 的情況
+    if (pathListId !== currentTodolistId) {
+      // console.log('<Todolist />: Warning: List id in url is not belong to current user.')
+      // 防止直接輸入 pathListId 在 url 的情況
       // 可以做 redirect
       return <div />;
     }
 
-    const todolistItems = decodedCurrentListData.items;
-    if (!todolistItems) {
-      todolistItemsContent.current = [];
+    const createTodolistItem = (todolistItemData, createTimeValue) => {
+      const { name } = todolistItemData;
+      return (
+        <TodolistItem
+          key={createTimeValue}
+          content={name}
+          handleTodolistItemClick={() => {
+            handleTodolistItemClick(createTimeValue);
+          }}
+        />
+      );
+    };
+    const todolistDataItems = decodedCurrentTodolistData.items;
+    if (!todolistDataItems) {
+      todolistItemsContent.current = {};
       return <div />;
     }
 
-    const newtodolistItemsContent = [];
-    const newTodolistItems = todolistItems.map((value, index) => {
-      const { name } = value;
-      newtodolistItemsContent.push(name);
+    const newTodolistItemsContent = {};
+    const newTodolistItems = todolistDataItems.map((todolistDataItemValue) => {
+      const { name } = todolistDataItemValue;
+      const createTimeValue = Date.now();
+      newTodolistItemsContent[createTimeValue] = name;
 
-      return createTodolistItem(value, index);
+      return createTodolistItem(todolistDataItemValue, createTimeValue);
     });
-    todolistItemsContent.current = newtodolistItemsContent;
+    todolistItemsContent.current = newTodolistItemsContent;
     // console.log('todolistItemsContent.current: ', todolistItemsContent.current);
     return newTodolistItems;
   };
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-  const handleInputKeyUp = (e) => {
-    // console.log('keyDown: ', 'e.key: ', e.key, 'e.keyCode: ', e.keyCode);
-    if (e.key === 'Enter') {
-      if (inputDisplayContent === '') {
-        return;
-      }
-
-      // console.log('trigger keydown 'enter' event');
-      const inputValue = e.target.value;
-      const newTodolistContent = [...todolistItemsContent.current];
-      todolistItemsContent.current = newTodolistContent.concat([inputValue]);
-      e.target.value = '';
-      setInputDisplayContent('');
-
-      // 更新資料庫
-      const newTodolistDataItemsPart = maptodolistItemsContent(todolistItemsContent.current);
-      firestore
-        .collection('todolists')
-        .doc(listId)
-        .update({
-          items: newTodolistDataItemsPart,
-          updateTime: firebase.firestore.Timestamp.now(),
-        })
-        .then(() => {
-          console.log('successfully update todolist ', listId);
-          // updateTodolistData(currentListId, currentListIdx);
-          getCurrentTodolistData(currentUid);
-        });
+  const handleTodolistInputKeyUp = (e) => {
+    if (e.key !== 'Enter') {
+      return;
     }
-  };
-  const handleInputElInput = (e) => {
-    let { enterEvent } = model.flag;
-    // console.log('trigger input event', 'enterEvent: ', enterEvent);
+    if (inputDisplayContent === '') {
+      return;
+    }
 
-    if (enterEvent === false) {
+    // console.log('trigger keydown 'enter' event');
+    const inputValue = e.target.value;
+    setInputDisplayContent('');
+    const createTimeValue = Date.now();
+    const newTodolistItemsContent = { ...todolistItemsContent.current };
+    newTodolistItemsContent[createTimeValue] = inputValue;
+
+    // 更新資料庫
+    const newTodolistDataItems = convertTodolistItemsContent(newTodolistItemsContent);
+    firestore
+      .collection('todolists')
+      .doc(pathListId)
+      .update({
+        items: newTodolistDataItems,
+        updateTime: firebase.firestore.Timestamp.now(),
+      })
+      .then(() => {
+        console.log(
+          '<Todolist />: handleTodolistInputKeyUp: successfully update DB todolists doc ',
+          pathListId,
+        );
+
+        readDBTodolistsData(currentUid);
+      });
+  };
+  const handleTodolistInputInput = (e) => {
+    if (isKeyUpTriggered.current === false) {
       const inputValue = e.target.value;
       setInputDisplayContent(inputValue);
     } else {
-      enterEvent = false;
-      // console.log('enterEvent: ', enterEvent);
+      isKeyUpTriggered.current = false;
     }
-  };
-  const handleSelfClick = () => {
-    handleTodolistClick();
   };
 
   useEffect(() => {
-    console.log('Todolist: useEffect depends on currentListData.');
-  }, [currentListData]);
+    console.log('<Todolist />: useEffect depends on currentTodolistData');
+    console.log('currentTodolistData: ', currentTodolistData);
+    todolistItemsContent.current = {};
+  }, [currentTodolistData]);
 
   useEffect(() => {
     return () => {
-      console.log('Todolist: unmount');
+      // console.log('<Todolist />: unmount');
     };
   }, []);
 
   return (
-    <StyledTodolist
-      onClick={() => {
-        handleSelfClick();
-      }}
-    >
+    <StyledTodolist onClick={handleTodolistClick}>
       <form onSubmit={handleSubmit}>
         {getTodolistItems()}
         <TodolistInput
           inputDisplayContent={inputDisplayContent}
           // ifClrTransparent={ifClrTransparent}
-          onInputElInput={handleInputElInput}
-          onInputKeyUp={handleInputKeyUp}
+          handleTodolistInputInput={handleTodolistInputInput}
+          handleTodolistInputKeyUp={handleTodolistInputKeyUp}
         />
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor="input" />
