@@ -1,18 +1,19 @@
-// script
 import { React, useEffect } from 'react';
 // import { Link } from 'react-router-dom';
 // import { auth } from '../../../utils/firebase/firebase-services.js';
 import TodolistTableItem from './TodolistTableItem';
 
-// styling
 import StyledTodolistTable from '../../../styles/TodolistPage/TodolistTable/StyledTodolistTable';
 
 const TodolistTable = ({
+  buttonState,
   todolistData,
-  currentTodolistInfo,
+  currentTodolistIdx,
   currentUid,
   handleTableItemClick,
   handleIcon2SearchClick,
+  initTableItemsButtonState,
+  handleTableItemSelectButton,
   // pageAmount,
   // deleteDBTodolistDate,
 }) => {
@@ -25,25 +26,32 @@ const TodolistTable = ({
   //   'currentUid: ',
   //   currentUid,
   // );
-
-  useEffect(() => {
-    // console.log('todolistData: ', todolistData);
-    // console.log('TodolistTable: useEffect depends on todolistData.');
-  }, [todolistData]);
-
-  const getTodolistTableItem = (todolistDataValue, currentListIdx) => {
-    return todolistDataValue.map((value, index) => {
+  const tableButtonState = !buttonState ? null : buttonState.todolistTable;
+  const tableItemsButtonState = !tableButtonState ? null : tableButtonState.todolistTableItems;
+  const tableItemButtonStateObj = {};
+  const getTodolistTableItem = (todolistDataValue, currentTodolistIdxValue) => {
+    const newTodolistTableItem = todolistDataValue.map((value, index) => {
+      const listId = value.id;
       const updateTime = value.data().updateTime.toDate().valueOf();
+      if (index === currentTodolistIdxValue) {
+        tableItemButtonStateObj[listId] = 2;
+      } else {
+        tableItemButtonStateObj[listId] = 1;
+      }
+      const tableItemButtonState = !tableItemsButtonState ? 0 : tableItemsButtonState[listId];
       return (
         <TodolistTableItem
           key={`${updateTime}`}
           listItemData={value}
           handleTableItemClick={handleTableItemClick}
           handleIcon2SearchClick={handleIcon2SearchClick}
-          isCurrentList={currentListIdx !== index ? false : currentTodolistInfo.itemButtonState}
+          tableItemButtonState={tableItemButtonState}
+          handleTableItemSelectButton={handleTableItemSelectButton}
+          listId={listId}
         />
       );
     });
+    return newTodolistTableItem;
   };
   const getTodolistTableContent = () => {
     if (!currentUid) {
@@ -52,8 +60,16 @@ const TodolistTable = ({
     if (!todolistData) {
       return <p>無購物清單資料</p>;
     }
-    return getTodolistTableItem(todolistData, currentTodolistInfo.idx);
+    return getTodolistTableItem(todolistData, currentTodolistIdx);
   };
+
+  useEffect(() => {
+    // console.log('todolistData: ', todolistData);
+    // console.log('TodolistTable: useEffect depends on todolistData.');
+  }, [todolistData]);
+  useEffect(() => {
+    initTableItemsButtonState(tableItemButtonStateObj);
+  }, []);
 
   return (
     <StyledTodolistTable>

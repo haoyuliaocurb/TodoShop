@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 
 // script
-import { React } from 'react';
+import { React, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import IconTodolistPages from '../../../styles/TodolistPage/IconTodolistPage';
 
@@ -13,11 +13,17 @@ import {
 } from '../../../styles/TodolistPage/TodolistTable/StyledTodolistTableItemComps';
 
 const TodolistTableItem = ({
+  // eslint-disable-next-line no-unused-vars
+  tableItemButtonState,
   handleIcon2SearchClick,
   listItemData,
   handleTableItemClick,
   isCurrentList,
+  handleTableItemSelectButton,
+  listId,
 }) => {
+  // console.log('tableItemButtonState: ', tableItemButtonState);
+  const isTableItemSelected = useRef(0);
   const uptimeTime = listItemData.data().updateTime.toDate();
   const productItems = listItemData.data().items;
   const getTodolistTableItemSpan = (itemArray) => {
@@ -44,12 +50,38 @@ const TodolistTableItem = ({
     handleTableItemClick(value);
   };
 
+  useEffect(() => {
+    if (tableItemButtonState !== 4 && tableItemButtonState !== 5) {
+      isTableItemSelected.current = 0;
+    }
+  }, [tableItemButtonState]);
+
   return (
     <StyledTodolistTableItem
       className={isCurrentList ? 'currentList' : ''}
       isCurrentList={isCurrentList}
+      tableItemButtonState={tableItemButtonState}
     >
       <div
+        className={`${
+          tableItemButtonState !== 4 && tableItemButtonState !== 5
+            ? 'selectTableItemButton dp-none'
+            : 'selectTableItemButton'
+        }`}
+        onClick={() => {
+          handleTableItemSelectButton(isTableItemSelected.current, listId);
+          if (isTableItemSelected.current === 0) {
+            isTableItemSelected.current = 1;
+          } else {
+            isTableItemSelected.current = 0;
+          }
+        }}
+      >
+        <div className="outline" />
+        <div className="fill" />
+      </div>
+      <div
+        className="content"
         onClick={() => {
           handleClick(listItemData);
         }}

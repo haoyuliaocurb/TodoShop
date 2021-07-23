@@ -63,40 +63,59 @@ export const StyledTodolistTableItem = styled.div`
   align-items: center;
   padding: 10px 10px 10px 10px;
   border-bottom: solid ${styledVariables.color.gray300} 1px;
-  background-color: ${({ clickState }) => {
-    switch (clickState) {
+  background-color: ${({ tableItemButtonState }) => {
+    console.log('<StyledTodolistTableItem />: tableItemButtonState: ', tableItemButtonState);
+    switch (tableItemButtonState) {
       case 0:
         // disabled
         return 'transparent';
       case 1:
-        // selected
-        return 'red';
-      case 2:
-        // unselected
+        // active
         return 'transparent';
+      case 2:
+        // currentList unfocus
+        return styledVariables.color.gray200;
+      case 3:
+        // currentList focus
+        return styledVariables.color.pink100;
+      case 4:
+        // management unfocus
+        return 'transparent';
+      case 5:
+        // management focus
+        return styledVariables.color.pink100;
       default:
         return 'transparent';
     }
   }};
 
-  &.currentList {
-    background-color: ${(props) => {
-      // console.log('props.isCurrentList: ', props.isCurrentList);
-      switch (props.isCurrentList) {
-        case 1:
-          return styledVariables.color.pink100;
-        case 2:
-          return styledVariables.color.gray200;
-        default:
-          return styledVariables.color.gray200;
-      }
-    }};
-  }
+  /* &.currentList {
+  background-color: ${(props) => {
+    // console.log('props.isCurrentList: ', props.isCurrentList);
+    switch (props.isCurrentList) {
+      case 1:
+        return styledVariables.color.pink100;
+      case 2:
+        return styledVariables.color.gray200;
+      default:
+        return styledVariables.color.gray200;
+    }
+  }};
+  } */
 
-  > div {
+  > div.content {
     display: inline-block;
     // border: black solid 1px;
-    width: calc(100% - ${styledVariables.todolistTable.itemButtonWidth});
+    width: ${({ tableItemButtonState }) => {
+      switch (tableItemButtonState) {
+        case 4:
+          return `calc(100% - ${styledVariables.todolistTable.buttonWidthSum})`;
+        case 5:
+          return `calc(100% - ${styledVariables.todolistTable.buttonWidthSum})`;
+        default:
+          return `calc(100% - ${styledVariables.todolistTable.itemButtonWidth})`;
+      }
+    }};
     height: 100%;
     position: relative;
 
@@ -118,6 +137,40 @@ export const StyledTodolistTableItem = styled.div`
       > span:not(:last-of-type)::after {
         content: '、';
       }
+    }
+  }
+
+  > div.selectTableItemButton {
+    height: 100%;
+    width: ${styledVariables.todolistTable.selectTableItemButtonWidth};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 15px;
+
+    > div {
+      position: absolute;
+    }
+
+    > div.outline {
+      width: 20px;
+      height: 20px;
+      border: solid ${styledVariables.color.gray300} 1px;
+      border-radius: 100px;
+    }
+
+    > div.fill {
+      width: 10px;
+      height: 10px;
+      background-color: ${({ tableItemButtonState }) => {
+        switch (tableItemButtonState) {
+          case 5:
+            return styledVariables.color.gray300;
+          default:
+            return 'transparent';
+        }
+      }};
+      border-radius: 100px;
     }
   }
 `;

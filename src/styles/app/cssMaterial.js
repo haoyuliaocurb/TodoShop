@@ -1,6 +1,27 @@
 // import styled from '@emotion/styled/macro';
 import { css } from '@emotion/react';
 
+export function removePx(originValue) {
+  const pxPattern = /px$/i;
+  if (typeof originValue === 'number') {
+    return originValue;
+  }
+
+  if (!pxPattern.test(originValue)) {
+    return originValue;
+  }
+
+  const charArray = originValue.split('');
+  // 兩次 pop() 把 px 去掉
+  charArray.pop();
+  charArray.pop();
+  // console.log(charArray);
+  const revisedValue = Number(charArray.join(''));
+  // console.log('revisedValue: ', revisedValue);
+
+  return revisedValue;
+}
+
 export const styledVariables = {
   color: {
     gray100: '#f2f2f2',
@@ -26,6 +47,7 @@ export const styledVariables = {
     buttonWidth: '40px',
   },
   todolistTable: {
+    selectTableItemButtonWidth: '35px',
     itemButtonWidth: '85px',
     selfPaddingTop: '10px',
     iconWidth: '20px',
@@ -55,6 +77,10 @@ export const styledVariables = {
     },
   },
 };
+styledVariables.todolistTable.buttonWidthSum = `${
+  removePx(styledVariables.todolistTable.selectTableItemButtonWidth) +
+  removePx(styledVariables.todolistTable.itemButtonWidth)
+}px`;
 
 // eslint-disable-next-line consistent-return
 const getIconColor = (disabled, active) => {
@@ -98,24 +124,3 @@ export const getRGBFromColorCode = (colorCode) => {
   const blue = `${colorCodeArray[4]}${colorCodeArray[5]}`;
   return { red, green, blue };
 };
-
-export function removePx(originValue) {
-  const pxPattern = /px$/i;
-  if (typeof originValue === 'number') {
-    return originValue;
-  }
-
-  if (!pxPattern.test(originValue)) {
-    return originValue;
-  }
-
-  const charArray = originValue.split('');
-  // 兩次 pop() 把 px 去掉
-  charArray.pop();
-  charArray.pop();
-  // console.log(charArray);
-  const revisedValue = Number(charArray.join(''));
-  // console.log('revisedValue: ', revisedValue);
-
-  return revisedValue;
-}

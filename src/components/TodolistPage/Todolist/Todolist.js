@@ -37,16 +37,16 @@ const Todolist = ({
 
   console.log('<Todolist />: render');
   // console.log('decodedCurrentTodolistData: ', decodedCurrentTodolistData);
-  console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
+  // console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
 
   const handleTodolistItemClick = (createTimeValue) => {
-    console.log('createTimeValue: ', createTimeValue);
+    // console.log('createTimeValue: ', createTimeValue);
     const preTodolistItemsContent = { ...todolistItemsContentObj.current };
     delete preTodolistItemsContent[createTimeValue];
 
     const newTodolistItemsContent = preTodolistItemsContent;
     todolistItemsContentObj.current = { ...newTodolistItemsContent };
-    console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
+    // console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
 
     // 更新資料庫
     const newTodolistDataItems = convertTodolistItemsContent(newTodolistItemsContent);
@@ -97,14 +97,14 @@ const Todolist = ({
     });
     // console.log('newTodolistItemsContent: ', newTodolistItemsContent);
     todolistItemsContentObj.current = newTodolistItemsContent;
-    console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
+    // console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
     return newTodolistItems;
   };
   const handleSubmit = (e) => {
     e.preventDefault();
   };
   const handleTodolistInputKeyUp = (e) => {
-    console.log('trigger handleTodolistInputKeyUp');
+    // console.log('trigger handleTodolistInputKeyUp');
     // console.log('isKeyUpTriggered.current: ', isKeyUpTriggered.current);
     // console.log('e: ', e);
     if (e.key !== 'Enter') {
@@ -115,7 +115,7 @@ const Todolist = ({
     }
     isKeyUpTriggered.current = 1;
 
-    console.log('inputDisplayContent: ', inputDisplayContent);
+    // console.log('inputDisplayContent: ', inputDisplayContent);
     const inputValue = e.target.value;
     // preUpdatedTodolistItemContent.current = inputValue;
     setInputDisplayContent('');
@@ -133,10 +133,10 @@ const Todolist = ({
         updateTime: firebase.firestore.Timestamp.now(),
       })
       .then(() => {
-        console.log(
-          '<Todolist />: handleTodolistInputKeyUp: successfully update DB todolists doc ',
-          pathListId,
-        );
+        // console.log(
+        //   '<Todolist />: handleTodolistInputKeyUp: successfully update DB todolists doc ',
+        //   pathListId,
+        // );
 
         readDBTodolistsData(currentUid);
         isKeyUpTriggered.current = 0;
@@ -172,7 +172,7 @@ const Todolist = ({
 
   useEffect(() => {
     // console.log('inputDisplayContent: ', inputDisplayContent);
-    console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
+    // console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
   });
 
   useEffect(() => {
@@ -188,6 +188,13 @@ const Todolist = ({
     };
   }, []);
 
+  const getGrid = () => {
+    const getTimeKeyForGrid = getTimeKeyGenerator();
+    const grid = Array.from({ length: 12 }).map(() => {
+      return <div key={getTimeKeyForGrid()} />;
+    });
+    return grid;
+  };
   return (
     <StyledTodolist onClick={handleTodolistClick}>
       <form onSubmit={handleSubmit}>
@@ -200,11 +207,7 @@ const Todolist = ({
         />
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor="input" />
-        <div className="grid">
-          {Array.from({ length: 12 }).map(() => (
-            <div />
-          ))}
-        </div>
+        <div className="grid">{getGrid()}</div>
       </form>
     </StyledTodolist>
   );

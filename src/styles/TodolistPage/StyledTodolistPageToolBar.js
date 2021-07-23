@@ -12,7 +12,7 @@ const StyledTodolistPageToolBar = styled.div`
   z-index: 10;
   padding: 0 ${styledVariables.shared.contentPadding};
 
-  > .buttonAddTodolist {
+  > .addTodolistButton {
     height: 30px;
     padding: 0 10px;
     margin-right: 10px;

@@ -18,11 +18,11 @@ html {
 }
 
 .vb-hidden {
-  visibility: hidden;
+  visibility: hidden !important;
 }
 
 .dp-none {
-  display: none;
+  display: none !important;
 }
 
 /* normal class */
