@@ -7,9 +7,10 @@ import TodolistInput from './TodolistInput';
 
 import StyledTodolist from '../../../styles/TodolistPage/Todolist/StyledTodolist';
 import { firestore, firebase } from '../../../utils/firebase/firebase-services';
+import { getTimeKeyGenerator } from '../../../utils/selfLibrary';
 
 const convertTodolistItemsContent = (todolistItemsContentValue) => {
-  const todolistItemsContentArray = todolistItemsContentValue.keys().map((itemKey) => {
+  const todolistItemsContentArray = Object.keys(todolistItemsContentValue).map((itemKey) => {
     const name = todolistItemsContentValue[itemKey];
     return { name };
   });
@@ -21,46 +22,44 @@ const Todolist = ({
   handleTodolistClick,
   readDBTodolistsData,
   currentUid,
-  // updateTodolistData,
+  updateDBTodolistData,
+  // pageAmount,
   // currentListIdx,
 }) => {
-  // console.log('<Todolist />: render');
-
-  const todolistItemsContent = useRef({});
-  const isKeyUpTriggered = useRef(false);
+  const todolistItemsContentObj = useRef({});
+  const isKeyUpTriggered = useRef(0);
+  // const preUpdatedTodolistItemContent = useRef(null);
   const [inputDisplayContent, setInputDisplayContent] = useState('');
   const currentTodolistId = !currentTodolistData ? '' : currentTodolistData.id;
   const decodedCurrentTodolistData = !currentTodolistData ? null : currentTodolistData.data();
   const pathListId = useParams().listId;
+  const getTimeKey = getTimeKeyGenerator();
+
+  console.log('<Todolist />: render');
+  // console.log('decodedCurrentTodolistData: ', decodedCurrentTodolistData);
+  console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
 
   const handleTodolistItemClick = (createTimeValue) => {
-    const preTodolistItemsContent = { ...todolistItemsContent.current };
+    console.log('createTimeValue: ', createTimeValue);
+    const preTodolistItemsContent = { ...todolistItemsContentObj.current };
     delete preTodolistItemsContent[createTimeValue];
 
     const newTodolistItemsContent = preTodolistItemsContent;
-    todolistItemsContent.current = { ...newTodolistItemsContent };
+    todolistItemsContentObj.current = { ...newTodolistItemsContent };
+    console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
 
     // 更新資料庫
     const newTodolistDataItems = convertTodolistItemsContent(newTodolistItemsContent);
-    firestore
-      .collection('todolists')
-      .doc(pathListId)
-      .update({
-        items: newTodolistDataItems,
-        updateTime: firebase.firestore.Timestamp.now(),
-      })
-      .then(() => {
-        console.log(
-          '<Todolist />: handleTodolistItemClick: successfully update DB todolists doc ',
-          pathListId,
-        );
-
-        readDBTodolistsData(currentUid);
-      });
+    const newTodolistDataPart = {
+      items: newTodolistDataItems,
+      updateTime: firebase.firestore.Timestamp.now(),
+    };
+    updateDBTodolistData(pathListId, newTodolistDataPart, currentUid);
   };
   const getTodolistItems = (decodedCurrentTodolistDataValue) => {
     // console.log('<Todolist />: trigger getTodolistItems');
     if (!decodedCurrentTodolistDataValue) {
+      // console.log('conditional: !decodedCurrentTodolistDataValue');
       return <div />;
     }
     if (pathListId !== currentTodolistId) {
@@ -84,38 +83,44 @@ const Todolist = ({
     };
     const todolistDataItems = decodedCurrentTodolistData.items;
     if (!todolistDataItems) {
-      todolistItemsContent.current = {};
+      todolistItemsContentObj.current = {};
       return <div />;
     }
 
     const newTodolistItemsContent = {};
     const newTodolistItems = todolistDataItems.map((todolistDataItemValue) => {
       const { name } = todolistDataItemValue;
-      const createTimeValue = Date.now();
+      const createTimeValue = getTimeKey();
       newTodolistItemsContent[createTimeValue] = name;
 
       return createTodolistItem(todolistDataItemValue, createTimeValue);
     });
-    todolistItemsContent.current = newTodolistItemsContent;
-    // console.log('todolistItemsContent.current: ', todolistItemsContent.current);
+    // console.log('newTodolistItemsContent: ', newTodolistItemsContent);
+    todolistItemsContentObj.current = newTodolistItemsContent;
+    console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
     return newTodolistItems;
   };
   const handleSubmit = (e) => {
     e.preventDefault();
   };
   const handleTodolistInputKeyUp = (e) => {
+    console.log('trigger handleTodolistInputKeyUp');
+    // console.log('isKeyUpTriggered.current: ', isKeyUpTriggered.current);
+    // console.log('e: ', e);
     if (e.key !== 'Enter') {
       return;
     }
     if (inputDisplayContent === '') {
       return;
     }
+    isKeyUpTriggered.current = 1;
 
-    // console.log('trigger keydown 'enter' event');
+    console.log('inputDisplayContent: ', inputDisplayContent);
     const inputValue = e.target.value;
+    // preUpdatedTodolistItemContent.current = inputValue;
     setInputDisplayContent('');
-    const createTimeValue = Date.now();
-    const newTodolistItemsContent = { ...todolistItemsContent.current };
+    const createTimeValue = getTimeKey();
+    const newTodolistItemsContent = { ...todolistItemsContentObj.current };
     newTodolistItemsContent[createTimeValue] = inputValue;
 
     // 更新資料庫
@@ -134,21 +139,47 @@ const Todolist = ({
         );
 
         readDBTodolistsData(currentUid);
+        isKeyUpTriggered.current = 0;
       });
   };
   const handleTodolistInputInput = (e) => {
-    if (isKeyUpTriggered.current === false) {
-      const inputValue = e.target.value;
-      setInputDisplayContent(inputValue);
-    } else {
-      isKeyUpTriggered.current = false;
+    if (isKeyUpTriggered.current === 1) {
+      isKeyUpTriggered.current = 0;
     }
+    const inputValue = e.target.value;
+
+    // if (preUpdatedTodolistItemContent.current === null) {
+    //   setInputDisplayContent(inputValue);
+    //   return;
+    // }
+
+    // const encodedInputValue = encodeURIComponent(inputValue);
+    // const encodedPreUpdatedTodolistItemContent = encodeURIComponent(
+    //   preUpdatedTodolistItemContent.current,
+    // );
+    // const testInputValuePattern = new RegExp(`^${encodedPreUpdatedTodolistItemContent}`);
+    // console.log('encodedPreUpdatedTodolistItemContent: ', encodedPreUpdatedTodolistItemContent);
+    // if (testInputValuePattern.test(encodedInputValue)) {
+    //   console.log('true');
+    //   const inputValueCharArray = inputValue.split('');
+    //   const sliceStartIdx = preUpdatedTodolistItemContent.current.split('').length;
+    //   const correctedInputValue = inputValueCharArray.slice(sliceStartIdx).join('');
+    //   setInputDisplayContent(correctedInputValue);
+    //   return;
+    // }
+    setInputDisplayContent(inputValue);
   };
 
   useEffect(() => {
-    console.log('<Todolist />: useEffect depends on currentTodolistData');
-    console.log('currentTodolistData: ', currentTodolistData);
-    todolistItemsContent.current = {};
+    // console.log('inputDisplayContent: ', inputDisplayContent);
+    console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
+  });
+
+  useEffect(() => {
+    // console.log('<Todolist />: useEffect depends on currentTodolistData');
+    // console.log('currentTodolistData: ', currentTodolistData);
+    todolistItemsContentObj.current = {};
+    // setInputDisplayContent('');
   }, [currentTodolistData]);
 
   useEffect(() => {
@@ -160,7 +191,7 @@ const Todolist = ({
   return (
     <StyledTodolist onClick={handleTodolistClick}>
       <form onSubmit={handleSubmit}>
-        {getTodolistItems()}
+        {getTodolistItems(decodedCurrentTodolistData)}
         <TodolistInput
           inputDisplayContent={inputDisplayContent}
           // ifClrTransparent={ifClrTransparent}

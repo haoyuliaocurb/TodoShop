@@ -15,7 +15,7 @@ import {
 const TodolistTableItem = ({
   handleIcon2SearchClick,
   listItemData,
-  onTableItemClick,
+  handleTableItemClick,
   isCurrentList,
 }) => {
   const uptimeTime = listItemData.data().updateTime.toDate();
@@ -41,7 +41,7 @@ const TodolistTableItem = ({
   const handleClick = (value) => {
     // console.log('trigger handleClick of TodolistTableItem.');
     // console.log('props.key: ', props.key);
-    onTableItemClick(value);
+    handleTableItemClick(value);
   };
 
   return (

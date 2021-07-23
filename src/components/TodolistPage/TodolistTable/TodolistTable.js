@@ -8,46 +8,51 @@ import TodolistTableItem from './TodolistTableItem';
 import StyledTodolistTable from '../../../styles/TodolistPage/TodolistTable/StyledTodolistTable';
 
 const TodolistTable = ({
-  handleIcon2SearchClick,
-  isSignIn,
   todolistData,
-  currentListInfo,
-  onTableItemClick,
+  currentTodolistInfo,
+  currentUid,
+  handleTableItemClick,
+  handleIcon2SearchClick,
+  // pageAmount,
+  // deleteDBTodolistDate,
 }) => {
-  // console.log('render TodolistTable.');
+  // console.log('<TodolistTable /> :render');
+  // console.log(
+  //   'todolistData: ',
+  //   todolistData,
+  //   'currentTodolistInfo: ',
+  //   currentTodolistInfo,
+  //   'currentUid: ',
+  //   currentUid,
+  // );
 
   useEffect(() => {
     // console.log('todolistData: ', todolistData);
     // console.log('TodolistTable: useEffect depends on todolistData.');
   }, [todolistData]);
 
-  const getTodolistTableItem = (dataArray, currentListIdx) => {
-    return dataArray.map((value, index) => {
-      // console.log('value: ', value);
-      // console.log('value.data(): ', value.data());
+  const getTodolistTableItem = (todolistDataValue, currentListIdx) => {
+    return todolistDataValue.map((value, index) => {
       const updateTime = value.data().updateTime.toDate().valueOf();
-      // console.log('updateTime: ', updateTime);
       return (
         <TodolistTableItem
-          handleIcon2SearchClick={handleIcon2SearchClick}
           key={`${updateTime}`}
           listItemData={value}
-          onTableItemClick={onTableItemClick}
-          // eslint-disable-next-line no-unneeded-ternary
-          isCurrentList={currentListIdx === index ? currentListInfo.itemButtonState : false}
+          handleTableItemClick={handleTableItemClick}
+          handleIcon2SearchClick={handleIcon2SearchClick}
+          isCurrentList={currentListIdx !== index ? false : currentTodolistInfo.itemButtonState}
         />
       );
     });
   };
-
   const getTodolistTableContent = () => {
-    if (!isSignIn) {
+    if (!currentUid) {
       return <p>請登入以瀏覽頁面</p>;
     }
     if (!todolistData) {
       return <p>無購物清單資料</p>;
     }
-    return getTodolistTableItem(todolistData, currentListInfo.idx);
+    return getTodolistTableItem(todolistData, currentTodolistInfo.idx);
   };
 
   return (
