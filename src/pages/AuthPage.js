@@ -1,10 +1,11 @@
-// script
 import { React, useState } from 'react';
 import { auth } from '../utils/firebase/firebase-services';
 // import { auth } from '../utils/firebase/firebase-services';
 
-// styling
 import StyledAuthPage from '../styles/AuthPage/StyledAuthPage';
+import TabBar from '../components/app/TabBar';
+import GeneralTabBar from '../components/app/GeneralTabBar';
+import { styledVariables } from '../styles/app/cssMaterial';
 
 // test data
 const USER_INFO_A = {
@@ -17,7 +18,32 @@ const USER_INFO_A = {
 // };
 const USER_INFO_TEST = USER_INFO_A;
 
+const INIT_BARSTATE = {
+  navBar: {
+    content: null,
+    visibility: 2,
+  },
+  tabBar: {
+    content: (
+      <GeneralTabBar
+      // handleTabBarSearchTabClick={handleTabBarSearchTabClick}
+      // handleTabBarHomeTabClick={handleTabBarHomeTabClick}
+      // handleTabBarCartTabClick={handleTabBarCartTabClick}
+      // handleTabBarAuthTabClick={handleTabBarAuthTabClick}
+      // handleTabBarListTabClick={handleTabBarListTabClick}
+      />
+    ),
+    visibility: 2,
+  },
+  toolBar: {
+    content: null,
+    visibility: 2,
+  },
+};
+
 const AuthPage = ({ isSignIn }) => {
+  // eslint-disable-next-line no-unused-vars
+  const [barState, setBarState] = useState(INIT_BARSTATE);
   /*
   useEffect(async () => {
       let signInInfo = null;
@@ -98,6 +124,7 @@ const AuthPage = ({ isSignIn }) => {
           Sign Out
         </button>
       </form>
+      <TabBar backgroundColor={styledVariables.color.gray100} tabBarState={barState.tabBar} />
     </StyledAuthPage>
   );
 };
