@@ -26,6 +26,7 @@ export const styledVariables = {
   color: {
     gray100: '#f2f2f2',
     gray200: '#dddddd',
+    gray250: '#999999',
     gray300: '#575757',
     gray700: '#000000',
     pink100: '#ffe8ee',

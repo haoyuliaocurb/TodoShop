@@ -14,11 +14,20 @@ const StyledTodolistPageToolBar = styled.div`
 
   > .addTodolistButton {
     height: 30px;
-    padding: 0 10px;
+    padding: 0 15px;
     margin-right: 10px;
     background-color: ${styledVariables.color.pink100};
     border-radius: 100px;
     filter: drop-shadow(4px 2px 4px ${styledVariables.color.gray200});
+  }
+
+  > .deleteTodolistButton {
+    height: 30px;
+    padding: 0 15px;
+    margin-right: 10px;
+    background-color: ${styledVariables.color.gray200};
+    border-radius: 100px;
+    filter: drop-shadow(4px 2px 4px ${styledVariables.color.gray250});
   }
 `;
 

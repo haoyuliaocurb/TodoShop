@@ -1,9 +1,14 @@
 import { React } from 'react';
 import StyledTodolistPageToolBar from '../../styles/TodolistPage/StyledTodolistPageToolBar';
 
-const TodolistPageToolBar = ({ buttonState, handleToolBarCreateTodolistButton }) => {
+const TodolistPageToolBar = ({
+  buttonState,
+  handleToolBarCreateTodolistButton,
+  handleToolBarDeleteTodolistButton,
+}) => {
   const toolBarButtonState = !buttonState ? null : buttonState.toolBar;
-  console.log('toolBarButtonState: ', toolBarButtonState);
+  // console.log('toolBarButtonState: ', toolBarButtonState);
+  console.log('<TodolistPageToolBar />: render');
   const addTodolistButtonState = !toolBarButtonState ? null : toolBarButtonState.addTodolistButton;
   const deleteTodolistButtonState = !toolBarButtonState
     ? null
@@ -22,6 +27,9 @@ const TodolistPageToolBar = ({ buttonState, handleToolBarCreateTodolistButton })
         新增購物清單 +
       </button>
       <button
+        onClick={() => {
+          handleToolBarDeleteTodolistButton(buttonState);
+        }}
         type="button"
         className={
           !deleteTodolistButtonState ? 'deleteTodolistButton dp-none' : 'deleteTodolistButton'

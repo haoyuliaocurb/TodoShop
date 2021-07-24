@@ -18,8 +18,8 @@ import StyledTodolistPage from '../styles/TodolistPage/StyledTodolistPage';
 // eslint-disable-next-line no-unused-vars
 const INIT_BUTTONSTATE = {
   toolBar: {
-    addTodolistButton: 1,
-    deleteTodolistButton: 0,
+    addTodolistButton: 0,
+    deleteTodolistButton: 1,
   },
   todolist: {},
   todolistTable: {
@@ -195,21 +195,26 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
       return;
     }
     setButtonState((preButtonState) => {
+      const newTodolistTableItems = {};
+      const currentListId = Object.keys(todolistDataIdxObj.current).find(
+        (key) => todolistDataIdxObj.current[key] === currentTodolistIdx,
+      );
+      // console.log('currentListId: ', currentListId);
+      Object.keys(preButtonState.todolistTable.todolistTableItems).forEach((key) => {
+        if (key === currentListId) {
+          newTodolistTableItems[key] = 2;
+        } else {
+          newTodolistTableItems[key] = 1;
+        }
+      });
+
       const newButtonState = {
         ...preButtonState,
         todolistTable: {
           ...preButtonState.todolistTable,
-          todolistTableItems: {
-            ...preButtonState.todolistTable.todolistTableItems,
-          },
+          todolistTableItems: newTodolistTableItems,
         },
       };
-      const currentListId = Object.keys(todolistDataIdxObj.current).find(
-        (key) => todolistDataIdxObj.current[key] === currentTodolistIdx,
-      );
-      console.log('currentListId: ', currentListId);
-      newButtonState.todolistTable.todolistTableItems[currentListId] = 2;
-
       return newButtonState;
     });
   };
@@ -329,6 +334,20 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
       return newButtonState;
     });
   };
+  const handleToolBarDeleteTodolistButton = (buttonStateValue) => {
+    console.log('trigger handleToolBarDeleteTodolistButton');
+    console.log(
+      'buttonState.todolistTable.todolistTableItems: ',
+      buttonState.todolistTable.todolistTableItems,
+    );
+    const listId2Delete = Object.keys(buttonState.todolistTable.todolistTableItems).filter(
+      (key) => {
+        console.log('trial');
+        return buttonStateValue.todolistTable.todolistTableItems[key] === 5;
+      },
+    );
+    console.log('listId2Delete: ', listId2Delete);
+  };
   const handleNavBarChevronLeft = () => {
     if (pathArray[1] === 'id') {
       history.push('/todolist/table');
@@ -352,38 +371,45 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
   }, [currentTodolistIdx]);
 
   // (2) 處理 Barstate
-  const INIT_BARSTATE = {
-    navBar: {
-      content: (
-        <TodolistPageNavBar
-          handleNavBarChevronLeft={handleNavBarChevronLeft}
-          handleNavBarManageButton={handleNavBarManageButton}
-        />
-      ),
-      visibility: 2,
-    },
-    tabBar: {
-      content: (
-        <GeneralTabBar
-        // handleTabBarSearchTabClick={handleTabBarSearchTabClick}
-        // handleTabBarHomeTabClick={handleTabBarHomeTabClick}
-        // handleTabBarCartTabClick={handleTabBarCartTabClick}
-        // handleTabBarAuthTabClick={handleTabBarAuthTabClick}
-        // handleTabBarListTabClick={handleTabBarListTabClick}
-        />
-      ),
-      visibility: 2,
-    },
-    toolBar: {
-      content: (
-        <TodolistPageToolBar
-          buttonState={buttonState}
-          handleToolBarCreateTodolistButton={handleToolBarCreateTodolistButton}
-        />
-      ),
-      visibility: 2,
-    },
+  const getInitBarState = (buttonStateValue) => {
+    const INIT_BARSTATE = {
+      navBar: {
+        content: (
+          <TodolistPageNavBar
+            handleNavBarChevronLeft={handleNavBarChevronLeft}
+            handleNavBarManageButton={handleNavBarManageButton}
+          />
+        ),
+        visibility: 2,
+      },
+      tabBar: {
+        content: (
+          <GeneralTabBar
+          // handleTabBarSearchTabClick={handleTabBarSearchTabClick}
+          // handleTabBarHomeTabClick={handleTabBarHomeTabClick}
+          // handleTabBarCartTabClick={handleTabBarCartTabClick}
+          // handleTabBarAuthTabClick={handleTabBarAuthTabClick}
+          // handleTabBarListTabClick={handleTabBarListTabClick}
+          />
+        ),
+        visibility: 2,
+      },
+      toolBar: {
+        content: (
+          <TodolistPageToolBar
+            buttonState={buttonStateValue}
+            handleToolBarCreateTodolistButton={handleToolBarCreateTodolistButton}
+            handleToolBarDeleteTodolistButton={handleToolBarDeleteTodolistButton}
+          />
+        ),
+        visibility: 2,
+      },
+    };
+    return INIT_BARSTATE;
   };
+  const INIT_BARSTATE = getInitBarState(buttonState);
+  console.log('INIT_BARSTATE: ', INIT_BARSTATE);
+
   const [barState, setBarState] = useState(INIT_BARSTATE);
 
   // eslint-disable-next-line no-unused-vars
@@ -417,13 +443,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
         setBarState({
           ...INIT_BARSTATE,
           toolBar: {
-            content: (
-              <TodolistPageToolBar
-                buttonState={buttonState}
-                createDBTodolistData={createDBTodolistData}
-                currentUid={currentUid}
-              />
-            ),
+            content: <TodolistPageToolBar />,
             visibility: 0,
           },
         });
