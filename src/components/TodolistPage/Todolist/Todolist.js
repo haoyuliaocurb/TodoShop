@@ -23,6 +23,7 @@ const Todolist = ({
   readDBTodolistsData,
   currentUid,
   updateDBTodolistData,
+  currentTodolistIdx,
   // pageAmount,
   // currentListIdx,
 }) => {
@@ -180,7 +181,7 @@ const Todolist = ({
     // console.log('currentTodolistData: ', currentTodolistData);
     todolistItemsContentObj.current = {};
     // setInputDisplayContent('');
-  }, [currentTodolistData]);
+  }, [currentTodolistIdx]);
 
   useEffect(() => {
     return () => {

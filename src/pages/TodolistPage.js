@@ -18,8 +18,8 @@ import StyledTodolistPage from '../styles/TodolistPage/StyledTodolistPage';
 // eslint-disable-next-line no-unused-vars
 const INIT_BUTTONSTATE = {
   toolBar: {
-    addTodolistButton: 0,
-    deleteTodolistButton: 1,
+    addTodolistButton: 1,
+    deleteTodolistButton: 0,
   },
   todolist: {},
   todolistTable: {
@@ -40,6 +40,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
   // eslint-disable-next-line no-unused-vars
   const [buttonState, setButtonState] = useState(INIT_BUTTONSTATE);
   const isUpdateButtonState = useRef(0);
+  const isUpdateToolBar = useRef(0);
   const todolistDataIdxObj = useRef({});
   // eslint-disable-next-line prefer-const
   let pathArray = useLocation().pathname.split('/');
@@ -104,7 +105,9 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
         //   '<Todolist />: updateDBTodolistData: successfully update DB todolists doc ',
         //   todolistsDocId,
         // );
+        // eslint-disable-next-line no-unused-vars
         const newTodolistData = await fetchDBTodolistData(currentUidValue, pageAmountValue);
+        console.log('newTodolistData: ', newTodolistData);
         setTodolistData(newTodolistData);
       });
   };
@@ -128,23 +131,24 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
         setTodolistData(newTodolistData);
       });
   };
-  const deleteDBTodolistDate = async (todolistsDocId, currentUidValue, pageAmountValue = 1) => {
+  const deleteDBTodolistDate = async (
+    todolistsDocIdArray,
+    currentUidValue,
+    pageAmountValue = 1,
+  ) => {
     if (!currentUidValue) {
       return;
     }
-    firestore
-      .collection('todolists')
-      .doc(todolistsDocId)
-      .delete()
-      .then(async () => {
-        // console.log(
-        //   '<Todolist />: deleteDBTodolistDate: successfully delete DB todolists doc ',
-        //   todolistsDocId,
-        // );
-        const newTodolistData = await fetchDBTodolistData(currentUidValue, pageAmountValue);
-        setTodolistData(newTodolistData);
-      });
+    Promise.all(
+      todolistsDocIdArray.map((todolistsDocId) =>
+        firestore.collection('todolists').doc(todolistsDocId).delete(),
+      ),
+    ).then(async () => {
+      const newTodolistData = await fetchDBTodolistData(currentUidValue, pageAmountValue);
+      setTodolistData(newTodolistData);
+    });
   };
+
   const handleTableItemClick = (value) => {
     // console.log('todolistData: ', todolistData);
     // console.log('todolistDataIdxObj.current[value.id]: ', todolistDataIdxObj.current[value.id]);
@@ -210,11 +214,16 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
 
       const newButtonState = {
         ...preButtonState,
+        toolBar: {
+          addTodolistButton: 1,
+          deleteTodolistButton: 0,
+        },
         todolistTable: {
           ...preButtonState.todolistTable,
           todolistTableItems: newTodolistTableItems,
         },
       };
+      isUpdateToolBar.current = 1;
       return newButtonState;
     });
   };
@@ -241,6 +250,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
             todolistTableItems: newTodolistTableItems,
           },
         };
+        isUpdateToolBar.current = 1;
         return newButtonState;
       });
     } else {
@@ -259,14 +269,15 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
           ...preButtonState,
           toolBar: {
             ...preButtonState.toolBar,
-            addTodolistButton: 0,
-            deleteTodolistButton: 1,
+            addTodolistButton: 1,
+            deleteTodolistButton: 0,
           },
           todolistTable: {
             ...preButtonState.todolistTable,
             todolistTableItems: newTodolistTableItems,
           },
         };
+        isUpdateToolBar.current = 1;
         return newButtonState;
       });
     }
@@ -288,6 +299,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
           },
         };
         newButtonState.todolistTable.todolistTableItems[listIdValue] = 5;
+        isUpdateToolBar.current = 1;
         return newButtonState;
       });
     }
@@ -303,6 +315,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
           },
         };
         newButtonState.todolistTable.todolistTableItems[listIdValue] = 4;
+        isUpdateToolBar.current = 1;
         return newButtonState;
       });
     }
@@ -336,17 +349,17 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
   };
   const handleToolBarDeleteTodolistButton = (buttonStateValue) => {
     console.log('trigger handleToolBarDeleteTodolistButton');
-    console.log(
-      'buttonState.todolistTable.todolistTableItems: ',
-      buttonState.todolistTable.todolistTableItems,
-    );
+    // console.log(
+    //   'buttonState.todolistTable.todolistTableItems: ',
+    //   buttonState.todolistTable.todolistTableItems,
+    // );
     const listId2Delete = Object.keys(buttonState.todolistTable.todolistTableItems).filter(
       (key) => {
-        console.log('trial');
         return buttonStateValue.todolistTable.todolistTableItems[key] === 5;
       },
     );
     console.log('listId2Delete: ', listId2Delete);
+    deleteDBTodolistDate(listId2Delete, currentUid);
   };
   const handleNavBarChevronLeft = () => {
     if (pathArray[1] === 'id') {
@@ -477,7 +490,30 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
     console.log('buttonState: ', buttonState);
     isUpdateButtonState.current = 0;
     // console.log('isUpdateButtonState.current: ', isUpdateButtonState.current);
+    if (isUpdateToolBar.current === 1) {
+      setBarState((preBarState) => {
+        const newBarState = {
+          ...preBarState,
+          toolBar: {
+            content: (
+              <TodolistPageToolBar
+                buttonState={buttonState}
+                handleToolBarCreateTodolistButton={handleToolBarCreateTodolistButton}
+                handleToolBarDeleteTodolistButton={handleToolBarDeleteTodolistButton}
+              />
+            ),
+            visibility: 2,
+          },
+        };
+        return newBarState;
+      });
+      isUpdateToolBar.current = 0;
+    }
   }, [buttonState]);
+
+  useEffect(() => {
+    console.log('update barState');
+  }, [barState]);
 
   // (3) 回傳 <TodolistPage /> 內容
   const getCurrentTodolistData = () => {
@@ -554,6 +590,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
               handleTodolistClick={handleTodolistClick}
               buttonState={buttonState}
               initTableItemsButtonState={initTableItemsButtonState}
+              currentTodolistIdx={currentTodolistIdx}
             />
           </Route>
           <Route exact path="/todolist/table">
@@ -602,6 +639,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
               handleTodolistClick={handleTodolistClick}
               buttonState={buttonState}
               initTableItemsButtonState={initTableItemsButtonState}
+              currentTodolistIdx={currentTodolistIdx}
             />
           </Route>
           <Redirect from="/todolist/table" to={`/todolist/id/${currentListId}`} />
