@@ -29,7 +29,7 @@ const INIT_BUTTONSTATE = {
 
 const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
   const currentUid = isSignIn;
-  // console.log('<TodolistPage />: render');
+  console.log('<TodolistPage />: render');
   // console.log('<TodolistPage />: currentUid: ', currentUid);
   const { breakpoint } = styledVariables.todolistPages;
   const [todolistData, setTodolistData] = useState(null);
@@ -42,6 +42,11 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
   const isUpdateButtonState = useRef(0);
   const isUpdateToolBar = useRef(0);
   const todolistDataIdxObj = useRef({});
+  const [isOnTodolistTableScroll, setIsOnTodolistTableScroll] = useState(0);
+  // eslint-disable-next-line no-unused-vars
+  const [isManageMode, setIsManageMode] = useState(0);
+  // eslint-disable-next-line no-unused-vars
+  const [isAllTodolist, setIsAllTodolist] = useState(0);
   // eslint-disable-next-line prefer-const
   let pathArray = useLocation().pathname.split('/');
   pathArray.shift();
@@ -77,6 +82,12 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
             indexCounter += 1;
           });
           todolistDataIdxObj.current = newTodoistDataIdxObj;
+          if (!fetchedTodolistData.empty) {
+            setIsAllTodolist(1);
+            if (pageAmount > 2) {
+              setPageAmount((prePageAmount) => prePageAmount - 1);
+            }
+          }
           resolve(newTodolistData);
         });
     });
@@ -84,8 +95,12 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
   };
   const readDBTodolistsData = async (currentUidValue, pageAmountValue = 1) => {
     // 登入狀態改變時，也會重新 setTodolistData
+    // console.log('pageAmount: ', pageAmount);
     const newTodolistData = await fetchDBTodolistData(currentUidValue, pageAmountValue);
     setTodolistData(newTodolistData);
+    if (isOnTodolistTableScroll === 1) {
+      setIsOnTodolistTableScroll(0);
+    }
   };
   const updateDBTodolistData = async (
     todolistsDocId,
@@ -148,7 +163,6 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
       setTodolistData(newTodolistData);
     });
   };
-
   const handleTableItemClick = (value) => {
     // console.log('todolistData: ', todolistData);
     // console.log('todolistDataIdxObj.current[value.id]: ', todolistDataIdxObj.current[value.id]);
@@ -171,7 +185,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
     }
     isUpdateButtonState.current = 1;
     const currentListIdxValue = todolistDataIdxObj.current[value.id];
-    console.log('currentListIdxValue: ', currentListIdxValue);
+    // console.log('currentListIdxValue: ', currentListIdxValue);
     setButtonState((preButtonState) => {
       const resetedTodolistTableItems = {};
       Object.keys(preButtonState.todolistTable.todolistTableItems).forEach((key) => {
@@ -226,13 +240,17 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
       isUpdateToolBar.current = 1;
       return newButtonState;
     });
+    if (isManageMode === 1) {
+      setIsManageMode(0);
+    }
   };
-  const handleNavBarManageButton = (istriggeredManageButtonValue) => {
+  const handleNavBarManageButton = (isManageModeValue) => {
     console.log('trigger handleNavBarManageButton');
+    console.log('isManageModeValue: ', isManageModeValue);
     if (isUpdateButtonState.current !== 0) {
       return;
     }
-    if (!istriggeredManageButtonValue) {
+    if (!isManageModeValue) {
       setButtonState((preButtonState) => {
         const newTodolistTableItems = {};
         Object.keys(preButtonState.todolistTable.todolistTableItems).forEach((key) => {
@@ -281,6 +299,12 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
         return newButtonState;
       });
     }
+    setIsManageMode((preIsManageMode) => {
+      if (!preIsManageMode) {
+        return 1;
+      }
+      return 0;
+    });
   };
   const handleTableItemSelectButton = (isTableItemSelectedValue, listIdValue) => {
     console.log('trigger handleTableItemSelectButton');
@@ -344,6 +368,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
           todolistTableItems: newTodolistTableItems,
         },
       };
+      isUpdateToolBar.current = 1;
       return newButtonState;
     });
   };
@@ -368,20 +393,67 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
     }
     history.go(-1);
   };
+  const handleTodolistTableScroll = (containerRef) => {
+    // readDBTodolistsData(currentUid, pageAmount);
+    // console.log('isOnTodolistTableScroll: ', isOnTodolistTableScroll);
+    const containerValue = containerRef;
+    // console.log('trigger handleTodolistTableScroll');
+    // console.log('isAllTodolist: ', isAllTodolist);
+    // console.log('isOnTodolistTableScroll: ', isOnTodolistTableScroll);
+    // console.log('containerValue.offsetHeight: ', containerValue.offsetHeight);
+    // console.log('containerValue.scrollTop: ', containerValue.scrollTop);
+    // console.log('containerValue.scrollHeight: ', containerValue.scrollHeight);
+
+    if (isAllTodolist) {
+      return;
+    }
+    if (!containerRef) {
+      return;
+    }
+    if (isOnTodolistTableScroll !== 0) {
+      return;
+    }
+    // if (isOnScroll.current !== 0) {
+    //   return;
+    // }
+    // eslint-disable-next-line no-unused-vars
+    setIsOnTodolistTableScroll(1);
+
+    // isOnScroll.current = 1;
+    if (
+      containerValue.offsetHeight + containerValue.scrollTop >=
+      (containerValue.scrollHeight / 3) * 2
+    ) {
+      // console.log('trigger scroll conditional');
+      setPageAmount((prePageAmount) => prePageAmount + 1);
+    } else {
+      setIsOnTodolistTableScroll(0);
+    }
+    // isOnScroll.current = 0;
+  };
 
   useEffect(() => {
     if (!isSignIn) {
       return;
     }
-    readDBTodolistsData(currentUid);
-  }, [isSignIn]);
+    if (isAllTodolist) {
+      return;
+    }
+    readDBTodolistsData(currentUid, pageAmount);
+  }, [isSignIn, pageAmount]);
   useEffect(() => {
     // console.log('<TodolistPage />: useEffect depends on todolistData');
     setCurrentTodolistIdx(0);
+    if (isAllTodolist === 1) {
+      setIsAllTodolist(0);
+    }
   }, [todolistData]);
   useEffect(() => {
     // console.log('currentTodolistIdx: ', currentTodolistIdx);
   }, [currentTodolistIdx]);
+  useEffect(() => {
+    console.log('isManageMode: ', isManageMode);
+  }, [isManageMode]);
 
   // (2) 處理 Barstate
   const getInitBarState = (buttonStateValue) => {
@@ -391,6 +463,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
           <TodolistPageNavBar
             handleNavBarChevronLeft={handleNavBarChevronLeft}
             handleNavBarManageButton={handleNavBarManageButton}
+            isManageMode={isManageMode}
           />
         ),
         visibility: 2,
@@ -421,7 +494,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
     return INIT_BARSTATE;
   };
   const INIT_BARSTATE = getInitBarState(buttonState);
-  console.log('INIT_BARSTATE: ', INIT_BARSTATE);
+  // console.log('INIT_BARSTATE: ', INIT_BARSTATE);
 
   const [barState, setBarState] = useState(INIT_BARSTATE);
 
@@ -477,23 +550,49 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
     isUpdateButtonState.current = 1;
     // console.log('trigger initTableItemsButtonState');
     // console.log('tableItemButtonStateObj: ', tableItemsButtonStateObj);
-    setButtonState({
-      ...INIT_BUTTONSTATE,
-      todolistTable: {
-        ...INIT_BUTTONSTATE.todolistTable,
-        todolistTableItems: tableItemsButtonStateObj,
-      },
+    setButtonState((preButtonState) => {
+      let newButtonState = {};
+      if (!isManageMode) {
+        newButtonState = {
+          ...INIT_BUTTONSTATE,
+          todolistTable: {
+            ...INIT_BUTTONSTATE.todolistTable,
+            todolistTableItems: tableItemsButtonStateObj,
+          },
+        };
+      }
+      newButtonState = {
+        ...INIT_BUTTONSTATE,
+        todolistTable: {
+          ...INIT_BUTTONSTATE.todolistTable,
+          todolistTableItems: {
+            ...tableItemsButtonStateObj,
+            ...preButtonState.todolistTable.todolistTableItems,
+          },
+        },
+      };
+      return newButtonState;
     });
   };
 
   useEffect(() => {
-    console.log('buttonState: ', buttonState);
+    // console.log('buttonState: ', buttonState);
     isUpdateButtonState.current = 0;
     // console.log('isUpdateButtonState.current: ', isUpdateButtonState.current);
     if (isUpdateToolBar.current === 1) {
       setBarState((preBarState) => {
         const newBarState = {
           ...preBarState,
+          navBar: {
+            content: (
+              <TodolistPageNavBar
+                handleNavBarChevronLeft={handleNavBarChevronLeft}
+                handleNavBarManageButton={handleNavBarManageButton}
+                isManageMode={isManageMode}
+              />
+            ),
+            visibility: 2,
+          },
           toolBar: {
             content: (
               <TodolistPageToolBar
@@ -512,7 +611,7 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
   }, [buttonState]);
 
   useEffect(() => {
-    console.log('update barState');
+    // console.log('update barState');
   }, [barState]);
 
   // (3) 回傳 <TodolistPage /> 內容
@@ -605,6 +704,8 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
               initTableItemsButtonState={initTableItemsButtonState}
               buttonState={buttonState}
               handleTableItemSelectButton={handleTableItemSelectButton}
+              handleTodolistTableScroll={handleTodolistTableScroll}
+              isManageMode={isManageMode}
             />
           </Route>
           <Redirect from="/todolist" to={`/todolist/id/${currentListId}`} />
@@ -627,6 +728,8 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
               initTableItemsButtonState={initTableItemsButtonState}
               buttonState={buttonState}
               handleTableItemSelectButton={handleTableItemSelectButton}
+              handleTodolistTableScroll={handleTodolistTableScroll}
+              isManageMode={isManageMode}
             />
             <Todolist
               currentUid={currentUid}

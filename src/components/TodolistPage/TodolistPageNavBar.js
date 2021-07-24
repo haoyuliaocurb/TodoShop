@@ -1,11 +1,13 @@
-import { React, useRef } from 'react';
+import { React } from 'react';
 import { Link } from 'react-router-dom';
 import IconAppContent from '../../styles/app/IconAppContent';
 import StyledTodolistPageNavBar from '../../styles/TodolistPage/StyledTodolistPageNavBar';
 
-const TodolistPageNavBar = ({ handleNavBarManageButton, handleNavBarChevronLeft }) => {
-  const istriggeredManageButton = useRef(0);
-
+const TodolistPageNavBar = ({
+  handleNavBarManageButton,
+  handleNavBarChevronLeft,
+  isManageMode,
+}) => {
   return (
     <StyledTodolistPageNavBar>
       <Link
@@ -20,12 +22,7 @@ const TodolistPageNavBar = ({ handleNavBarManageButton, handleNavBarChevronLeft 
       <h1>您的購物清單</h1>
       <button
         onClick={() => {
-          handleNavBarManageButton(istriggeredManageButton.current);
-          if (istriggeredManageButton.current === 0) {
-            istriggeredManageButton.current = 1;
-          } else {
-            istriggeredManageButton.current = 0;
-          }
+          handleNavBarManageButton(isManageMode);
         }}
         type="button"
       >

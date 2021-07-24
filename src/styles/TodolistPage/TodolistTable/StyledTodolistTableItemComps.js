@@ -62,9 +62,8 @@ export const StyledTodolistTableItem = styled.div`
   display: flex;
   align-items: center;
   padding: 10px 10px 10px 10px;
-  border-bottom: solid ${styledVariables.color.gray300} 1px;
   background-color: ${({ tableItemButtonState }) => {
-    console.log('<StyledTodolistTableItem />: tableItemButtonState: ', tableItemButtonState);
+    // console.log('<StyledTodolistTableItem />: tableItemButtonState: ', tableItemButtonState);
     switch (tableItemButtonState) {
       case 0:
         // disabled

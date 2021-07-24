@@ -8,13 +8,25 @@ const StyledTodolistTable = styled.div`
   width: 100%;
   height: 100%;
   background-color: ${styledVariables.color.gray100};
-  padding: 0 ${styledVariables.shared.contentPadding};
 
   @media (min-width: ${styledVariables.todolistPages.breakpoint}px) {
     // position: absolute;
     width: 50%;
     // height: 100%;
     // left: 0;
+  }
+
+  > .container {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0 ${styledVariables.shared.contentPadding};
+    padding-bottom: ${styledVariables.shared.barHeight};
+    overflow-y: scroll;
+    > div {
+      border-bottom: solid ${styledVariables.color.gray300} 1px;
+    }
   }
 
   > .dividingLine {

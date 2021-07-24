@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { React, useState } from 'react';
 import { auth } from '../utils/firebase/firebase-services';
 // import { auth } from '../utils/firebase/firebase-services';
@@ -7,16 +8,15 @@ import TabBar from '../components/app/TabBar';
 import GeneralTabBar from '../components/app/GeneralTabBar';
 import { styledVariables } from '../styles/app/cssMaterial';
 
-// test data
-// const USER_INFO_A = {
-//   email: 'jeffery84115@gmail.com',
-//   password: 'haoyuliao',
-// };
+const USER_INFO_A = {
+  email: 'jeffery84115@gmail.com',
+  password: 'haoyuliao',
+};
 const USER_INFO_B = {
   email: 'trial@gmail.com',
   password: 'trialtrial',
 };
-const USER_INFO_TEST = USER_INFO_B;
+const USER_INFO_TEST = USER_INFO_A;
 
 const INIT_BARSTATE = {
   navBar: {

@@ -17,8 +17,6 @@ const StyledTodolist = styled.div`
     width: 100%;
     height: 100%;
     background-color: ${styledVariables.color.gray100};
-    padding-top: ${styledVariables.todolistTable.selfPaddingTop};
-    padding-bottom: ${styledVariables.todolistTable.selfPaddingTop};
     padding-left: ${styledVariables.shared.contentPadding};
     padding-right: ${styledVariables.shared.contentPadding};
 
@@ -38,16 +36,13 @@ const StyledTodolist = styled.div`
 
     > .grid {
       position: absolute;
-      top: ${styledVariables.todolistTable.selfPaddingTop};
       z-index: 0;
       width: calc(100% - ${styledVariables.shared.contentPadding} * 2);
       height: 100%;
 
       > div {
         width: 100%;
-        height: calc(
-          ${styledVariables.todolist.itemHeight} + 2 * ${styledVariables.todolist.itemMargin}
-        );
+        height: 65px;
         border-bottom: solid 1px ${styledVariables.color.gray300};
       }
     }

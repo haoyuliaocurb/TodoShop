@@ -23,15 +23,17 @@ const Todolist = ({
   readDBTodolistsData,
   currentUid,
   updateDBTodolistData,
-  currentTodolistIdx,
-  // pageAmount,
+  // currentTodolistIdx,
+  pageAmount,
   // currentListIdx,
 }) => {
   const todolistItemsContentObj = useRef({});
   const isKeyUpTriggered = useRef(0);
   // const preUpdatedTodolistItemContent = useRef(null);
   const [inputDisplayContent, setInputDisplayContent] = useState('');
+  // const preTodolistId = useRef(null);
   const currentTodolistId = !currentTodolistData ? '' : currentTodolistData.id;
+  // eslint-disable-next-line no-unused-vars
   const decodedCurrentTodolistData = !currentTodolistData ? null : currentTodolistData.data();
   const pathListId = useParams().listId;
   const getTimeKey = getTimeKeyGenerator();
@@ -55,7 +57,7 @@ const Todolist = ({
       items: newTodolistDataItems,
       updateTime: firebase.firestore.Timestamp.now(),
     };
-    updateDBTodolistData(pathListId, newTodolistDataPart, currentUid);
+    updateDBTodolistData(pathListId, newTodolistDataPart, currentUid, pageAmount);
   };
   const getTodolistItems = (decodedCurrentTodolistDataValue) => {
     // console.log('<Todolist />: trigger getTodolistItems');
@@ -139,7 +141,7 @@ const Todolist = ({
         //   pathListId,
         // );
 
-        readDBTodolistsData(currentUid);
+        readDBTodolistsData(currentUid, pageAmount);
         isKeyUpTriggered.current = 0;
       });
   };
@@ -176,12 +178,14 @@ const Todolist = ({
     // console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
   });
 
-  useEffect(() => {
-    // console.log('<Todolist />: useEffect depends on currentTodolistData');
-    // console.log('currentTodolistData: ', currentTodolistData);
-    todolistItemsContentObj.current = {};
-    // setInputDisplayContent('');
-  }, [currentTodolistIdx]);
+  // useEffect(() => {
+  //   if (preTodolistId.current === null) {
+  //     preTodolistId.current = currentTodolistId;
+  //   }
+  //   if (preTodolistId.current !== currentTodolistId) {
+  //     todolistItemsContentObj.current = {};
+  //   }
+  // }, [currentTodolistData]);
 
   useEffect(() => {
     return () => {

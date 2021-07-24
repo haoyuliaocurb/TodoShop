@@ -55,7 +55,7 @@ export const styledVariables = {
   },
   todolist: {
     itemHeight: '30px',
-    itemMargin: '10px',
+    itemMargin: '17.5px',
   },
   todolistPages: {
     breakpoint: '800',

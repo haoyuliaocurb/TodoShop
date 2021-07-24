@@ -1,4 +1,5 @@
-import { React, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+import { React, useEffect, useRef, useState } from 'react';
 // import { Link } from 'react-router-dom';
 // import { auth } from '../../../utils/firebase/firebase-services.js';
 import TodolistTableItem from './TodolistTableItem';
@@ -14,7 +15,10 @@ const TodolistTable = ({
   handleIcon2SearchClick,
   initTableItemsButtonState,
   handleTableItemSelectButton,
-  // pageAmount,
+  handleTodolistTableScroll,
+  readDBTodolistsData,
+  pageAmount,
+  isManageMode,
   // deleteDBTodolistDate,
 }) => {
   // console.log('<TodolistTable /> :render');
@@ -29,15 +33,22 @@ const TodolistTable = ({
   const tableButtonState = !buttonState ? null : buttonState.todolistTable;
   const tableItemsButtonState = !tableButtonState ? null : tableButtonState.todolistTableItems;
   const tableItemButtonStateObj = {};
+  // const isOnScroll = useRef(0);
+  const container = useRef(null);
   const getTodolistTableItem = (todolistDataValue, currentTodolistIdxValue) => {
     const newTodolistTableItem = todolistDataValue.map((value, index) => {
       const listId = value.id;
       const updateTime = value.data().updateTime.toDate().valueOf();
-      if (index === currentTodolistIdxValue) {
-        tableItemButtonStateObj[listId] = 2;
+      if (!isManageMode) {
+        if (index === currentTodolistIdxValue) {
+          tableItemButtonStateObj[listId] = 2;
+        } else {
+          tableItemButtonStateObj[listId] = 1;
+        }
       } else {
-        tableItemButtonStateObj[listId] = 1;
+        tableItemButtonStateObj[listId] = 4;
       }
+
       const tableItemButtonState = !tableItemsButtonState ? 0 : tableItemsButtonState[listId];
       return (
         <TodolistTableItem
@@ -64,17 +75,21 @@ const TodolistTable = ({
   };
 
   useEffect(() => {
-    // console.log('todolistData: ', todolistData);
-    // console.log('TodolistTable: useEffect depends on todolistData.');
-  }, [todolistData]);
-  useEffect(() => {
     initTableItemsButtonState(tableItemButtonStateObj);
-  }, []);
+  }, [todolistData]);
 
   return (
     <StyledTodolistTable>
       <div className="dividingLine" />
-      {getTodolistTableContent()}
+      <div
+        className="container"
+        ref={container}
+        onScroll={() => {
+          handleTodolistTableScroll(container.current);
+        }}
+      >
+        {getTodolistTableContent()}
+      </div>
     </StyledTodolistTable>
   );
 };

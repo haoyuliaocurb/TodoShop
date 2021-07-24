@@ -58,7 +58,7 @@ const TodolistTableItem = ({
 
   return (
     <StyledTodolistTableItem
-      className={isCurrentList ? 'currentList' : ''}
+      className={isCurrentList ? 'todolistTableItem currentList' : 'todolistTableItem'}
       isCurrentList={isCurrentList}
       tableItemButtonState={tableItemButtonState}
     >
@@ -69,6 +69,7 @@ const TodolistTableItem = ({
             : 'selectTableItemButton'
         }`}
         onClick={() => {
+          console.log('trigger TodolistItem onClick');
           handleTableItemSelectButton(isTableItemSelected.current, listId);
           if (isTableItemSelected.current === 0) {
             isTableItemSelected.current = 1;
