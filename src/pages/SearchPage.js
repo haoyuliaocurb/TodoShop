@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { React, useState, useEffect } from 'react';
 import { firestore } from '../utils/firebase/firebase-services';
 // import { Link } from 'react-router-dom';
@@ -7,7 +8,7 @@ import NormalSearchMode from '../components/SearchPage/NormalSearchMode/NormalSe
 import StyledSearchPage from '../styles/SearchPage/StyledSearchPage';
 
 const SEARCH_META_INFO_TEMPLATE = {
-  isEasySearchMode: 0,
+  isEasySearchMode: 1,
   currentSearchKeywordsIdx: 0,
   filterButtonState: {
     generalSort: 0,
@@ -278,7 +279,37 @@ const SearchPages = ({ isSignIn }) => {
   // eslint-disable-next-line no-unused-vars
   const { isEasySearchMode, currentSearchKeywordsIdx, filterButtonState } = searchMetaInfo;
   const [searchInfo, setSearchInfo] = useState(null);
+  const [searchItemIdxObj, setSearchItemIdxObj] = useState(null);
+  const [isUpdateSearchItemIdxObj, setIsUpdateSearchItemIdxObj] = useState(null);
+  const [isUpdateSearchItem, setIsUpdateSearchItem] = useState(null);
 
+  const updateSearchItemIdxObj = (newSearchItemIdxObjValue) => {
+    if (isUpdateSearchItem !== 1) {
+      return;
+    }
+    if (isUpdateSearchItemIdxObj !== 0) {
+      return;
+    }
+    setIsUpdateSearchItemIdxObj(1);
+    setSearchItemIdxObj(() => {
+      const newSearchItemIdxObj = newSearchItemIdxObjValue;
+      return newSearchItemIdxObj;
+    });
+  };
+  const fetchSearchInfo = () => {};
+  const fetchSearchItemInfo = () => {};
+  const fetchSearchCardInfo = (pidValue, updatedProductAction) => {};
+  const updateSearchItemInfo = () => {};
+  const updateSearchCardInfo = async (pidValue, updatedProductAction, itemKey, cardIdx) => {
+    const newSearchInfoProductAction = fetchSearchCardInfo(pidValue, updatedProductAction);
+    setSearchInfo((preSearchInfo) => {
+      const newSearchInfo = [...preSearchInfo];
+      const updateItemIdx = searchItemIdxObj[itemKey];
+      newSearchInfo[updateItemIdx].products[cardIdx] = newSearchInfoProductAction;
+
+      return newSearchInfo;
+    });
+  };
   const updateSearchInfo = async () => {
     // console.log('getSearchInfo(searchMetaInfo): ', getSearchInfo(searchMetaInfo));
     const newSearchInfo = JSON.parse(JSON.stringify(getSearchInfo(searchMetaInfo)));
@@ -472,6 +503,17 @@ const SearchPages = ({ isSignIn }) => {
   useEffect(() => {
     // console.log('searchInfo in useEffect on searchInfo: ', searchInfo);
   }, [searchInfo]);
+  useEffect(() => {
+    console.log('searchItemIdxObj: ', searchItemIdxObj);
+    if (isUpdateSearchItemIdxObj === 1) {
+      setIsUpdateSearchItemIdxObj(0);
+      setIsUpdateSearchItem(0);
+    }
+    if (isUpdateSearchItemIdxObj === null) {
+      setIsUpdateSearchItemIdxObj(0);
+      setIsUpdateSearchItem(1);
+    }
+  }, [searchItemIdxObj]);
 
   return (
     <StyledSearchPage>
@@ -481,6 +523,7 @@ const SearchPages = ({ isSignIn }) => {
           handleNavBarItemClick={handleNavBarItemClick}
           handleEasySearchButtonClick={handleEasySearchButtonClick}
           searchInfo={searchInfo}
+          updateSearchItemIdxObj={updateSearchItemIdxObj}
         />
       ) : (
         <NormalSearchMode

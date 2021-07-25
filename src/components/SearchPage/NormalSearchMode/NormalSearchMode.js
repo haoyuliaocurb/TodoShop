@@ -69,14 +69,14 @@ const NormalSearchMode = ({
       isScrollBackward.current = true;
       // console.log('trigger backward scrollTarget');
       // console.log('before: scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
+      // setTimeout(() => {
+      //   scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight);
+      // }, 200);
       setTimeout(() => {
-        scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight);
-      }, 200);
-      setTimeout(() => {
-        scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight);
+        scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight * 1.5);
       }, 350);
       setTimeout(() => {
-        scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight);
+        scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight * 1.5);
       }, 450);
       // scrollTarget.scrollTo(0, scrollTarget.scrollTop - styledVariables.shared.barHeight);
       // console.log('after: scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
