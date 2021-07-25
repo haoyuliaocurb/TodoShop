@@ -18,9 +18,10 @@ const TabBar = ({ backgroundColor, scrollOffsetInfo, tabBarState }) => {
       windowOffset={windowOffset}
       scrollOffset={scrollOffset}
       isScrollEnd={isScrollEnd}
-      className={`${visibility ? '' : 'vb-hidden'} ${
-        windowOffset < 0 || isScrollEnd ? 'transition' : ''
-      }`}
+      // className={`${visibility ? '' : 'vb-hidden'} ${
+      //   windowOffset < 0 || isScrollEnd ? 'transition' : ''
+      // }`}
+      className={`${visibility ? '' : 'vb-hidden'} transition`}
     >
       {content}
     </StyledTabBar>

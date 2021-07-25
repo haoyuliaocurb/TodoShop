@@ -1,28 +1,30 @@
 import { React } from 'react';
-import StyledToolBar from '../../styles/app/StyledToolBar';
+import StyledFeatureBar from '../../../styles/SearchPage/NormalSearchMode/StyledFeatureBar';
+import StyledFeatureTags from '../../../styles/SearchPage/NormalSearchMode/StyledFeatureTags';
+import FeatureTag from './FeatureTag';
 
-const ToolBar = ({ scrollOffsetInfo, toolBarState }) => {
-  const { content, visibility } = toolBarState;
-  // const { preScrollOffset, scrollOffset, isScrollEnd } = scrollOffsetInfo;
+const FeatureBar = ({ scrollOffsetInfo }) => {
+  const visibility = 1;
   const preScrollOffset = visibility !== 1 ? null : scrollOffsetInfo.preScrollOffset;
   const scrollOffset = visibility !== 1 ? null : scrollOffsetInfo.scrollOffset;
   const isScrollEnd = visibility !== 1 ? null : scrollOffsetInfo.isScrollEnd;
   // console.log('preScrollOffset: ', preScrollOffset, 'scrollOffset: ', scrollOffset);
   const windowOffset = visibility !== 1 ? null : scrollOffset - preScrollOffset;
   return (
-    <StyledToolBar
+    <StyledFeatureBar
       visibility={visibility}
       windowOffset={windowOffset}
       scrollOffset={scrollOffset}
       isScrollEnd={isScrollEnd}
-      // className={`${visibility ? '' : 'vb-hidden'} ${
-      //   windowOffset < 0 || isScrollEnd ? 'transition' : ''
-      // }`}
       className={`${visibility ? '' : 'vb-hidden'} transition`}
     >
-      {content}
-    </StyledToolBar>
+      <StyledFeatureTags>
+        {Array.from({ length: 20 }).map(() => (
+          <FeatureTag />
+        ))}
+      </StyledFeatureTags>
+    </StyledFeatureBar>
   );
 };
 
-export default ToolBar;
+export default FeatureBar;

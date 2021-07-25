@@ -1,130 +1,20 @@
-import { React } from 'react';
+import { React, useState, useEffect, useRef } from 'react';
 
-import {
-  StyledNormalSearchMode,
-  StyledSearchCard,
-  StyledFilterBar,
-  StyledFeatureBar,
-  StyledFeatureTags,
-  StyledFeatureTag,
-} from '../../../styles/SearchPage/NormalSearchMode/StyledNormalSearchModeComps';
-import IconSearchPage from '../../../styles/SearchPage/IconSearchPage';
+import FilterBar from './FilterBar';
+import FeatureBar from './FeatureBar';
+import SearchCard from './SearchCard';
+import NavBar from '../../app/NavBar';
+import TabBar from '../../app/TabBar';
+import SearchNavBar from '../SearchNavBar';
+import GeneralTabBar from '../../app/GeneralTabBar';
 
-const FilterBar = ({
-  handleGeneralSortButtonClick,
-  handlePriceSortButtonClick,
-  handleHitButtonClick,
-  handleEasySearchButtonClick,
-  filterButtonState,
-}) => {
-  const { generalSort, priceSort, hit } = filterButtonState;
-  const getGeneralSortIcon = (generalSortValue) => {
-    switch (generalSortValue) {
-      case 0:
-        return <IconSearchPage.NoSort />;
-      case 1:
-        return <IconSearchPage.SortUp className="fill" />;
-      case 2:
-        return <IconSearchPage.SortDown className="fill" />;
-      default:
-        return <IconSearchPage.NoSort />;
-    }
-  };
-  const getPriceSortIcon = (priceSortValue) => {
-    switch (priceSortValue) {
-      case 0:
-        return <IconSearchPage.NoSort />;
-      case 1:
-        return <IconSearchPage.SortUp className="fill" />;
-      case 2:
-        return <IconSearchPage.SortDown className="fill" />;
-      default:
-        return <IconSearchPage.NoSort />;
-    }
-  };
-  return (
-    <StyledFilterBar>
-      <button
-        onClick={handleGeneralSortButtonClick}
-        className={`generalSort ${generalSort ? 'notNoSort' : 'noSort'}`}
-        type="button"
-      >
-        <p>綜合排序</p>
-        <span>{getGeneralSortIcon(generalSort)}</span>
-      </button>
-      <button
-        onClick={handlePriceSortButtonClick}
-        className={`priceSort ${priceSort ? 'notNoSort' : 'noSort'}`}
-        type="button"
-      >
-        <p>價格</p>
-        <span>{getPriceSortIcon(priceSort)}</span>
-      </button>
-      <button
-        onClick={handleHitButtonClick}
-        className={`hit ${hit ? 'selected' : 'unselected'}`}
-        type="button"
-      >
-        <p>最高人氣</p>
-      </button>
-      <span>
-        <button onClick={handleEasySearchButtonClick} className="easySearch" type="button">
-          <IconSearchPage.EasySearch />
-        </button>
-        <button className="filter" type="button">
-          <IconSearchPage.Filter />
-          <p>篩選</p>
-        </button>
-      </span>
-    </StyledFilterBar>
-  );
-};
+import StyledNormalSearchMode from '../../../styles/SearchPage/NormalSearchMode/StyledNormalSearchMode';
+import { styledVariables, removePx } from '../../../styles/app/cssMaterial';
 
-const FeatureTag = () => {
-  return (
-    <StyledFeatureTag>
-      <h3>抽取</h3>
-    </StyledFeatureTag>
-  );
-};
-
-const FeatureBar = () => {
-  return (
-    <StyledFeatureBar>
-      <StyledFeatureTags>
-        {Array.from({ length: 20 }).map(() => (
-          <FeatureTag />
-        ))}
-      </StyledFeatureTags>
-    </StyledFeatureBar>
-  );
-};
-
-const SearchCard = ({ productInfo }) => {
-  const { name, price, image, productAction } = productInfo;
-  const isLiked = productAction ? productAction.like || false : false;
-  const isCarted = productAction ? productAction.cart || false : false;
-
-  return (
-    <StyledSearchCard>
-      {isLiked ? (
-        <IconSearchPage.LikeSelected className="IconLikeSelected" />
-      ) : (
-        <IconSearchPage.LikeUnselected className="IconLikeUnselected" />
-      )}
-      <img alt="" src={image} />
-      <p className="SearchCardTitle">{name}</p>
-      <p className="SearchCardPrice">
-        <span className="priceTag">$</span>
-        <span>{price}</span>
-      </p>
-      {isCarted ? (
-        <IconSearchPage.Add2CartSelected className="IconAdd2Cart" />
-      ) : (
-        <IconSearchPage.Add2CartUnselected className="IconAdd2Cart" />
-      )}
-    </StyledSearchCard>
-  );
+const INIT_SCROLLOFFSET = {
+  preScrollOffset: 0,
+  pageYOffset: 0,
+  isScrollEnd: true,
 };
 
 const NormalSearchMode = ({
@@ -134,25 +24,155 @@ const NormalSearchMode = ({
   handleEasySearchButtonClick,
   currentSearchInfo,
   filterButtonState,
+  currentSearchKeywordsIdx,
+  handleNavBarItemClick,
+  searchInfo,
 }) => {
   const products = currentSearchInfo ? currentSearchInfo.products : null;
+  const [scrollOffsetInfo, setScrollOffsetInfo] = useState(INIT_SCROLLOFFSET);
+  const preScrollOffset = useRef(0);
+  const isOnScroll = useRef(false);
+  const isScrollEnd = useRef(false);
+  const isScrollBackward = useRef(false);
+  const scrollTarget = useRef(null);
+  const windowOffset = useRef(0);
+
+  const handleScroll = (scrollTargetValue) => {
+    console.log('trigger onScroll');
+    if (!scrollTargetValue) {
+      return;
+    }
+    if (isOnScroll.current) {
+      return;
+    }
+
+    // console.log('trigger addEventListener');
+    // console.log('windowOffset.current: ', windowOffset.current);
+    // console.log('isScrollBackward.current: ', isScrollBackward.current);
+    console.log('scrollOffsetInfo.isScrollEnd: ', scrollOffsetInfo.isScrollEnd);
+    console.log('scrollTarget.current.offsetHeight: ', scrollTarget.current.offsetHeight);
+    console.log('scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
+    console.log('scrollTarget.current.scrollHeight: ', scrollTarget.current.scrollHeight);
+    console.log('window.innerHeight: ', window.innerHeight);
+
+    const scrollOffsetValue = scrollTargetValue.scrollTop;
+    const preScrollOffsetValue = preScrollOffset.current;
+    windowOffset.current = scrollOffsetValue - preScrollOffsetValue;
+    preScrollOffset.current = scrollOffsetValue;
+
+    if (windowOffset.current < 0) {
+      if (isScrollBackward.current) {
+        return;
+      }
+
+      isOnScroll.current = true;
+      isScrollBackward.current = true;
+      // console.log('trigger backward scrollTarget');
+      // console.log('before: scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
+      setTimeout(() => {
+        scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight);
+      }, 200);
+      setTimeout(() => {
+        scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight);
+      }, 350);
+      setTimeout(() => {
+        scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight);
+      }, 450);
+      // scrollTarget.scrollTo(0, scrollTarget.scrollTop - styledVariables.shared.barHeight);
+      // console.log('after: scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
+
+      setScrollOffsetInfo({
+        preScrollOffset: preScrollOffsetValue,
+        scrollOffset: scrollOffsetValue,
+        isScrollEnd: isScrollEnd.current,
+      });
+      return;
+    }
+    // windowOffset.current >= 0
+
+    isOnScroll.current = true;
+    isScrollBackward.current = false;
+
+    // 若滑到底
+    if (
+      scrollTargetValue.offsetHeight + scrollTargetValue.scrollTop >=
+      scrollTargetValue.scrollHeight - removePx(styledVariables.shared.barHeight) / 2
+    ) {
+      isScrollEnd.current = true;
+    } else {
+      isScrollEnd.current = false;
+    }
+
+    setScrollOffsetInfo({
+      preScrollOffset: preScrollOffsetValue,
+      scrollOffset: scrollOffsetValue,
+      isScrollEnd: isScrollEnd.current,
+    });
+  };
+
+  useEffect(() => {
+    // console.log('scrollTarget.current: ', scrollTarget.current);
+    // console.log('windowOffset.current: ', windowOffset.current);
+    // console.log('scrollTarget.current.clientHeight: ', scrollTarget.current.clientHeight);
+    // console.log('scrollOffsetInfo: ', scrollOffsetInfo);
+  });
+
+  useEffect(() => {
+    isOnScroll.current = false;
+  }, [scrollOffsetInfo]);
+
   return (
     <StyledNormalSearchMode>
+      <NavBar
+        scrollOffsetInfo={scrollOffsetInfo}
+        navBarState={{
+          content: (
+            <SearchNavBar
+              currentSearchKeywordsIdx={currentSearchKeywordsIdx}
+              handleNavBarItemClick={handleNavBarItemClick}
+              searchInfo={searchInfo}
+            />
+          ),
+          visibility: 1,
+        }}
+      />
       <FilterBar
         handleGeneralSortButtonClick={handleGeneralSortButtonClick}
         handlePriceSortButtonClick={handlePriceSortButtonClick}
         handleHitButtonClick={handleHitButtonClick}
         handleEasySearchButtonClick={handleEasySearchButtonClick}
         filterButtonState={filterButtonState}
+        scrollOffsetInfo={scrollOffsetInfo}
       />
-      <FeatureBar />
-      <div className="SearchCardContainer">
+      <FeatureBar scrollOffsetInfo={scrollOffsetInfo} />
+      <div
+        className="SearchCardContainer"
+        ref={scrollTarget}
+        onScroll={() => {
+          handleScroll(scrollTarget.current);
+        }}
+      >
         {products ? (
           products.map((productInfo) => <SearchCard productInfo={productInfo} />)
         ) : (
           <div />
         )}
       </div>
+      <TabBar
+        scrollOffsetInfo={scrollOffsetInfo}
+        tabBarState={{
+          content: (
+            <GeneralTabBar
+            // handleTabBarSearchTabClick={handleTabBarSearchTabClick}
+            // handleTabBarHomeTabClick={handleTabBarHomeTabClick}
+            // handleTabBarCartTabClick={handleTabBarCartTabClick}
+            // handleTabBarAuthTabClick={handleTabBarAuthTabClick}
+            // handleTabBarListTabClick={handleTabBarListTabClick}
+            />
+          ),
+          visibility: 1,
+        }}
+      />
     </StyledNormalSearchMode>
   );
 };

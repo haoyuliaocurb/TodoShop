@@ -14,6 +14,7 @@ const SearchNavBarItem = ({ index, handleNavBarItemClick, content, selected }) =
       className={selected ? 'selected' : ''}
     >
       {content}
+      <IconSearchPage.Close />
     </button>
   );
 };
@@ -52,10 +53,11 @@ const SearchNavBar = ({ currentSearchKeywordsIdx, handleNavBarItemClick, searchI
   return (
     <StyledSearchNavBar>
       <div>
-        <span>1</span>
+        <span className="formerItemAmount">1</span>
         <StyledSearchNavBarItems className="container">
           {searchInfo ? getSearchNavBarItems(searchInfo) : ''}
         </StyledSearchNavBarItems>
+        <span className="latterItemAmount">1</span>
         <IconSearchPage.Add className="iconAdd" />
       </div>
       <IconSearchPage.ChenvronLeft className="iconChenvronLeft" />

@@ -7,7 +7,7 @@ import NormalSearchMode from '../components/SearchPage/NormalSearchMode/NormalSe
 import StyledSearchPage from '../styles/SearchPage/StyledSearchPage';
 
 const SEARCH_META_INFO_TEMPLATE = {
-  isEasySearchMode: 1,
+  isEasySearchMode: 0,
   currentSearchKeywordsIdx: 0,
   filterButtonState: {
     generalSort: 0,
@@ -47,6 +47,20 @@ const SEARCH_INFO_WITH_PID_TEST1 = [
         image:
           'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2FC9F4A74390-Gd-5619164.jpeg?alt=media&token=57a3e234-48ff-4eef-8361-d39252b101f3',
       },
+      {
+        pid: 'uym9FbUNRTPpE11GRTwk',
+        name: '五月花厚棒抽取式衛生紙90抽x10包/袋',
+        price: 229,
+        image:
+          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2FEA12DF5694-Product-22905621.jpeg?alt=media&token=d9aa4352-6a72-45f3-a573-ecd16acd9dd9',
+      },
+      {
+        pid: 'hzLK7rDYOAIQWx5C5OkI',
+        name: '得意連續抽取式花紋衛生紙100抽 x70包/箱',
+        price: 659,
+        image:
+          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2FF613DAB9DB-Product-12612396.jpeg?alt=media&token=1566dfdf-1f2c-4077-acab-115ba05ff950',
+      },
     ],
   },
   {
@@ -83,6 +97,53 @@ const SEARCH_INFO_WITH_PID_TEST1 = [
 ];
 // eslint-disable-next-line no-unused-vars
 const SEARCH_INFO_WITH_PID_TEST2 = [
+  {
+    keyword: '衛生紙',
+    products: [
+      {
+        pid: '7c8f8Ab6OQFVpGaAxzCj',
+        name: '淨世代環保抽取式衛生紙100抽x12包x6串/箱',
+        price: 600,
+        image:
+          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2F9D84A6FE4D47730FB45B68EDF54888C80C79CF74.jpeg?alt=media&token=ed985593-8fa1-42c6-82be-76bdf1fdda1a',
+      },
+      {
+        pid: 'CLuaEILOo0NGuBHpaP6V',
+        name: 'BeniBear邦尼熊復古酒紅條紋抽取式衛生紙100抽8包6袋',
+        price: 489,
+        image:
+          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2F9D1A2174AB-SP-8702915.jpeg?alt=media&token=7f6bfad5-1855-414e-a8a9-9020c2d51f82',
+      },
+      {
+        pid: 'SWUNApoWStoWaW7RP4hh',
+        name: '春風柔膚感抽取式衛生紙 110抽x24包x3串/箱',
+        price: 829,
+        image:
+          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2F7C9EAB399A-SP-7033611.jpeg?alt=media&token=c174d228-1b92-4038-8bd3-a2716f856e9c',
+      },
+      {
+        pid: 'SeFCJJMAzLXBxbJ2MdI1',
+        name: '蒲公英環保抽取衛生紙100抽x72包',
+        price: 659,
+        image:
+          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2FC9F4A74390-Gd-5619164.jpeg?alt=media&token=57a3e234-48ff-4eef-8361-d39252b101f3',
+      },
+      {
+        pid: 'uym9FbUNRTPpE11GRTwk',
+        name: '五月花厚棒抽取式衛生紙90抽x10包/袋',
+        price: 229,
+        image:
+          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2FEA12DF5694-Product-22905621.jpeg?alt=media&token=d9aa4352-6a72-45f3-a573-ecd16acd9dd9',
+      },
+      {
+        pid: 'hzLK7rDYOAIQWx5C5OkI',
+        name: '得意連續抽取式花紋衛生紙100抽 x70包/箱',
+        price: 659,
+        image:
+          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2FF613DAB9DB-Product-12612396.jpeg?alt=media&token=1566dfdf-1f2c-4077-acab-115ba05ff950',
+      },
+    ],
+  },
   {
     keyword: '洗髮精',
     products: [
@@ -193,39 +254,6 @@ const SEARCH_INFO_WITH_PID_TEST2 = [
       },
     ],
   },
-  {
-    keyword: '衛生紙',
-    products: [
-      {
-        pid: '7c8f8Ab6OQFVpGaAxzCj',
-        name: '淨世代環保抽取式衛生紙100抽x12包x6串/箱',
-        price: 600,
-        image:
-          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2F9D84A6FE4D47730FB45B68EDF54888C80C79CF74.jpeg?alt=media&token=ed985593-8fa1-42c6-82be-76bdf1fdda1a',
-      },
-      {
-        pid: 'CLuaEILOo0NGuBHpaP6V',
-        name: 'BeniBear邦尼熊復古酒紅條紋抽取式衛生紙100抽8包6袋',
-        price: 489,
-        image:
-          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2F9D1A2174AB-SP-8702915.jpeg?alt=media&token=7f6bfad5-1855-414e-a8a9-9020c2d51f82',
-      },
-      {
-        pid: 'SWUNApoWStoWaW7RP4hh',
-        name: '春風柔膚感抽取式衛生紙 110抽x24包x3串/箱',
-        price: 829,
-        image:
-          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2F7C9EAB399A-SP-7033611.jpeg?alt=media&token=c174d228-1b92-4038-8bd3-a2716f856e9c',
-      },
-      {
-        pid: 'SeFCJJMAzLXBxbJ2MdI1',
-        name: '蒲公英環保抽取衛生紙100抽x72包',
-        price: 659,
-        image:
-          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2FC9F4A74390-Gd-5619164.jpeg?alt=media&token=57a3e234-48ff-4eef-8361-d39252b101f3',
-      },
-    ],
-  },
 ];
 const getSearchInfo = (searchMetaInfo) => {
   if (!searchMetaInfo.keywords) {
@@ -306,7 +334,6 @@ const SearchPages = ({ isSignIn }) => {
     // console.log('newSearchInfo: ', newSearchInfo);
     setSearchInfo(newSearchInfo);
   };
-
   const handleNavBarItemClick = (idx) => {
     // console.log('idx: ', idx);
     setSearchMetaInfo((preValue) => ({ ...preValue, currentSearchKeywordsIdx: idx }));
@@ -392,7 +419,6 @@ const SearchPages = ({ isSignIn }) => {
       };
     });
   };
-
   useEffect(() => {
     const updateSearchMetaInfo = async () => {
       // eslint-disable-next-line no-unused-vars
@@ -434,7 +460,6 @@ const SearchPages = ({ isSignIn }) => {
     };
     updateSearchMetaInfo();
   }, [isSignIn]);
-
   useEffect(() => {
     // console.log('useEffect on updateSearchInfo');
     // console.log('searchMetaInfo: ', searchMetaInfo);
@@ -444,7 +469,6 @@ const SearchPages = ({ isSignIn }) => {
     }
     updateSearchInfo();
   }, [searchMetaInfo]);
-
   useEffect(() => {
     // console.log('searchInfo in useEffect on searchInfo: ', searchInfo);
   }, [searchInfo]);
@@ -466,6 +490,9 @@ const SearchPages = ({ isSignIn }) => {
           handlePriceSortButtonClick={handlePriceSortButtonClick}
           handleHitButtonClick={handleHitButtonClick}
           handleEasySearchButtonClick={handleEasySearchButtonClick}
+          currentSearchKeywordsIdx={currentSearchKeywordsIdx}
+          handleNavBarItemClick={handleNavBarItemClick}
+          searchInfo={searchInfo}
         />
       )}
     </StyledSearchPage>
