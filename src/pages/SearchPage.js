@@ -279,6 +279,7 @@ const SearchPages = ({ isSignIn }) => {
   // eslint-disable-next-line no-unused-vars
   const { isEasySearchMode, currentSearchKeywordsIdx, filterButtonState } = searchMetaInfo;
   const [searchInfo, setSearchInfo] = useState(null);
+  const [preSearchInfo, setPreSearchInfo] = useState(null);
   const [searchItemIdxObj, setSearchItemIdxObj] = useState(null);
   const searchCardIdxObj = useRef(null);
   const [isUpdateSearchItemIdxObj, setIsUpdateSearchItemIdxObj] = useState(null);
@@ -311,8 +312,8 @@ const SearchPages = ({ isSignIn }) => {
   const updateSearchItemInfo = () => {};
   const updateSearchCardInfo = async (pidValue, updatedProductAction, itemKey, cardIdx) => {
     const newSearchInfoProductAction = fetchSearchCardInfo(pidValue, updatedProductAction);
-    setSearchInfo((preSearchInfo) => {
-      const newSearchInfo = [...preSearchInfo];
+    setSearchInfo((preSearchInfoValue) => {
+      const newSearchInfo = [...preSearchInfoValue];
       const updateItemIdx = searchItemIdxObj[itemKey];
       newSearchInfo[updateItemIdx].products[cardIdx] = newSearchInfoProductAction;
 
@@ -511,7 +512,13 @@ const SearchPages = ({ isSignIn }) => {
   }, [searchMetaInfo]);
   useEffect(() => {
     // console.log('searchInfo in useEffect on searchInfo: ', searchInfo);
+    if (preSearchInfo !== searchInfo) {
+      setPreSearchInfo(searchInfo);
+    }
   }, [searchInfo]);
+  // useEffect(() => {
+  //   console.log('preSearchInfo in useEffect on preSearchInfo: ', preSearchInfo);
+  // }, [preSearchInfo]);
   useEffect(() => {
     // console.log('searchItemIdxObj: ', searchItemIdxObj);
     if (isUpdateSearchItemIdxObj === 1) {
@@ -532,6 +539,8 @@ const SearchPages = ({ isSignIn }) => {
           handleNavBarItemClick={handleNavBarItemClick}
           handleEasySearchButtonClick={handleEasySearchButtonClick}
           searchInfo={searchInfo}
+          preSearchInfo={preSearchInfo}
+          searchItemIdxObj={searchItemIdxObj}
           updateSearchItemIdxObj={updateSearchItemIdxObj}
           updateSearchCardIdxObj={updateSearchCardIdxObj}
         />

@@ -1,4 +1,5 @@
-import { React, useState, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+import { React, useState, useEffect, useRef } from 'react';
 import IconSearchPage from '../../../styles/SearchPage/IconSearchPage';
 import {
   StyledSearchCards,
@@ -34,8 +35,8 @@ const SearchCard = ({ name, image, price, productAction }) => {
 };
 
 const SearchCards = ({ productsData, updateSearchCardIdxObj, itemKey }) => {
-  const [preProductsData, setPreProductsData] = useState(null);
-  const [preItemKey, setPreItemKey] = useState(null);
+  // const [preProductsData, setPreProductsData] = useState(null);
+  // const preItemKey = useRef(null);
   let newSearchCards = [];
   const newSearchCardIdxObj = {};
   newSearchCardIdxObj[itemKey] = {};
@@ -56,26 +57,31 @@ const SearchCards = ({ productsData, updateSearchCardIdxObj, itemKey }) => {
     });
   }
 
+  // useEffect(() => {
+  //   console.log('preItemKey.current: ', preItemKey.current);
+  // }, [preItemKey]);
+  // useEffect(() => {
+  //   if (preProductsData !== null) {
+  //     if (JSON.stringify(productsData) === JSON.stringify(preProductsData)) {
+  //       return;
+  //     }
+  //   }
+  //   console.log('preItemKey.current: ', preItemKey.current);
+  //   console.log('itemKey: ', itemKey);
+  //   console.log('preProductsData: ', preProductsData);
+  //   console.log('productsData: ', productsData);
+  //   setPreProductsData(productsData);
+  //   updateSearchCardIdxObj(newSearchCardIdxObj, preItemKey.current);
+  //   preItemKey.current = itemKey;
+  // }, [productsData]);
+  // useEffect(() => {
+  //   // console.log('preProductsData: ', preProductsData);
+  // }, [preProductsData]);
   useEffect(() => {
-    console.log('preItemKey: ', preItemKey);
-  }, [preItemKey]);
-  useEffect(() => {
-    if (preProductsData !== null) {
-      if (JSON.stringify(productsData) === JSON.stringify(preProductsData)) {
-        return;
-      }
-    }
-    console.log('preItemKey: ', preItemKey);
-    console.log('itemKey: ', itemKey);
-    console.log('preProductsData: ', preProductsData);
-    console.log('productsData: ', productsData);
-    setPreItemKey(itemKey);
-    setPreProductsData(productsData);
-    updateSearchCardIdxObj(newSearchCardIdxObj, preItemKey);
-  }, [productsData]);
-  useEffect(() => {
-    // console.log('preProductsData: ', preProductsData);
-  }, [preProductsData]);
+    return () => {
+      console.log('<SearchCards /> unmount');
+    };
+  });
 
   return <StyledSearchCards>{!productsData ? <div /> : newSearchCards}</StyledSearchCards>;
 };

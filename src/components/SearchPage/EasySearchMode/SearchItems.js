@@ -8,6 +8,24 @@ import { StyledSearchItem } from '../../../styles/SearchPage/EasySearchMode/Styl
 
 const SearchItem = ({ eachSearchInfo, updateSearchCardIdxObj, itemKey }) => {
   const { products: productsData } = eachSearchInfo;
+  console.log('itemKey: ', itemKey);
+  const [preProductsData, setPreProductsData] = useState(null);
+
+  useEffect(() => {
+    if (JSON.stringify(preProductsData) !== JSON.stringify(productsData)) {
+      return;
+    }
+    setPreProductsData(productsData);
+  }, [eachSearchInfo]);
+  useEffect(() => {
+    console.log('preProductsData: ', preProductsData);
+  }, [preProductsData]);
+
+  useEffect(() => {
+    return () => {
+      console.log('<SearchItem />: unmount');
+    };
+  });
   return (
     <StyledSearchItem>
       <div className="SearchItemTitle">
@@ -23,16 +41,25 @@ const SearchItem = ({ eachSearchInfo, updateSearchCardIdxObj, itemKey }) => {
   );
 };
 
-const SearchItems = ({ searchInfo, updateSearchItemIdxObj, updateSearchCardIdxObj }) => {
+const SearchItems = ({
+  searchInfo,
+  preSearchInfo,
+  searchItemIdxObj,
+  updateSearchItemIdxObj,
+  updateSearchCardIdxObj,
+}) => {
   // console.log('!searchInfo: ', !searchInfo);
-  const [preSearchInfo, setPreSearchInfo] = useState(null);
   let newSearchItems = [];
+  const isSearchInfoChange = JSON.stringify(preSearchInfo) !== JSON.stringify(searchInfo);
+  const preSearchItemsKeys = !searchItemIdxObj ? null : Object.keys(searchItemIdxObj);
   const newSearchItemIdxObj = {};
+  // console.log('preSearchItemsKeys: ', preSearchItemsKeys);
 
   if (searchInfo) {
     const getTimeKey = getTimeKeyGenerator();
     newSearchItems = searchInfo.map((eachSearchInfo, index) => {
-      const itemKey = getTimeKey();
+      const itemKey =
+        !preSearchItemsKeys || isSearchInfoChange ? getTimeKey() : preSearchItemsKeys[index];
       newSearchItemIdxObj[itemKey] = index;
       let eachPreSearchInfo = null;
       if (preSearchInfo) {
@@ -52,19 +79,20 @@ const SearchItems = ({ searchInfo, updateSearchItemIdxObj, updateSearchCardIdxOb
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
-    console.log('searchInfo: ', searchInfo);
-    console.log('preSearchInfo: ', preSearchInfo);
+    // console.log('searchInfo: ', searchInfo);
+    // console.log('preSearchInfo: ', preSearchInfo);
     if (preSearchInfo !== null) {
-      if (JSON.stringify(searchInfo) === JSON.stringify(preSearchInfo)) {
+      if (!isSearchInfoChange) {
         return;
       }
     }
-    setPreSearchInfo(searchInfo);
     updateSearchItemIdxObj(newSearchItemIdxObj);
   }, [searchInfo]);
   useEffect(() => {
-    // console.log('preSearchInfo: ', preSearchInfo);
-  }, [preSearchInfo]);
+    return () => {
+      console.log('<SearchItems /> unmount');
+    };
+  });
 
   return !searchInfo ? <div /> : newSearchItems;
 };

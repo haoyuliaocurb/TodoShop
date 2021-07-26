@@ -24,6 +24,8 @@ const EasySearchPage = ({
   handleNavBarItemClick,
   handleEasySearchButtonClick,
   searchInfo,
+  preSearchInfo,
+  searchItemIdxObj,
   updateSearchItemIdxObj,
   updateSearchCardIdxObj,
 }) => {
@@ -139,6 +141,8 @@ const EasySearchPage = ({
         </button>
         <SearchItems
           searchInfo={searchInfo}
+          preSearchInfo={preSearchInfo}
+          searchItemIdxObj={searchItemIdxObj}
           updateSearchItemIdxObj={updateSearchItemIdxObj}
           updateSearchCardIdxObj={updateSearchCardIdxObj}
         />
