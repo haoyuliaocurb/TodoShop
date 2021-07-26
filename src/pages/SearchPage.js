@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useRef } from 'react';
 import { firestore } from '../utils/firebase/firebase-services';
 // import { Link } from 'react-router-dom';
 
@@ -280,13 +280,10 @@ const SearchPages = ({ isSignIn }) => {
   const { isEasySearchMode, currentSearchKeywordsIdx, filterButtonState } = searchMetaInfo;
   const [searchInfo, setSearchInfo] = useState(null);
   const [searchItemIdxObj, setSearchItemIdxObj] = useState(null);
+  const searchCardIdxObj = useRef(null);
   const [isUpdateSearchItemIdxObj, setIsUpdateSearchItemIdxObj] = useState(null);
-  const [isUpdateSearchItem, setIsUpdateSearchItem] = useState(null);
 
   const updateSearchItemIdxObj = (newSearchItemIdxObjValue) => {
-    if (isUpdateSearchItem !== 1) {
-      return;
-    }
     if (isUpdateSearchItemIdxObj !== 0) {
       return;
     }
@@ -295,6 +292,18 @@ const SearchPages = ({ isSignIn }) => {
       const newSearchItemIdxObj = newSearchItemIdxObjValue;
       return newSearchItemIdxObj;
     });
+  };
+  const updateSearchCardIdxObj = (newSearchCardIdxObjValue, preSearchItemKey) => {
+    // console.log('trigger updateSearchCardIdxObj');
+    if (preSearchItemKey !== null) {
+      delete searchCardIdxObj.current[preSearchItemKey];
+    }
+    const newSearchCardIdxObj = {
+      ...searchCardIdxObj.current,
+      ...newSearchCardIdxObjValue,
+    };
+    // console.log('newSearchCardIdxObj: ', newSearchCardIdxObj);
+    searchCardIdxObj.current = newSearchCardIdxObj;
   };
   const fetchSearchInfo = () => {};
   const fetchSearchItemInfo = () => {};
@@ -504,17 +513,17 @@ const SearchPages = ({ isSignIn }) => {
     // console.log('searchInfo in useEffect on searchInfo: ', searchInfo);
   }, [searchInfo]);
   useEffect(() => {
-    console.log('searchItemIdxObj: ', searchItemIdxObj);
+    // console.log('searchItemIdxObj: ', searchItemIdxObj);
     if (isUpdateSearchItemIdxObj === 1) {
       setIsUpdateSearchItemIdxObj(0);
-      setIsUpdateSearchItem(0);
     }
     if (isUpdateSearchItemIdxObj === null) {
       setIsUpdateSearchItemIdxObj(0);
-      setIsUpdateSearchItem(1);
     }
   }, [searchItemIdxObj]);
-
+  useEffect(() => {
+    console.log('searchCardIdxObj.current:', searchCardIdxObj.current);
+  }, [searchCardIdxObj]);
   return (
     <StyledSearchPage>
       {isEasySearchMode ? (
@@ -524,6 +533,7 @@ const SearchPages = ({ isSignIn }) => {
           handleEasySearchButtonClick={handleEasySearchButtonClick}
           searchInfo={searchInfo}
           updateSearchItemIdxObj={updateSearchItemIdxObj}
+          updateSearchCardIdxObj={updateSearchCardIdxObj}
         />
       ) : (
         <NormalSearchMode

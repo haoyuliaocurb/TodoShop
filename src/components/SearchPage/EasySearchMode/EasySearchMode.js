@@ -25,6 +25,7 @@ const EasySearchPage = ({
   handleEasySearchButtonClick,
   searchInfo,
   updateSearchItemIdxObj,
+  updateSearchCardIdxObj,
 }) => {
   const [scrollOffsetInfo, setScrollOffsetInfo] = useState(INIT_SCROLLOFFSET);
   const preScrollOffset = useRef(0);
@@ -136,7 +137,11 @@ const EasySearchPage = ({
         <button onClick={handleEasySearchButtonClick} type="button">
           <IconSearchPage.NormalSearch />
         </button>
-        <SearchItems searchInfo={searchInfo} updateSearchItemIdxObj={updateSearchItemIdxObj} />
+        <SearchItems
+          searchInfo={searchInfo}
+          updateSearchItemIdxObj={updateSearchItemIdxObj}
+          updateSearchCardIdxObj={updateSearchCardIdxObj}
+        />
       </div>
       <TabBar
         scrollOffsetInfo={scrollOffsetInfo}

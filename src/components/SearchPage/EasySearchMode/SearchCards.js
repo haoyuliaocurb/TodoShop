@@ -1,4 +1,4 @@
-import { React } from 'react';
+import { React, useState, useEffect } from 'react';
 import IconSearchPage from '../../../styles/SearchPage/IconSearchPage';
 import {
   StyledSearchCards,
@@ -33,15 +33,51 @@ const SearchCard = ({ name, image, price, productAction }) => {
   );
 };
 
-const SearchCards = ({ products }) => {
-  return (
-    <StyledSearchCards>
-      {products.map((product) => {
-        const { name, image, price, productAction } = product;
-        return <SearchCard name={name} image={image} price={price} productAction={productAction} />;
-      })}
-    </StyledSearchCards>
-  );
+const SearchCards = ({ productsData, updateSearchCardIdxObj, itemKey }) => {
+  const [preProductsData, setPreProductsData] = useState(null);
+  const [preItemKey, setPreItemKey] = useState(null);
+  let newSearchCards = [];
+  const newSearchCardIdxObj = {};
+  newSearchCardIdxObj[itemKey] = {};
+
+  if (productsData) {
+    newSearchCards = productsData.map((eachProductData, index) => {
+      const { name, image, price, pid, productAction } = eachProductData;
+      newSearchCardIdxObj[itemKey][pid] = index;
+      return (
+        <SearchCard
+          key={pid}
+          name={name}
+          image={image}
+          price={price}
+          productAction={productAction}
+        />
+      );
+    });
+  }
+
+  useEffect(() => {
+    console.log('preItemKey: ', preItemKey);
+  }, [preItemKey]);
+  useEffect(() => {
+    if (preProductsData !== null) {
+      if (JSON.stringify(productsData) === JSON.stringify(preProductsData)) {
+        return;
+      }
+    }
+    console.log('preItemKey: ', preItemKey);
+    console.log('itemKey: ', itemKey);
+    console.log('preProductsData: ', preProductsData);
+    console.log('productsData: ', productsData);
+    setPreItemKey(itemKey);
+    setPreProductsData(productsData);
+    updateSearchCardIdxObj(newSearchCardIdxObj, preItemKey);
+  }, [productsData]);
+  useEffect(() => {
+    // console.log('preProductsData: ', preProductsData);
+  }, [preProductsData]);
+
+  return <StyledSearchCards>{!productsData ? <div /> : newSearchCards}</StyledSearchCards>;
 };
 
 export default SearchCards;
