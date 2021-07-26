@@ -1,6 +1,8 @@
-import firebase from '@firebase/app';
-import '@firebase/auth';
-import '@firebase/firestore';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+// import * as firebaseui from 'firebaseui';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyD_Bo3BYW-axF5GpUUEdsGKw-vtgFSFANE',
@@ -18,4 +20,19 @@ const app = firebase.initializeApp(firebaseConfig);
 const auth = app.auth();
 const firestore = app.firestore();
 
-export { firebase, auth, firestore };
+// Configure FirebaseUI.
+const uiConfig = {
+  // Popup signin flow rather than redirect flow.
+  signInFlow: 'popup',
+  // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
+  signInSuccessUrl: '/signedIn',
+  // We will display Google and Facebook as auth providers.
+  signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
+};
+
+// // Initialize the FirebaseUI Widget using Firebase.
+// const ui = new firebaseui.auth.AuthUI(auth);
+// // The start method will wait until the DOM is loaded.
+// ui.start('#firebaseui-auth-container', uiConfig);
+
+export { firebase, auth, firestore, uiConfig, StyledFirebaseAuth };

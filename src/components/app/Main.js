@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
+// eslint-disable-next-line no-unused-vars
 import { auth, firestore, firebase } from '../../utils/firebase/firebase-services';
 import TodolistPage from '../../pages/TodolistPage';
 import AuthPage from '../../pages/AuthPage';

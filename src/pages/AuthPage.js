@@ -1,11 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { React, useState } from 'react';
-import { auth } from '../utils/firebase/firebase-services';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import { auth, uiConfig, StyledFirebaseAuth, firebase } from '../utils/firebase/firebase-services';
 // import { auth } from '../utils/firebase/firebase-services';
 
 import StyledAuthPage from '../styles/AuthPage/StyledAuthPage';
 import TabBar from '../components/app/TabBar';
 import GeneralTabBar from '../components/app/GeneralTabBar';
+import SignIn from '../components/AuthPage/SignIn';
+import User from '../components/AuthPage/User';
 import { styledVariables } from '../styles/app/cssMaterial';
 
 const USER_INFO_A = {
@@ -75,7 +78,80 @@ const AuthPage = ({ isSignIn }) => {
     setPasswordValue(e.target.value);
   };
 
-  /*
+  const getAuthPageContent = (isSignInValue) => {
+    if (!isSignInValue) {
+      return (
+        <Route path="/auth/signIn">
+          <SignIn />
+        </Route>
+      );
+    }
+    return (
+      <Route exact path="/auth/uid/:uid">
+        <User isSignIn={isSignIn} />
+      </Route>
+    );
+  };
+
+  return (
+    <StyledAuthPage>
+      <Switch>
+        <Route exact path="/auth/uid/:uid">
+          <User isSignIn={isSignIn} />
+        </Route>
+        <Route path="/auth/signIn">
+          <SignIn isSignIn={isSignIn} />
+        </Route>
+        {!isSignIn ? (
+          <Redirect from="/auth" to="/auth/signIn" />
+        ) : (
+          <Redirect from="/auth" to={`/auth/uid/${isSignIn}`} />
+        )}
+      </Switch>
+      <TabBar backgroundColor={styledVariables.color.gray100} tabBarState={barState.tabBar} />
+    </StyledAuthPage>
+  );
+};
+
+export default AuthPage;
+
+/*
+<Switch>
+  {getAuthPageContent(isSignIn)}
+  <Redirect from="/auth" to="/auth/signIn" />
+</Switch>
+
+*/
+
+/*
+<form onSubmit={handleSubmit}>
+<label htmlFor="AuthEmailInput">
+  <span>email:</span>
+  <input id="AuthEmailInput" value={emailValue} onInput={handleEmailInput} />
+</label>
+<label htmlFor="AuthPasswordInput">
+  <span>password:</span>
+  <input
+    id="AuthPasswordInput"
+    type="password"
+    value={passwordValue}
+    onInput={handlePasswordInput}
+  />
+</label>
+<p>{!isSignIn ? '尚未登入' : `已登入，使用者 ${isSignIn}`}</p>
+<button type="submit">Submit</button>
+<button
+  type="button"
+  onClick={() => {
+    auth.signOut();
+  }}
+>
+  Sign Out
+</button>
+</form> 
+*/
+
+/*
   const onAuthSubmit = async (emailValueInput, passwordValueInput) => {
     // console.log('trigger submit event');
 
@@ -95,38 +171,4 @@ const AuthPage = ({ isSignIn }) => {
     // currentUser.current = signInResult.user;
     setIsSignIn(signInResult.user.uid);
   };
-  */
-
-  return (
-    <StyledAuthPage>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="AuthEmailInput">
-          <span>email:</span>
-          <input id="AuthEmailInput" value={emailValue} onInput={handleEmailInput} />
-        </label>
-        <label htmlFor="AuthPasswordInput">
-          <span>password:</span>
-          <input
-            id="AuthPasswordInput"
-            type="password"
-            value={passwordValue}
-            onInput={handlePasswordInput}
-          />
-        </label>
-        <p>{!isSignIn ? '尚未登入' : `已登入，使用者 ${isSignIn}`}</p>
-        <button type="submit">Submit</button>
-        <button
-          type="button"
-          onClick={() => {
-            auth.signOut();
-          }}
-        >
-          Sign Out
-        </button>
-      </form>
-      <TabBar backgroundColor={styledVariables.color.gray100} tabBarState={barState.tabBar} />
-    </StyledAuthPage>
-  );
-};
-
-export default AuthPage;
+*/
