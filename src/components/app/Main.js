@@ -7,6 +7,7 @@ import TodolistPage from '../../pages/TodolistPage';
 import AuthPage from '../../pages/AuthPage';
 import SearchPage from '../../pages/SearchPage';
 import HomePage from '../../pages/HomePage';
+import CartPage from '../../pages/CartPage';
 
 // styling
 import StyledMain from '../../styles/app/StyledMain';
@@ -84,6 +85,9 @@ const Main = () => {
         </Route>
         <Route path="/search">
           <SearchPage isSignIn={isSignIn} />
+        </Route>
+        <Route path="/cart">
+          <CartPage isSignIn={isSignIn} />
         </Route>
         <Route path="/">
           <HomePage />
