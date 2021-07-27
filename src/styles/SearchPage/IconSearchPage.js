@@ -13,6 +13,7 @@ import { ReactComponent as SortUp } from './images/icon-sortUp.svg';
 import { ReactComponent as SortDown } from './images/icon-sortDown.svg';
 import { ReactComponent as NoSort } from './images/icon-noSort.svg';
 import { ReactComponent as Close } from './images/icon-close.svg';
+import { ReactComponent as Search } from './images/icon-search.svg';
 
 export default {
   Add2CartUnselected,
@@ -30,4 +31,5 @@ export default {
   SortDown,
   NoSort,
   Close,
+  Search,
 };

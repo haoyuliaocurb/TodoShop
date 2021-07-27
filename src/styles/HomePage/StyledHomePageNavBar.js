@@ -1,7 +1,7 @@
 import styled from '@emotion/styled/macro';
 import { styledVariables } from '../app/cssMaterial';
 
-const StyledSearchNavBar = styled.nav`
+const StyledHomePageNavBar = styled.nav`
   width: 100%;
   height: 100%;
   background-color: ${styledVariables.color.gray100};
@@ -17,41 +17,6 @@ const StyledSearchNavBar = styled.nav`
     display: flex;
     justify-content: center;
     align-items: center;
-
-    > span.formerItemAmount {
-      margin-left: 10px;
-      width: 16px;
-      height: 16px;
-      border: ${styledVariables.color.gray300} solid 1px;
-      border-radius: 4px;
-      font-size: 8px;
-      line-height: 8px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: ${styledVariables.color.gray300};
-    }
-
-    > span.latterItemAmount {
-      margin-right: 10px;
-      width: 16px;
-      height: 16px;
-      border: ${styledVariables.color.gray300} solid 1px;
-      border-radius: 4px;
-      font-size: 8px;
-      line-height: 8px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: ${styledVariables.color.gray300};
-    }
-
-    > svg.iconAdd {
-      margin-right: 20px;
-      padding-bottom: 4px;
-      width: 20px;
-      height: 20px;
-    }
 
     > span.searchBar {
       position: absolute;
@@ -163,4 +128,4 @@ const StyledSearchNavBar = styled.nav`
   }
 `;
 
-export default StyledSearchNavBar;
+export default StyledHomePageNavBar;

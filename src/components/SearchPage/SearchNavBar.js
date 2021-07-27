@@ -1,4 +1,4 @@
-import { React } from 'react';
+import { React, useRef } from 'react';
 
 import IconSearchPage from '../../styles/SearchPage/IconSearchPage';
 import StyledSearchNavBar from '../../styles/SearchPage/StyledSearchNavBar';
@@ -20,6 +20,16 @@ const SearchNavBarItem = ({ index, handleNavBarItemClick, content, selected }) =
 };
 
 const SearchNavBar = ({ currentSearchKeywordsIdx, handleNavBarItemClick, searchInfo }) => {
+  const searchBar = useRef(null);
+  const handleButtonClick = () => {
+    if (!searchBar) {
+      return;
+    }
+    searchBar.current.classList.remove('unfocus');
+  };
+  const handleSearchBarBlur = () => {
+    searchBar.current.classList.add('unfocus');
+  };
   // console.log('searchInfo: ', searchInfo);
   const getSearchNavBarItems = (searchInfoData) => {
     // eslint-disable-next-line prettier/prettier
@@ -53,12 +63,18 @@ const SearchNavBar = ({ currentSearchKeywordsIdx, handleNavBarItemClick, searchI
   return (
     <StyledSearchNavBar>
       <div>
+        <span className="searchBar unfocus" ref={searchBar} onBlur={handleSearchBarBlur}>
+          <label htmlFor="searchBar">
+            <IconSearchPage.Search />
+            <input id="searchBar" placeholder="請輸入您欲新增查詢的商品" />
+          </label>
+        </span>
         <span className="formerItemAmount">1</span>
         <StyledSearchNavBarItems className="container">
           {searchInfo ? getSearchNavBarItems(searchInfo) : ''}
         </StyledSearchNavBarItems>
         <span className="latterItemAmount">1</span>
-        <IconSearchPage.Add className="iconAdd" />
+        <IconSearchPage.Add className="iconAdd" onClick={handleButtonClick} />
       </div>
       <IconSearchPage.ChenvronLeft className="iconChenvronLeft" />
       <span className="iconCart">
