@@ -15,7 +15,7 @@ const CartPageNavBar = ({ handleNavBarManageButton, handleNavBarChevronLeft, isM
       >
         <IconAppContent.ChevronLeft />
       </Link>
-      <h1>您的購物清單</h1>
+      <h1>購物車</h1>
       <button
         onClick={() => {
           handleNavBarManageButton(isManageMode);

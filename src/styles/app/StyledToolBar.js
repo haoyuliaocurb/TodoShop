@@ -10,7 +10,7 @@ const StyledToolBar = styled.div`
     const barHeight = removePx(styledVariables.shared.barHeight);
     // console.log('windowOffset: ', windowOffset);
     if (windowOffset <= 0 || isScrollEnd) {
-      return '0';
+      return styledVariables.shared.barHeight;
     }
     if (Math.abs(scrollOffset) < barHeight) {
       // console.log(`${-scrollOffset}px`);
@@ -25,6 +25,7 @@ const StyledToolBar = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 5;
+  /* border: solid black 1px; */
 
   &.transition {
     transition-property: bottom;

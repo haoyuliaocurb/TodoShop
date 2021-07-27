@@ -1,44 +1,51 @@
 import { React } from 'react';
-import StyledTodolistPageToolBar from '../../styles/TodolistPage/StyledTodolistPageToolBar';
+import StyledCartPageToolBar from '../../styles/CartPage/StyledCartPageToolBar';
 
-const CartPageToolBar = ({
-  buttonState,
-  handleToolBarCreateTodolistButton,
-  handleToolBarDeleteTodolistButton,
-}) => {
-  const toolBarButtonState = !buttonState ? null : buttonState.toolBar;
-  // console.log('toolBarButtonState: ', toolBarButtonState);
-  console.log('<TodolistPageToolBar />: render');
-  const addTodolistButtonState = !toolBarButtonState ? null : toolBarButtonState.addTodolistButton;
-  const deleteTodolistButtonState = !toolBarButtonState
-    ? null
-    : toolBarButtonState.deleteTodolistButton;
-  return (
-    <StyledTodolistPageToolBar>
-      <button
-        onClick={() => {
-          // console.log('<TodolistPageToolBar />: trigger button onClick');
-          // console.log('currentUid: ', currentUid);
-          handleToolBarCreateTodolistButton();
-        }}
-        type="button"
-        className={!addTodolistButtonState ? 'addTodolistButton dp-none' : 'addTodolistButton'}
-      >
-        新增購物清單 +
-      </button>
-      <button
-        onClick={() => {
-          handleToolBarDeleteTodolistButton(buttonState);
-        }}
-        type="button"
-        className={
-          !deleteTodolistButtonState ? 'deleteTodolistButton dp-none' : 'deleteTodolistButton'
-        }
-      >
-        刪除購物清單
-      </button>
-    </StyledTodolistPageToolBar>
-  );
+const CartPageToolBar = () => {
+  const toolBarState = 1;
+  const sumPrice = 315;
+  const buttonSelectAllState = 0;
+  // console.log('<TodolistPageToolBar />: render');
+  const getToolBarContent = (toolBarStateValue) => {
+    switch (toolBarStateValue) {
+      case 2:
+        return (
+          <div>
+            <button type="button" className="buttonSelectAll">
+              <span>
+                <span className={!buttonSelectAllState ? 'dot vb-hidden' : 'dot'} />
+              </span>
+              <p>全選</p>
+            </button>
+            <button type="button" className="buttonDeleteCard">
+              刪除
+            </button>
+          </div>
+        );
+      default:
+        return (
+          <div>
+            <button type="button" className="buttonSelectAll">
+              <span>
+                <span className={!buttonSelectAllState ? 'dot vb-hidden' : 'dot'} />
+              </span>
+              <p>全選</p>
+            </button>
+            <div className="sumPriceText">
+              <p>合計</p>
+              <span className="sumPrice">
+                <h3>$</h3>
+                <h3>{sumPrice}</h3>
+              </span>
+            </div>
+            <button type="button" className="buttonPayment">
+              結算
+            </button>
+          </div>
+        );
+    }
+  };
+  return <StyledCartPageToolBar>{getToolBarContent(toolBarState)}</StyledCartPageToolBar>;
 };
 
 export default CartPageToolBar;
