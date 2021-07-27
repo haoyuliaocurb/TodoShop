@@ -12,7 +12,7 @@ const SearchItem = ({ eachSearchInfo, updateSearchCardIdxObj, itemKey }) => {
   const [preProductsData, setPreProductsData] = useState(null);
 
   useEffect(() => {
-    if (JSON.stringify(preProductsData) !== JSON.stringify(productsData)) {
+    if (JSON.stringify(preProductsData) === JSON.stringify(productsData)) {
       return;
     }
     setPreProductsData(productsData);
@@ -25,7 +25,7 @@ const SearchItem = ({ eachSearchInfo, updateSearchCardIdxObj, itemKey }) => {
     return () => {
       console.log('<SearchItem />: unmount');
     };
-  });
+  }, []);
   return (
     <StyledSearchItem>
       <div className="SearchItemTitle">
@@ -92,7 +92,7 @@ const SearchItems = ({
     return () => {
       console.log('<SearchItems /> unmount');
     };
-  });
+  }, []);
 
   return !searchInfo ? <div /> : newSearchItems;
 };
