@@ -81,7 +81,7 @@ const SearchCards = ({ productsData, updateSearchCardIdxObj, itemKey }) => {
     return () => {
       console.log('<SearchCards /> unmount');
     };
-  });
+  }, []);
 
   return <StyledSearchCards>{!productsData ? <div /> : newSearchCards}</StyledSearchCards>;
 };
