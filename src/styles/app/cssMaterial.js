@@ -80,6 +80,7 @@ export const styledVariables = {
   cartPage: {
     cartedProductGroupByStore: {
       sharedPaddingLeft: '30px',
+      sharedPaddingLeftShort: '15px',
       shareMarginLeftAdjust: '4px',
     },
     cartedProductCard: {

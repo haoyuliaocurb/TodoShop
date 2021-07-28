@@ -17,7 +17,7 @@ const StyledStoreTitle = styled.div`
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding-left: calc(${styledVariables.cartPage.cartedProductGroupByStore.sharedPaddingLeft} + 4px);
+    padding-left: calc( ${styledVariables.cartPage.cartedProductGroupByStore.sharedPaddingLeft} + 4px);
     color: ${styledVariables.color.gray300};
   }
 

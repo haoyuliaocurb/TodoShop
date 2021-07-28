@@ -26,7 +26,12 @@ const StyledToolBar = styled.div`
   align-items: center;
   z-index: 5;
   /* border: solid black 1px; */
-  /* box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.1); */
+  box-shadow: ${({ topShadow }) => {
+    if (!topShadow) {
+      return 'none';
+    }
+    return '0 -5px 10px rgba(0, 0, 0, 0.1)';
+  }};
 
   &.transition {
     transition-property: bottom;

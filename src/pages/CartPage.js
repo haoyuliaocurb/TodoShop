@@ -18,7 +18,14 @@ const INIT_SCROLLOFFSET = {
   isScrollEnd: true,
 };
 
+const INIT_BUTTONSTATE = {
+  management: 0,
+};
+
 const CartPage = ({ isSignIn }) => {
+  const [cartedProductPriceSum, setCartedProductPriceSum] = useState(0);
+  const [buttonState, setButtonState] = useState(INIT_BUTTONSTATE);
+
   // (1) 處理 scroll bar
   const INIT_BARSTATE = {
     navBar: {
@@ -26,8 +33,9 @@ const CartPage = ({ isSignIn }) => {
       visibility: 1,
     },
     toolBar: {
-      content: <CartPageToolBar />,
+      content: <CartPageToolBar cartedProductPriceSum={cartedProductPriceSum} />,
       visibility: 1,
+      topShadow: 1,
     },
     tabBar: {
       content: (
@@ -125,7 +133,6 @@ const CartPage = ({ isSignIn }) => {
   // (2) 處理 data
   const currentUid = isSignIn;
   const [cartData, setCartData] = useState(null);
-
   // eslint-disable-next-line consistent-return
   const fetchCartData = (uidValue) => {
     if (!uidValue) {
@@ -233,12 +240,62 @@ const CartPage = ({ isSignIn }) => {
     // eslint-disable-next-line consistent-return
     return promiseCartData;
   };
+  const updateButtonState = (newButtonStateValue, updateBehavior = 0, sid) => {
+    // console.log('newButtonStateValue: ', newButtonStateValue);
+    switch (updateBehavior) {
+      case 0:
+        setButtonState((preButtonState) => {
+          const newButtonState = {
+            ...preButtonState,
+            ...newButtonStateValue,
+          };
+          return newButtonState;
+        });
+        break;
+      case 1:
+        if (newButtonStateValue === null) {
+          setButtonState((preButtonState) => {
+            const newButtonState = {
+              ...preButtonState,
+            };
+            delete newButtonState[sid];
+            return newButtonState;
+          });
+          return;
+        }
+        setButtonState((preButtonState) => {
+          const newSidButtonState = {
+            ...preButtonState[sid],
+            ...newButtonStateValue,
+          };
+          const newButtonState = {
+            ...preButtonState,
+          };
+          newButtonState[sid] = newSidButtonState;
+          return newButtonState;
+        });
+        break;
+      default:
+    }
+  };
+
   useEffect(() => {
     fetchCartData(currentUid);
   }, [currentUid]);
   useEffect(() => {
     console.log('cartData: ', cartData);
   }, [cartData]);
+  useEffect(() => {
+    console.log('buttonState: ', buttonState);
+    setBarState((preBarState) => {
+      const newBarState = {
+        navBar: { ...preBarState.navBar },
+        toolBar: { ...preBarState.toolBar },
+        tabBar: { ...preBarState.tabBar },
+      };
+      return newBarState;
+    });
+  }, [buttonState]);
 
   return (
     <StyledCartPage>
@@ -256,7 +313,13 @@ const CartPage = ({ isSignIn }) => {
               <div />
             ) : (
               cartData.map((eachCartData) => {
-                return <CartedProductGroupByStore eachCartData={eachCartData} />;
+                return (
+                  <CartedProductGroupByStore
+                    eachCartData={eachCartData}
+                    buttonState={buttonState}
+                    updateButtonState={updateButtonState}
+                  />
+                );
               })
             )}
           </div>

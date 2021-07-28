@@ -2,9 +2,8 @@ import { React } from 'react';
 import StyledCartPageToolBar from '../../styles/CartPage/StyledCartPageToolBar';
 import IconSelectAll from '../app/IconSelectAll';
 
-const CartPageToolBar = () => {
+const CartPageToolBar = ({ cartedProductPriceSum }) => {
   const toolBarState = 1;
-  const sumPrice = 315;
   const buttonSelectAllState = 0;
   // console.log('<TodolistPageToolBar />: render');
   const getToolBarContent = (toolBarStateValue) => {
@@ -34,7 +33,7 @@ const CartPageToolBar = () => {
               <p>合計</p>
               <span className="sumPrice">
                 <h3>$</h3>
-                <h3>{sumPrice}</h3>
+                <h3>{cartedProductPriceSum}</h3>
               </span>
             </div>
             <button type="button" className="buttonPayment">

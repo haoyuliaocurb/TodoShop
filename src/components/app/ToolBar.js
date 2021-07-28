@@ -2,7 +2,7 @@ import { React } from 'react';
 import StyledToolBar from '../../styles/app/StyledToolBar';
 
 const ToolBar = ({ scrollOffsetInfo, toolBarState }) => {
-  const { content, visibility } = toolBarState;
+  const { content, visibility, topShadow } = toolBarState;
   // const { preScrollOffset, scrollOffset, isScrollEnd } = scrollOffsetInfo;
   const preScrollOffset = visibility !== 1 ? null : scrollOffsetInfo.preScrollOffset;
   const scrollOffset = visibility !== 1 ? null : scrollOffsetInfo.scrollOffset;
@@ -15,6 +15,7 @@ const ToolBar = ({ scrollOffsetInfo, toolBarState }) => {
       windowOffset={windowOffset}
       scrollOffset={scrollOffset}
       isScrollEnd={isScrollEnd}
+      topShadow={topShadow}
       // className={`${visibility ? '' : 'vb-hidden'} ${
       //   windowOffset < 0 || isScrollEnd ? 'transition' : ''
       // }`}

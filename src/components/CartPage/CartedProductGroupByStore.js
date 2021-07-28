@@ -4,13 +4,23 @@ import StyledCartedProductGroupByStore from '../../styles/CartPage/StyledCartedP
 import StoreTitle from './StoreTitle';
 import CartedProductCard from './CartedProductCard';
 
-const CartedProductGroupByStore = ({ eachCartData }) => {
-  const { storeName, products } = eachCartData;
+const CartedProductGroupByStore = ({ eachCartData, buttonState, updateButtonState }) => {
+  const { storeName, products, sid } = eachCartData;
   return (
     <StyledCartedProductGroupByStore>
-      <StoreTitle storeName={storeName} />
+      <StoreTitle
+        sid={sid}
+        storeName={storeName}
+        buttonState={buttonState}
+        updateButtonState={updateButtonState}
+      />
       {products.map((productData) => (
-        <CartedProductCard productData={productData} />
+        <CartedProductCard
+          sid={sid}
+          productData={productData}
+          buttonState={buttonState}
+          updateButtonState={updateButtonState}
+        />
       ))}
     </StyledCartedProductGroupByStore>
   );
