@@ -203,7 +203,7 @@ const CartPage = ({ isSignIn }) => {
             );
           })
           .then(() => {
-            // setCartData(cartDataResolved);
+            setCartData(cartDataResolved);
             resolve(cartDataResolved);
           });
       };
@@ -213,16 +213,11 @@ const CartPage = ({ isSignIn }) => {
     return promiseCartData;
   };
   useEffect(() => {
-    fetchCartData(currentUid).then((cartDataValue) => {
-      console.log('cartDataValue: ', cartDataValue);
-    });
+    fetchCartData(currentUid);
   }, [currentUid]);
-  // useEffect(() => {
-  //   fetchCartData(currentUid);
-  // }, [currentUid]);
-  // useEffect(() => {
-  //   console.log('cartData: ', cartData);
-  // }, [cartData]);
+  useEffect(() => {
+    console.log('cartData: ', cartData);
+  }, [cartData]);
 
   return (
     <StyledCartPage>
