@@ -19,7 +19,12 @@ const SearchNavBarItem = ({ index, handleNavBarItemClick, content, selected }) =
   );
 };
 
-const SearchNavBar = ({ currentSearchKeywordsIdx, handleNavBarItemClick, searchInfo }) => {
+const SearchNavBar = ({
+  currentSearchKeywordsIdx,
+  handleNavBarItemClick,
+  searchInfo,
+  cartedProductAmount,
+}) => {
   const searchBar = useRef(null);
   const handleButtonClick = () => {
     if (!searchBar) {
@@ -69,17 +74,17 @@ const SearchNavBar = ({ currentSearchKeywordsIdx, handleNavBarItemClick, searchI
             <input id="searchBar" placeholder="請輸入您欲新增查詢的商品" />
           </label>
         </span>
-        <span className="formerItemAmount">1</span>
+        <span className="formerItemAmount vb-hidden">1</span>
         <StyledSearchNavBarItems className="container">
           {searchInfo ? getSearchNavBarItems(searchInfo) : ''}
         </StyledSearchNavBarItems>
-        <span className="latterItemAmount">1</span>
+        <span className="latterItemAmount vb-hidden">1</span>
         <IconSearchPage.Add className="iconAdd" onClick={handleButtonClick} />
       </div>
       <IconSearchPage.ChenvronLeft className="iconChenvronLeft" />
       <span className="iconCart">
         <IconSearchPage.Cart />
-        <span>1</span>
+        <span>{cartedProductAmount > 9 ? '+' : cartedProductAmount}</span>
       </span>
     </StyledSearchNavBar>
   );

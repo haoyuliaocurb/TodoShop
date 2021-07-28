@@ -27,6 +27,8 @@ const NormalSearchMode = ({
   currentSearchKeywordsIdx,
   handleNavBarItemClick,
   searchInfo,
+  updateSearchCardInfo,
+  cartedProductAmount,
 }) => {
   const products = currentSearchInfo ? currentSearchInfo.products : null;
   const [scrollOffsetInfo, setScrollOffsetInfo] = useState(INIT_SCROLLOFFSET);
@@ -38,7 +40,7 @@ const NormalSearchMode = ({
   const windowOffset = useRef(0);
 
   const handleScroll = (scrollTargetValue) => {
-    console.log('trigger onScroll');
+    // console.log('trigger onScroll');
     if (!scrollTargetValue) {
       return;
     }
@@ -49,11 +51,11 @@ const NormalSearchMode = ({
     // console.log('trigger addEventListener');
     // console.log('windowOffset.current: ', windowOffset.current);
     // console.log('isScrollBackward.current: ', isScrollBackward.current);
-    console.log('scrollOffsetInfo.isScrollEnd: ', scrollOffsetInfo.isScrollEnd);
-    console.log('scrollTarget.current.offsetHeight: ', scrollTarget.current.offsetHeight);
-    console.log('scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
-    console.log('scrollTarget.current.scrollHeight: ', scrollTarget.current.scrollHeight);
-    console.log('window.innerHeight: ', window.innerHeight);
+    // console.log('scrollOffsetInfo.isScrollEnd: ', scrollOffsetInfo.isScrollEnd);
+    // console.log('scrollTarget.current.offsetHeight: ', scrollTarget.current.offsetHeight);
+    // console.log('scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
+    // console.log('scrollTarget.current.scrollHeight: ', scrollTarget.current.scrollHeight);
+    // console.log('window.innerHeight: ', window.innerHeight);
 
     const scrollOffsetValue = scrollTargetValue.scrollTop;
     const preScrollOffsetValue = preScrollOffset.current;
@@ -131,6 +133,7 @@ const NormalSearchMode = ({
               currentSearchKeywordsIdx={currentSearchKeywordsIdx}
               handleNavBarItemClick={handleNavBarItemClick}
               searchInfo={searchInfo}
+              cartedProductAmount={cartedProductAmount}
             />
           ),
           visibility: 1,
@@ -153,7 +156,20 @@ const NormalSearchMode = ({
         }}
       >
         {products ? (
-          products.map((productInfo) => <SearchCard productInfo={productInfo} />)
+          products.map((productInfo, index) => {
+            const { pid } = productInfo;
+            const cardIdx = index;
+            console.log('productInfo: ', productInfo);
+            return (
+              <SearchCard
+                key={pid}
+                productInfo={productInfo}
+                updateSearchCardInfo={updateSearchCardInfo}
+                cardIdx={cardIdx}
+                currentSearchKeywordsIdx={currentSearchKeywordsIdx}
+              />
+            );
+          })
         ) : (
           <div />
         )}

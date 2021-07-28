@@ -4,7 +4,8 @@ import StyledFeatureTags from '../../../styles/SearchPage/NormalSearchMode/Style
 import FeatureTag from './FeatureTag';
 
 const FeatureBar = ({ scrollOffsetInfo }) => {
-  const visibility = 1;
+  // const visibility = 1;
+  const visibility = 0;
   const preScrollOffset = visibility !== 1 ? null : scrollOffsetInfo.preScrollOffset;
   const scrollOffset = visibility !== 1 ? null : scrollOffsetInfo.scrollOffset;
   const isScrollEnd = visibility !== 1 ? null : scrollOffsetInfo.isScrollEnd;

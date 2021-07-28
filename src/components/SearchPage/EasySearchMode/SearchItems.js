@@ -50,11 +50,11 @@ const SearchItems = ({ searchInfo, updateSearchCardInfo }) => {
     });
   }
 
-  useEffect(() => {
-    return () => {
-      console.log('<SearchItems /> unmount');
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     console.log('<SearchItems /> unmount');
+  //   };
+  // }, []);
 
   return !searchInfo ? <div /> : newSearchItems;
 };

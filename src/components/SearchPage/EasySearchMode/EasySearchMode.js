@@ -25,6 +25,7 @@ const EasySearchPage = ({
   handleEasySearchButtonClick,
   searchInfo,
   updateSearchCardInfo,
+  cartedProductAmount,
 }) => {
   const [scrollOffsetInfo, setScrollOffsetInfo] = useState(INIT_SCROLLOFFSET);
   const preScrollOffset = useRef(0);
@@ -101,11 +102,8 @@ const EasySearchPage = ({
   };
 
   useEffect(() => {
-    // console.log('scrollTarget.current: ', scrollTarget.current);
-    // console.log('windowOffset.current: ', windowOffset.current);
-    // console.log('scrollTarget.current.clientHeight: ', scrollTarget.current.clientHeight);
-    // console.log('scrollOffsetInfo: ', scrollOffsetInfo);
-  });
+    // console.log('cartedProductAmount change');
+  }, [cartedProductAmount]);
 
   useEffect(() => {
     isOnScroll.current = false;
@@ -121,6 +119,7 @@ const EasySearchPage = ({
               currentSearchKeywordsIdx={currentSearchKeywordsIdx}
               handleNavBarItemClick={handleNavBarItemClick}
               searchInfo={searchInfo}
+              cartedProductAmount={cartedProductAmount}
             />
           ),
           visibility: 1,

@@ -16,7 +16,7 @@ const FeatureTag = () => {
 
 const FeatureBar = () => {
   return (
-    <StyledFeatureBar>
+    <StyledFeatureBar className="vb-hidden">
       <StyledFeatureTags>
         {Array.from({ length: 20 }).map(() => (
           <FeatureTag />

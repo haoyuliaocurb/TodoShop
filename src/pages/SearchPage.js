@@ -292,6 +292,7 @@ const SearchPages = ({ isSignIn }) => {
   // eslint-disable-next-line no-unused-vars
   const { isEasySearchMode, currentSearchKeywordsIdx, filterButtonState } = searchMetaInfo;
   const [searchInfo, setSearchInfo] = useState(null);
+  const [cartedProductAmount, setCartedProductAmount] = useState(0);
 
   const fetchSearchInfo = () => {};
   const fetchSearchItemInfo = () => {};
@@ -366,6 +367,12 @@ const SearchPages = ({ isSignIn }) => {
       pidValue,
       updatedProductAction,
     );
+    setCartedProductAmount((preCartedProductAmount) => {
+      if (!updatedProductAction.cart) {
+        return preCartedProductAmount - 1;
+      }
+      return preCartedProductAmount + 1;
+    });
     // console.log('newSearchCardProductAction: ', newSearchCardProductAction);
     setSearchInfo((preSearchInfoValue) => {
       const newSearchInfo = [...preSearchInfoValue];
@@ -388,6 +395,7 @@ const SearchPages = ({ isSignIn }) => {
             .collectionGroup('productAction')
             .where('uid', '==', currentUid)
             .get();
+          let counter = 0;
           srcProductActionArray.forEach((srcProductAction) => {
             const pid = srcProductAction.id;
             const productActionData = srcProductAction.data();
@@ -400,9 +408,15 @@ const SearchPages = ({ isSignIn }) => {
               productActionObj[pid].like = true;
             }
             if (productActionData.cart) {
-              productActionObj[pid].cart = true;
+              productActionObj[pid].cart = {};
+              productActionObj[pid].cart.amount = productActionData.cart.amount;
+              if (productActionData.cart.type) {
+                productActionObj[pid].cart.type = productActionData.cart.type;
+              }
+              counter += 1;
             }
           });
+          setCartedProductAmount(counter);
           resolve(productActionObj);
         };
         innerGetProductActionObj();
@@ -578,6 +592,7 @@ const SearchPages = ({ isSignIn }) => {
           handleEasySearchButtonClick={handleEasySearchButtonClick}
           searchInfo={searchInfo}
           updateSearchCardInfo={updateSearchCardInfo}
+          cartedProductAmount={cartedProductAmount}
         />
       ) : (
         <NormalSearchMode
@@ -590,6 +605,8 @@ const SearchPages = ({ isSignIn }) => {
           currentSearchKeywordsIdx={currentSearchKeywordsIdx}
           handleNavBarItemClick={handleNavBarItemClick}
           searchInfo={searchInfo}
+          updateSearchCardInfo={updateSearchCardInfo}
+          cartedProductAmount={cartedProductAmount}
         />
       )}
     </StyledSearchPage>

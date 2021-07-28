@@ -27,7 +27,8 @@ export const StyledFeatureTags = styled.div`
 
 export const StyledFeatureBar = styled.div`
   width: 100%;
-  height: 30px;
+  /* height: 30px; */
+  height: 0px;
   overflow-x: scroll;
   margin-top: 6px;
 `;
