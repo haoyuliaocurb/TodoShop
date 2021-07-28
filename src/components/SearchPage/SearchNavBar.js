@@ -1,4 +1,5 @@
 import { React, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import IconSearchPage from '../../styles/SearchPage/IconSearchPage';
 import StyledSearchNavBar from '../../styles/SearchPage/StyledSearchNavBar';
@@ -26,6 +27,7 @@ const SearchNavBar = ({
   cartedProductAmount,
 }) => {
   const searchBar = useRef(null);
+  const history = useHistory();
   const handleButtonClick = () => {
     if (!searchBar) {
       return;
@@ -34,6 +36,9 @@ const SearchNavBar = ({
   };
   const handleSearchBarBlur = () => {
     searchBar.current.classList.add('unfocus');
+  };
+  const handleIconCartClick = () => {
+    history.push('/cart');
   };
   // console.log('searchInfo: ', searchInfo);
   const getSearchNavBarItems = (searchInfoData) => {
@@ -82,10 +87,10 @@ const SearchNavBar = ({
         <IconSearchPage.Add className="iconAdd" onClick={handleButtonClick} />
       </div>
       <IconSearchPage.ChenvronLeft className="iconChenvronLeft" />
-      <span className="iconCart">
+      <button type="button" className="iconCart" onClick={handleIconCartClick}>
         <IconSearchPage.Cart />
         <span>{cartedProductAmount > 9 ? '+' : cartedProductAmount}</span>
-      </span>
+      </button>
     </StyledSearchNavBar>
   );
 };
