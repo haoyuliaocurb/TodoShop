@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { React, useState, useEffect, useRef } from 'react';
+import { firestore } from '../utils/firebase/firebase-services';
 import StyledCartPage from '../styles/CartPage/StyledCartPage';
 import TabBar from '../components/app/TabBar';
 import ToolBar from '../components/app/ToolBar';
@@ -15,7 +17,8 @@ const INIT_SCROLLOFFSET = {
   isScrollEnd: true,
 };
 
-const CartPage = () => {
+const CartPage = ({ isSignIn }) => {
+  // (1) 處理 scroll bar
   const INIT_BARSTATE = {
     navBar: {
       content: <CartPageNavBar />,
@@ -117,6 +120,109 @@ const CartPage = () => {
   useEffect(() => {
     isOnScroll.current = false;
   }, [scrollOffsetInfo]);
+
+  // (2) 處理 data
+  const currentUid = isSignIn;
+  const [cartData, setCartData] = useState(null);
+
+  // eslint-disable-next-line consistent-return
+  const fetchCartData = (uidValue) => {
+    if (!uidValue) {
+      return;
+    }
+    const promiseCartData = new Promise((resolve) => {
+      // eslint-disable-next-line consistent-return
+      const innerFetchCartData = async (innerUidValue) => {
+        const cartDataResolved = [];
+        firestore
+          .collectionGroup('productAction')
+          .where('uid', '==', innerUidValue)
+          .where('cart', '!=', false)
+          .get()
+          .then((srcCartedProductActionDataArray) => {
+            // console.log('srcCartedProductActionDataArray: ', srcCartedProductActionDataArray);
+            if (!srcCartedProductActionDataArray) {
+              resolve(null);
+            }
+            const cartedProductActionDataArray = [];
+            srcCartedProductActionDataArray.forEach((cartedProductActionData) => {
+              const dataPushed = {
+                pid: cartedProductActionData.id,
+                decodedProductActionData: cartedProductActionData.data(),
+              };
+              // console.log('dataPushed: ', dataPushed);
+              cartedProductActionDataArray.push(dataPushed);
+            });
+            // console.log('cartedProductActionDataArray: ', cartedProductActionDataArray);
+
+            const sidIdxObj = {};
+            let sidIdxCounter = 0;
+            return Promise.all(
+              cartedProductActionDataArray.map((cartedProductActionData) => {
+                const { pid, decodedProductActionData } = cartedProductActionData;
+                const promiseProductData = new Promise((innerResolve) => {
+                  const fetchProductData = async (pidValue) => {
+                    const productData = await firestore.collection('products').doc(pidValue).get();
+                    if (!productData) {
+                      console.log(false);
+                      innerResolve(null);
+                    }
+                    const decodedProductData = productData.data();
+                    // console.log('decodedProductData: ', decodedProductData);
+                    const { sid } = decodedProductData;
+                    const dataResolved = {
+                      pid,
+                      sid,
+                      cartAmount: decodedProductActionData.cart.amount,
+                      cartType: !decodedProductActionData.cart.type
+                        ? 0
+                        : decodedProductActionData.cart.type,
+                    };
+                    // console.log('dataPushed: ', dataPushed);
+
+                    const sidIdx = sidIdxObj[sid];
+                    if (sidIdx === undefined) {
+                      sidIdxObj[sid] = sidIdxCounter;
+                      sidIdxCounter += 1;
+                      // console.log('sidIdxObj: ', sidIdxObj);
+                      const newSidIdx = sidIdxObj[sid];
+                      cartDataResolved[newSidIdx] = {};
+                      cartDataResolved[newSidIdx].sid = sid;
+                      cartDataResolved[newSidIdx].products = [];
+                      cartDataResolved[newSidIdx].products.push(dataResolved);
+                      innerResolve(0);
+                      return;
+                    }
+                    cartDataResolved[sidIdx].products.push(dataResolved);
+                    innerResolve(1);
+                  };
+                  fetchProductData(pid);
+                });
+                return promiseProductData;
+              }),
+            );
+          })
+          .then(() => {
+            // setCartData(cartDataResolved);
+            resolve(cartDataResolved);
+          });
+      };
+      innerFetchCartData(uidValue);
+    });
+    // eslint-disable-next-line consistent-return
+    return promiseCartData;
+  };
+  useEffect(() => {
+    fetchCartData(currentUid).then((cartDataValue) => {
+      console.log('cartDataValue: ', cartDataValue);
+    });
+  }, [currentUid]);
+  // useEffect(() => {
+  //   fetchCartData(currentUid);
+  // }, [currentUid]);
+  // useEffect(() => {
+  //   console.log('cartData: ', cartData);
+  // }, [cartData]);
 
   return (
     <StyledCartPage>
