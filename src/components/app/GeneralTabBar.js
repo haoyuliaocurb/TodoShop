@@ -113,6 +113,9 @@ const GeneralTabBar = (
       case 'todolist':
         setIconState(getNewIconState('list'));
         break;
+      case 'search':
+        setIconState(getNewIconState());
+        break;
       default:
         setIconState(getNewIconState('home'));
     }
