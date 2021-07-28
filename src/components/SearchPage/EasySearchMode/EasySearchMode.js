@@ -45,11 +45,11 @@ const EasySearchPage = ({
     // console.log('trigger addEventListener');
     // console.log('windowOffset.current: ', windowOffset.current);
     // console.log('isScrollBackward.current: ', isScrollBackward.current);
-    console.log('scrollOffsetInfo.isScrollEnd: ', scrollOffsetInfo.isScrollEnd);
-    console.log('scrollTarget.current.offsetHeight: ', scrollTarget.current.offsetHeight);
-    console.log('scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
-    console.log('scrollTarget.current.scrollHeight: ', scrollTarget.current.scrollHeight);
-    console.log('window.innerHeight: ', window.innerHeight);
+    // console.log('scrollOffsetInfo.isScrollEnd: ', scrollOffsetInfo.isScrollEnd);
+    // console.log('scrollTarget.current.offsetHeight: ', scrollTarget.current.offsetHeight);
+    // console.log('scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
+    // console.log('scrollTarget.current.scrollHeight: ', scrollTarget.current.scrollHeight);
+    // console.log('window.innerHeight: ', window.innerHeight);
 
     const scrollOffsetValue = scrollTargetValue.scrollTop;
     const preScrollOffsetValue = preScrollOffset.current;
