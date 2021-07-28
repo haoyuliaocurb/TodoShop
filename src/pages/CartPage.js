@@ -8,6 +8,7 @@ import NavBar from '../components/app/NavBar';
 import CartPageNavBar from '../components/CartPage/CartPageNavBar';
 import CartPageToolBar from '../components/CartPage/CartPageToolBar';
 import GeneralTabBar from '../components/app/GeneralTabBar';
+import CartedProductGroupByStore from '../components/CartPage/CartedProductGroupByStore';
 
 import { styledVariables, removePx } from '../styles/app/cssMaterial';
 
@@ -230,8 +231,9 @@ const CartPage = ({ isSignIn }) => {
         ref={scrollTarget}
       >
         <div className="scroll">
-          <p className="pageStart">CartPage start</p>
-          <p className="pageEnd">CartPage end</p>
+          {Array.from({ length: 10 }).map(() => (
+            <CartedProductGroupByStore />
+          ))}
         </div>
       </div>
       <ToolBar scrollOffsetInfo={scrollOffsetInfo} toolBarState={barState.toolBar} />

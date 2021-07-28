@@ -15,17 +15,14 @@ const StyledCartPage = styled.div`
     > .scroll {
       position: relative;
       width: 100%;
-      height: 200%;
-      display: flex;
-      align-items: flex-end;
-      flex-wrap: wrap;
-      padding-bottom: calc(${styledVariables.shared.barHeight} * 2);
-      > p {
-        width: 100%;
+      background-color: ${styledVariables.color.gray100};
+
+      > div:last-of-type {
+        margin-bottom: calc(${styledVariables.shared.barHeight} * 2);
       }
-      > .pageStart {
-        position: absolute;
-        top: 0;
+
+      > :not(div:first-of-type) {
+        margin-top: 10px;
       }
     }
   }

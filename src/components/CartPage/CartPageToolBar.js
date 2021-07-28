@@ -1,5 +1,6 @@
 import { React } from 'react';
 import StyledCartPageToolBar from '../../styles/CartPage/StyledCartPageToolBar';
+import IconSelectAll from '../app/IconSelectAll';
 
 const CartPageToolBar = () => {
   const toolBarState = 1;
@@ -26,9 +27,7 @@ const CartPageToolBar = () => {
         return (
           <div>
             <button type="button" className="buttonSelectAll">
-              <span>
-                <span className={!buttonSelectAllState ? 'dot vb-hidden' : 'dot'} />
-              </span>
+              <IconSelectAll buttonSelectAllState={0} />
               <p>全選</p>
             </button>
             <div className="sumPriceText">

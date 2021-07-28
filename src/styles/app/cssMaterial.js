@@ -77,6 +77,18 @@ export const styledVariables = {
       SelfPaddingHor: '18px',
     },
   },
+  cartPage: {
+    cartedProductGroupByStore: {
+      sharedPaddingLeft: '30px',
+      shareMarginLeftAdjust: '4px',
+    },
+    cartedProductCard: {
+      minHeight: '100px',
+      imgProductWidth: '50px',
+      paddingTop: '8px',
+      productContentPaddingHor: '16px',
+    },
+  },
 };
 styledVariables.todolistTable.buttonWidthSum = `${
   removePx(styledVariables.todolistTable.selectTableItemButtonWidth) +

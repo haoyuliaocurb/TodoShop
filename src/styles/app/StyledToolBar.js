@@ -26,6 +26,7 @@ const StyledToolBar = styled.div`
   align-items: center;
   z-index: 5;
   /* border: solid black 1px; */
+  /* box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.1); */
 
   &.transition {
     transition-property: bottom;
@@ -48,22 +49,3 @@ const StyledToolBar = styled.div`
 `;
 
 export default StyledToolBar;
-
-/*
-const StyledToolBar = styled.div`
-  position: fixed;
-  bottom: ${styledVariables.shared.barHeight};
-  width: 100%;
-  height: ${styledVariables.shared.barHeight};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  > div {
-    width: 100%;
-    height: 100%;
-  }
-`;
-
-export default StyledToolBar;
-*/

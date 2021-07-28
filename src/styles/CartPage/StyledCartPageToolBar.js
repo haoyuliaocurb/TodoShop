@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import styled from '@emotion/styled/macro';
 import { styledVariables } from '../app/cssMaterial';
 
@@ -6,7 +7,7 @@ const StyledCartPageToolBar = styled.div`
   height: 100%;
   z-index: 10;
   padding: 0 ${styledVariables.shared.contentPadding};
-  /* background-color: bisque; */
+  background-color: ${styledVariables.color.white};
 
   button {
     height: 30px;
@@ -23,6 +24,8 @@ const StyledCartPageToolBar = styled.div`
   }
 
   > div {
+    position: relative;
+    /* border: solid black 1px; */
     width: 100%;
     height: 100%;
     display: flex;
@@ -40,7 +43,7 @@ const StyledCartPageToolBar = styled.div`
         > * {
           margin-left: 4px;
         }
-        > :first-child {
+        > :first-:nth-of-type(h3) {
           margin-left: 8px;
         }
       }
@@ -49,32 +52,15 @@ const StyledCartPageToolBar = styled.div`
     > .buttonSelectAll {
       position: absolute;
       left: 0;
+      margin-left: ${styledVariables.cartPage.cartedProductGroupByStore.shareMarginLeftAdjust};
+      padding: 0;
+      /* left: ${styledVariables.cartPage.cartedProductGroupByStore.sharedPaddingLeft}; */
       display: flex;
       align-items: center;
-      > :not(:first-child) {
-        margin-left: 8px;
-      }
-      > span {
-        position: relative;
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        border: solid 1px ${styledVariables.color.gray250};
-        border-radius: 100px;
-
-        > span.dot {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          margin: auto;
-          display: inline-block;
-          width: 60%;
-          height: 60%;
-          background-color: ${styledVariables.color.gray250};
-          border-radius: 100px;
-        }
+      > p {
+        margin-left: calc(
+          ${styledVariables.cartPage.cartedProductGroupByStore.sharedPaddingLeft} - 18px
+        );
       }
     }
 
