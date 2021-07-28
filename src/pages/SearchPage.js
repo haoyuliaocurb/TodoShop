@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 import { React, useState, useEffect, useRef } from 'react';
 import { firestore } from '../utils/firebase/firebase-services';
@@ -18,6 +19,7 @@ const SEARCH_META_INFO_TEMPLATE = {
 };
 const SEARCH_INFO_WITH_PID_TEST1 = [
   {
+    key: 162744031531100,
     keyword: '衛生紙',
     products: [
       {
@@ -65,6 +67,7 @@ const SEARCH_INFO_WITH_PID_TEST1 = [
     ],
   },
   {
+    key: 162744031531101,
     keyword: '牙線',
     products: [
       {
@@ -84,6 +87,7 @@ const SEARCH_INFO_WITH_PID_TEST1 = [
     ],
   },
   {
+    key: 162744031531103,
     keyword: '漱口水',
     products: [
       {
@@ -99,6 +103,7 @@ const SEARCH_INFO_WITH_PID_TEST1 = [
 // eslint-disable-next-line no-unused-vars
 const SEARCH_INFO_WITH_PID_TEST2 = [
   {
+    key: 162744031531500,
     keyword: '衛生紙',
     products: [
       {
@@ -146,6 +151,7 @@ const SEARCH_INFO_WITH_PID_TEST2 = [
     ],
   },
   {
+    key: 16274403153150,
     keyword: '洗髮精',
     products: [
       {
@@ -158,6 +164,7 @@ const SEARCH_INFO_WITH_PID_TEST2 = [
     ],
   },
   {
+    key: 162744031531502,
     keyword: '乳液',
     products: [
       {
@@ -177,6 +184,7 @@ const SEARCH_INFO_WITH_PID_TEST2 = [
     ],
   },
   {
+    key: 162744031531503,
     keyword: '保鮮盒',
     products: [
       {
@@ -189,6 +197,7 @@ const SEARCH_INFO_WITH_PID_TEST2 = [
     ],
   },
   {
+    key: 162744031531504,
     keyword: '廚房紙巾',
     products: [
       {
@@ -201,6 +210,7 @@ const SEARCH_INFO_WITH_PID_TEST2 = [
     ],
   },
   {
+    key: 162744031531505,
     keyword: '洗碗精',
     products: [
       {
@@ -213,6 +223,7 @@ const SEARCH_INFO_WITH_PID_TEST2 = [
     ],
   },
   {
+    key: 162744031531506,
     keyword: '面膜',
     products: [
       {
@@ -225,6 +236,7 @@ const SEARCH_INFO_WITH_PID_TEST2 = [
     ],
   },
   {
+    key: 162744031531507,
     keyword: '化妝水',
     products: [
       {
@@ -237,6 +249,7 @@ const SEARCH_INFO_WITH_PID_TEST2 = [
     ],
   },
   {
+    key: 162744031531508,
     keyword: '洗面乳',
     products: [
       {
@@ -279,43 +292,84 @@ const SearchPages = ({ isSignIn }) => {
   // eslint-disable-next-line no-unused-vars
   const { isEasySearchMode, currentSearchKeywordsIdx, filterButtonState } = searchMetaInfo;
   const [searchInfo, setSearchInfo] = useState(null);
-  const [preSearchInfo, setPreSearchInfo] = useState(null);
-  const [searchItemIdxObj, setSearchItemIdxObj] = useState(null);
-  const searchCardIdxObj = useRef(null);
-  const [isUpdateSearchItemIdxObj, setIsUpdateSearchItemIdxObj] = useState(null);
 
-  const updateSearchItemIdxObj = (newSearchItemIdxObjValue) => {
-    if (isUpdateSearchItemIdxObj !== 0) {
-      return;
-    }
-    setIsUpdateSearchItemIdxObj(1);
-    setSearchItemIdxObj(() => {
-      const newSearchItemIdxObj = newSearchItemIdxObjValue;
-      return newSearchItemIdxObj;
-    });
-  };
-  const updateSearchCardIdxObj = (newSearchCardIdxObjValue, preSearchItemKey) => {
-    // console.log('trigger updateSearchCardIdxObj');
-    if (preSearchItemKey !== null) {
-      delete searchCardIdxObj.current[preSearchItemKey];
-    }
-    const newSearchCardIdxObj = {
-      ...searchCardIdxObj.current,
-      ...newSearchCardIdxObjValue,
-    };
-    // console.log('newSearchCardIdxObj: ', newSearchCardIdxObj);
-    searchCardIdxObj.current = newSearchCardIdxObj;
-  };
   const fetchSearchInfo = () => {};
   const fetchSearchItemInfo = () => {};
-  const fetchSearchCardInfo = (pidValue, updatedProductAction) => {};
+  const updateSearchCardProductAction = (pidValue, updatedProductAction) => {
+    if (!currentUid) {
+      return;
+    }
+    return firestore
+      .collection('users')
+      .doc(currentUid)
+      .collection('productAction')
+      .limit(1)
+      .get()
+      .then(() => {
+        return firestore
+          .collection('users')
+          .doc(currentUid)
+          .collection('productAction')
+          .doc(pidValue)
+          .update(updatedProductAction);
+      })
+      .catch((e) => {
+        const { message: errorMessage } = e;
+        const createProductActionColl = () => {
+          return firestore
+            .collection('users')
+            .doc(currentUid)
+            .collection('productAction')
+            .doc(pidValue)
+            .set({
+              uid: currentUid,
+            });
+        };
+        const promiseHandleHasNoCollError = new Promise((resolve) => {
+          const handleHasNoCollError = async () => {
+            await createProductActionColl();
+            await updateSearchCardProductAction(pidValue, updatedProductAction);
+            resolve();
+          };
+          handleHasNoCollError();
+        });
+        switch (errorMessage) {
+          case 'Requested entity was not found.':
+            return promiseHandleHasNoCollError;
+          default:
+        }
+      });
+  };
+  const fetchSearchCardProductAction = (pidValue) => {
+    if (!currentUid) {
+      return;
+    }
+    return firestore
+      .collection('users')
+      .doc(currentUid)
+      .collection('productAction')
+      .doc(pidValue)
+      .get()
+      .then((srcSearchCardProductAction) => {
+        if (!srcSearchCardProductAction) {
+          return null;
+        }
+        const newSearchCardProductAction = srcSearchCardProductAction.data();
+        // console.log('inner newSearchCardProductAction: ', newSearchCardProductAction);
+        return newSearchCardProductAction;
+      });
+  };
   const updateSearchItemInfo = () => {};
-  const updateSearchCardInfo = async (pidValue, updatedProductAction, itemKey, cardIdx) => {
-    const newSearchInfoProductAction = fetchSearchCardInfo(pidValue, updatedProductAction);
+  const updateSearchCardInfo = async (pidValue, updatedProductAction, itemIdx, cardIdx) => {
+    await updateSearchCardProductAction(pidValue, updatedProductAction);
+    const newSearchCardProductAction = await fetchSearchCardProductAction(
+      pidValue,
+      updatedProductAction,
+    );
+    // console.log('newSearchCardProductAction: ', newSearchCardProductAction);
     setSearchInfo((preSearchInfoValue) => {
       const newSearchInfo = [...preSearchInfoValue];
-      const updateItemIdx = searchItemIdxObj[itemKey];
-      newSearchInfo[updateItemIdx].products[cardIdx] = newSearchInfoProductAction;
+      newSearchInfo[itemIdx].products[cardIdx].productAction = newSearchCardProductAction;
 
       return newSearchInfo;
     });
@@ -368,6 +422,8 @@ const SearchPages = ({ isSignIn }) => {
         if (productActionObj[pid]) {
           // console.log('productActionObj[pid]: ', productActionObj[pid]);
           productInfo.productAction = productActionObj[pid];
+        } else {
+          productInfo.productAction = null;
         }
       }
     }
@@ -511,26 +567,8 @@ const SearchPages = ({ isSignIn }) => {
     updateSearchInfo();
   }, [searchMetaInfo]);
   useEffect(() => {
-    // console.log('searchInfo in useEffect on searchInfo: ', searchInfo);
-    if (preSearchInfo !== searchInfo) {
-      setPreSearchInfo(searchInfo);
-    }
+    console.log('searchInfo: ', searchInfo);
   }, [searchInfo]);
-  // useEffect(() => {
-  //   console.log('preSearchInfo in useEffect on preSearchInfo: ', preSearchInfo);
-  // }, [preSearchInfo]);
-  useEffect(() => {
-    // console.log('searchItemIdxObj: ', searchItemIdxObj);
-    if (isUpdateSearchItemIdxObj === 1) {
-      setIsUpdateSearchItemIdxObj(0);
-    }
-    if (isUpdateSearchItemIdxObj === null) {
-      setIsUpdateSearchItemIdxObj(0);
-    }
-  }, [searchItemIdxObj]);
-  useEffect(() => {
-    console.log('searchCardIdxObj.current:', searchCardIdxObj.current);
-  }, [searchCardIdxObj]);
   return (
     <StyledSearchPage>
       {isEasySearchMode ? (
@@ -539,10 +577,7 @@ const SearchPages = ({ isSignIn }) => {
           handleNavBarItemClick={handleNavBarItemClick}
           handleEasySearchButtonClick={handleEasySearchButtonClick}
           searchInfo={searchInfo}
-          preSearchInfo={preSearchInfo}
-          searchItemIdxObj={searchItemIdxObj}
-          updateSearchItemIdxObj={updateSearchItemIdxObj}
-          updateSearchCardIdxObj={updateSearchCardIdxObj}
+          updateSearchCardInfo={updateSearchCardInfo}
         />
       ) : (
         <NormalSearchMode

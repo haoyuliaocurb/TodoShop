@@ -6,18 +6,50 @@ import {
   StyledSearchCard,
 } from '../../../styles/SearchPage/EasySearchMode/StyledSearchCardsComps';
 
-const SearchCard = ({ name, image, price, productAction }) => {
+const SearchCard = ({
+  pid,
+  name,
+  image,
+  price,
+  productAction,
+  cardIdx,
+  itemIdx,
+  updateSearchCardInfo,
+}) => {
   // eslint-disable-next-line no-unused-vars
   const isBookmarked = productAction ? productAction.bookmark || false : false;
   const isCarted = productAction ? productAction.cart || false : false;
+  const handleIconBookmarkClick = () => {
+    const getCurrentBookmark = () => {
+      if (!isBookmarked) {
+        return null;
+      }
+      if (!productAction.bookmark) {
+        return null;
+      }
+      return productAction.bookmark;
+    };
+    const currentBookmark = getCurrentBookmark();
+    const bookmarkedProductAction = {
+      ...productAction,
+      bookmark: !currentBookmark ? true : null,
+    };
+    updateSearchCardInfo(pid, bookmarkedProductAction, itemIdx, cardIdx);
+  };
 
   // <StyledSearchCard className={isBookmarked ? 'bookmarked' : ''}>
   return (
     <StyledSearchCard>
       {isBookmarked ? (
-        <IconSearchPage.Bookmark className="IconBookmarkSelected" />
+        <IconSearchPage.Bookmark
+          className="IconBookmarkSelected"
+          onClick={handleIconBookmarkClick}
+        />
       ) : (
-        <IconSearchPage.Bookmark className="IconBookmarkUnselected" />
+        <IconSearchPage.Bookmark
+          className="IconBookmarkUnselected"
+          onClick={handleIconBookmarkClick}
+        />
       )}
       <img alt="" src={image} />
       <p className="SearchCardTitle">{name}</p>
@@ -34,49 +66,30 @@ const SearchCard = ({ name, image, price, productAction }) => {
   );
 };
 
-const SearchCards = ({ productsData, updateSearchCardIdxObj, itemKey }) => {
+const SearchCards = ({ productsData, itemKey, itemIdx, updateSearchCardInfo }) => {
   // const [preProductsData, setPreProductsData] = useState(null);
   // const preItemKey = useRef(null);
   let newSearchCards = [];
-  const newSearchCardIdxObj = {};
-  newSearchCardIdxObj[itemKey] = {};
 
   if (productsData) {
     newSearchCards = productsData.map((eachProductData, index) => {
       const { name, image, price, pid, productAction } = eachProductData;
-      newSearchCardIdxObj[itemKey][pid] = index;
       return (
         <SearchCard
           key={pid}
+          pid={pid}
           name={name}
           image={image}
           price={price}
           productAction={productAction}
+          cardIdx={index}
+          itemIdx={itemIdx}
+          updateSearchCardInfo={updateSearchCardInfo}
         />
       );
     });
   }
 
-  // useEffect(() => {
-  //   console.log('preItemKey.current: ', preItemKey.current);
-  // }, [preItemKey]);
-  // useEffect(() => {
-  //   if (preProductsData !== null) {
-  //     if (JSON.stringify(productsData) === JSON.stringify(preProductsData)) {
-  //       return;
-  //     }
-  //   }
-  //   console.log('preItemKey.current: ', preItemKey.current);
-  //   console.log('itemKey: ', itemKey);
-  //   console.log('preProductsData: ', preProductsData);
-  //   console.log('productsData: ', productsData);
-  //   setPreProductsData(productsData);
-  //   updateSearchCardIdxObj(newSearchCardIdxObj, preItemKey.current);
-  //   preItemKey.current = itemKey;
-  // }, [productsData]);
-  // useEffect(() => {
-  //   // console.log('preProductsData: ', preProductsData);
-  // }, [preProductsData]);
   useEffect(() => {
     return () => {
       console.log('<SearchCards /> unmount');
