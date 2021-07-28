@@ -72,10 +72,10 @@ const SEARCH_INFO_WITH_PID_TEST1 = [
     products: [
       {
         pid: 'SnnWbfqOFz0Z5CIMdglT',
-        name: 'GUM 牙周護理牙線 (含蠟滑順型) (50m)',
+        name: 'GUM 牙周護理牙線',
         price: 119,
         image:
-          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2FA83E0F310755133A5AB524A5CC7B3AB9E8ACBF76.jpeg?alt=media&token=be7c0420-3c8c-4fce-9fe2-a17df5b33a5d',
+          'https://firebasestorage.googleapis.com/v0/b/todoshop-5fd25.appspot.com/o/productsImages%2FACD8F56CF47ABA0FC576123A596B5CB16CC1C87D.jpg?alt=media&token=56195a96-17fb-4c6d-9bd7-85ecdad42445',
       },
       {
         pid: 'aOHwl9peu1BQI7Bq7Kt0',

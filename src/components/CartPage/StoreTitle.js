@@ -2,11 +2,11 @@ import { React } from 'react';
 import StyledStoreTitle from '../../styles/CartPage/StyledStoreTitle';
 import IconSelectAll from '../app/IconSelectAll';
 
-const StoreTitle = () => {
+const StoreTitle = ({ storeName }) => {
   return (
     <StyledStoreTitle>
       <IconSelectAll buttonSelectAllState={0} />
-      <h3>store</h3>
+      <h3>{storeName}</h3>
     </StyledStoreTitle>
   );
 };

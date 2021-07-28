@@ -16,13 +16,14 @@ const StyledCartPage = styled.div`
       position: relative;
       width: 100%;
       background-color: ${styledVariables.color.gray100};
+      > .cartedBlock {
+        > div:last-of-type {
+          margin-bottom: calc(${styledVariables.shared.barHeight} * 2);
+        }
 
-      > div:last-of-type {
-        margin-bottom: calc(${styledVariables.shared.barHeight} * 2);
-      }
-
-      > :not(div:first-of-type) {
-        margin-top: 10px;
+        > :not(div:first-of-type) {
+          margin-top: 10px;
+        }
       }
     }
   }

@@ -2,18 +2,19 @@ import { React } from 'react';
 import IconSelectAll from '../app/IconSelectAll';
 import StyledCartedProductCard from '../../styles/CartPage/StyledCartedProductCard';
 
-const CartedProductCard = () => {
+const CartedProductCard = ({ productData }) => {
+  const { name, price, images } = productData;
   return (
     <StyledCartedProductCard>
       <IconSelectAll />
       <div className="imgProduct">
-        <img alt="" />
+        <img alt="" src={images[0]} />
       </div>
       <div className="productContent">
-        <h3>花王 KAO 洗髮精兒童專用 (750ml/瓶)</h3>
+        <h3>{name}</h3>
         <h3 className="textPrice">
           <span>$</span>
-          <span>69</span>
+          <span>{price}</span>
         </h3>
         <div className="buttonAdjustAmount">
           <button className="add" type="button">

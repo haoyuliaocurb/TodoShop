@@ -170,10 +170,13 @@ const CartPage = ({ isSignIn }) => {
                     }
                     const decodedProductData = productData.data();
                     // console.log('decodedProductData: ', decodedProductData);
-                    const { sid } = decodedProductData;
+                    const { sid, name, price, images } = decodedProductData;
                     const dataResolved = {
                       pid,
                       sid,
+                      name,
+                      price,
+                      images,
                       cartAmount: decodedProductActionData.cart.amount,
                       cartType: !decodedProductActionData.cart.type
                         ? 0
@@ -204,6 +207,23 @@ const CartPage = ({ isSignIn }) => {
             );
           })
           .then(() => {
+            return Promise.all(
+              // eslint-disable-next-line array-callback-return
+              cartDataResolved.map((eachCartData) => {
+                const { sid } = eachCartData;
+                console.log('sid: ', sid);
+                return firestore.collection('stores').doc(sid).get();
+              }),
+            );
+          })
+          .then((srcStoreDate) => {
+            let counter = 0;
+            srcStoreDate.forEach((srcEachStoreData) => {
+              const eachStoreData = srcEachStoreData.data();
+              const { name: storeName } = eachStoreData;
+              cartDataResolved[counter].storeName = storeName;
+              counter += 1;
+            });
             setCartData(cartDataResolved);
             resolve(cartDataResolved);
           });
@@ -231,9 +251,15 @@ const CartPage = ({ isSignIn }) => {
         ref={scrollTarget}
       >
         <div className="scroll">
-          {Array.from({ length: 10 }).map(() => (
-            <CartedProductGroupByStore />
-          ))}
+          <div className="cartedBlock">
+            {!cartData ? (
+              <div />
+            ) : (
+              cartData.map((eachCartData) => {
+                return <CartedProductGroupByStore eachCartData={eachCartData} />;
+              })
+            )}
+          </div>
         </div>
       </div>
       <ToolBar scrollOffsetInfo={scrollOffsetInfo} toolBarState={barState.toolBar} />

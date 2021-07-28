@@ -4,12 +4,13 @@ import StyledCartedProductGroupByStore from '../../styles/CartPage/StyledCartedP
 import StoreTitle from './StoreTitle';
 import CartedProductCard from './CartedProductCard';
 
-const CartedProductGroupByStore = () => {
+const CartedProductGroupByStore = ({ eachCartData }) => {
+  const { storeName, products } = eachCartData;
   return (
     <StyledCartedProductGroupByStore>
-      <StoreTitle />
-      {Array.from({ length: 2 }).map(() => (
-        <CartedProductCard />
+      <StoreTitle storeName={storeName} />
+      {products.map((productData) => (
+        <CartedProductCard productData={productData} />
       ))}
     </StyledCartedProductGroupByStore>
   );
