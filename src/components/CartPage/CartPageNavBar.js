@@ -11,7 +11,7 @@ const CartPageNavBar = ({ buttonState, updateButtonState }) => {
     if (!buttonState.management) {
       return '管理';
     }
-    return '編輯';
+    return '完成';
   };
   const buttonManagementContent = getButtonManagementContent();
   const history = useHistory();

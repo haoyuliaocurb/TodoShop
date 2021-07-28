@@ -2,7 +2,13 @@ import { React } from 'react';
 import StyledCartPageToolBar from '../../styles/CartPage/StyledCartPageToolBar';
 import IconSelectAll from '../app/IconSelectAll';
 
-const CartPageToolBar = ({ cartedProductPriceSum, buttonState, updateButtonState, cartData }) => {
+const CartPageToolBar = ({
+  cartedProductPriceSum,
+  buttonState,
+  updateButtonState,
+  cartData,
+  deleteProductActionCart,
+}) => {
   const toolBarState = !buttonState.management ? 1 : 2;
   // console.log('<TodolistPageToolBar />: render');
   const getButtonSelectAllState = () => {
@@ -46,6 +52,26 @@ const CartPageToolBar = ({ cartedProductPriceSum, buttonState, updateButtonState
     });
     updateButtonState(newUpdateButtonStatePart);
   };
+  const handleButtonDeleteClick = () => {
+    const pid2DeleteArray = [];
+    cartData.forEach((eachCartData) => {
+      const { sid } = eachCartData;
+      if (buttonState[sid]) {
+        // console.log('buttonState[sid]: ', buttonState[sid]);
+        const srcPid2DeleteObjPart = buttonState[sid];
+        delete srcPid2DeleteObjPart.isOnClick;
+        Object.entries(srcPid2DeleteObjPart).forEach((pair) => {
+          if (pair[1] === 0) {
+            return;
+          }
+          pid2DeleteArray.push(pair[0]);
+        });
+        // pid2DeleteArray = pid2DeleteArray.concat(Object.keys(srcPid2DeleteObjPart));
+        console.log('pid2DeleteArray: ', pid2DeleteArray);
+      }
+    });
+    deleteProductActionCart(pid2DeleteArray);
+  };
 
   const getToolBarContent = (toolBarStateValue) => {
     switch (toolBarStateValue) {
@@ -59,7 +85,7 @@ const CartPageToolBar = ({ cartedProductPriceSum, buttonState, updateButtonState
               />
               <p>全選</p>
             </button>
-            <button type="button" className="buttonDeleteCard">
+            <button type="button" className="buttonDeleteCard" onClick={handleButtonDeleteClick}>
               刪除
             </button>
           </div>
