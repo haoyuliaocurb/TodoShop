@@ -1,8 +1,13 @@
 import { React } from 'react';
+import { useHistory } from 'react-router-dom';
 import IconHomePage from '../../styles/HomePage/IconHomePage';
 import StyledHomePageNavBar from '../../styles/HomePage/StyledHomePageNavBar';
 
-const HomePageNavBar = () => {
+const HomePageNavBar = ({ cartedProductAmount }) => {
+  const history = useHistory();
+  const handleIconCartClick = () => {
+    history.push('/cart');
+  };
   return (
     <StyledHomePageNavBar>
       <div>
@@ -16,10 +21,10 @@ const HomePageNavBar = () => {
         <span className="latterItemAmount">1</span>
       </div>
       <IconHomePage.ChenvronLeft className="iconChenvronLeft" />
-      <span className="iconCart">
+      <button type="button" className="iconCart" onClick={handleIconCartClick}>
         <IconHomePage.Cart />
-        <span>1</span>
-      </span>
+        <span>{cartedProductAmount}</span>
+      </button>
     </StyledHomePageNavBar>
   );
 };

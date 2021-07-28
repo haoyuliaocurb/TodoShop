@@ -90,7 +90,7 @@ const Main = () => {
           <CartPage isSignIn={isSignIn} />
         </Route>
         <Route path="/">
-          <HomePage />
+          <HomePage isSignIn={isSignIn} />
         </Route>
       </Switch>
     </StyledMain>
