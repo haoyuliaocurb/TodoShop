@@ -4,7 +4,12 @@ import StyledCartedProductGroupByStore from '../../styles/CartPage/StyledCartedP
 import StoreTitle from './StoreTitle';
 import CartedProductCard from './CartedProductCard';
 
-const CartedProductGroupByStore = ({ eachCartData, buttonState, updateButtonState }) => {
+const CartedProductGroupByStore = ({
+  eachCartData,
+  buttonState,
+  updateButtonState,
+  updateProductActionCart,
+}) => {
   const { storeName, products, sid } = eachCartData;
   return (
     <StyledCartedProductGroupByStore>
@@ -21,6 +26,7 @@ const CartedProductGroupByStore = ({ eachCartData, buttonState, updateButtonStat
           productData={productData}
           buttonState={buttonState}
           updateButtonState={updateButtonState}
+          updateProductActionCart={updateProductActionCart}
         />
       ))}
     </StyledCartedProductGroupByStore>

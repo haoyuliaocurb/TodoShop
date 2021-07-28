@@ -63,10 +63,10 @@ const StyledCartedProductCard = styled.div`
           left: 1px;
         }
       }
-      > button.add {
+      > button.sub {
         border-right: ${styledVariables.color.white} 2px solid;
       }
-      > button.sub {
+      > button.add {
         border-left: ${styledVariables.color.white} 2px solid;
       }      
       > span {

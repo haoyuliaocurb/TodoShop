@@ -3,7 +3,7 @@ import StyledCartPageToolBar from '../../styles/CartPage/StyledCartPageToolBar';
 import IconSelectAll from '../app/IconSelectAll';
 
 const CartPageToolBar = ({ cartedProductPriceSum, buttonState, updateButtonState, cartData }) => {
-  const toolBarState = 1;
+  const toolBarState = !buttonState.management ? 1 : 2;
   // console.log('<TodolistPageToolBar />: render');
   const getButtonSelectAllState = () => {
     if (!buttonState) {
@@ -53,9 +53,10 @@ const CartPageToolBar = ({ cartedProductPriceSum, buttonState, updateButtonState
         return (
           <div>
             <button type="button" className="buttonSelectAll">
-              <span>
-                <span className={!buttonSelectAllState ? 'dot vb-hidden' : 'dot'} />
-              </span>
+              <IconSelectAll
+                buttonSelectAllState={buttonSelectAllState}
+                handleIconSelectAllClick={handleIconSelectAllClick}
+              />
               <p>全選</p>
             </button>
             <button type="button" className="buttonDeleteCard">

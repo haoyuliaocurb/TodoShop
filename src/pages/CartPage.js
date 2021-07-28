@@ -70,14 +70,21 @@ const CartPage = ({ isSignIn }) => {
           return newButtonState;
         });
         break;
+      case 3:
+        setButtonState((preButtonState) => {
+          const newButtonState = {
+            ...newButtonStateValue,
+          };
+          return newButtonState;
+        });
+        break;
       default:
     }
   };
-
   // (1) 處理 scroll bar
   const INIT_BARSTATE = {
     navBar: {
-      content: <CartPageNavBar />,
+      content: <CartPageNavBar buttonState={buttonState} updateButtonState={updateButtonState} />,
       visibility: 1,
     },
     toolBar: {
@@ -272,7 +279,7 @@ const CartPage = ({ isSignIn }) => {
               // eslint-disable-next-line array-callback-return
               cartDataResolved.map((eachCartData) => {
                 const { sid } = eachCartData;
-                console.log('sid: ', sid);
+                // console.log('sid: ', sid);
                 return firestore.collection('stores').doc(sid).get();
               }),
             );
@@ -294,6 +301,80 @@ const CartPage = ({ isSignIn }) => {
     // eslint-disable-next-line consistent-return
     return promiseCartData;
   };
+  const updateProductActionCart = async (newProductActionCart, targetSid, targetPid) => {
+    await firestore
+      .collection('users')
+      .doc(currentUid)
+      .collection('productAction')
+      .doc(targetPid)
+      .update(newProductActionCart);
+    const srcFetchedProductActionData = await firestore
+      .collection('users')
+      .doc(currentUid)
+      .collection('productAction')
+      .doc(targetPid)
+      .get();
+    const fetchedProductActionData = srcFetchedProductActionData.data();
+    const cart = !fetchedProductActionData ? null : fetchedProductActionData.cart;
+    if (!cart) {
+      setCartData((preCartData) => {
+        const newCartData = preCartData.map((eachPreCartData) => {
+          const { sid } = eachPreCartData;
+          if (sid !== targetSid) {
+            return eachPreCartData;
+          }
+          let targetPidIdx = null;
+          const newEachCartData = {
+            ...eachPreCartData,
+          };
+          const { products: productsData } = eachPreCartData;
+          const newProductData = productsData.map((eachProductData, index) => {
+            const { pid } = eachProductData;
+            if (pid !== targetPid) {
+              return eachProductData;
+            }
+            targetPidIdx = index;
+            return null;
+          });
+          newProductData.splice(targetPidIdx, 1);
+          // console.log('newProductData: ', newProductData);
+          newEachCartData.products = newProductData;
+          return newEachCartData;
+        });
+        return newCartData;
+      });
+      return;
+    }
+    const cartAmount = cart.amount;
+    const cartType = !cart.type ? 0 : cart.type;
+    setCartData((preCartData) => {
+      const newCartData = preCartData.map((eachPreCartData) => {
+        const { sid } = eachPreCartData;
+        if (sid !== targetSid) {
+          return eachPreCartData;
+        }
+        const newEachCartData = {
+          ...eachPreCartData,
+        };
+        const { products: productsData } = eachPreCartData;
+        const newProductData = productsData.map((eachProductData) => {
+          const { pid } = eachProductData;
+          if (pid !== targetPid) {
+            return eachProductData;
+          }
+          const newEachProductData = {
+            ...eachProductData,
+            cartAmount,
+            cartType,
+          };
+          return newEachProductData;
+        });
+        newEachCartData.products = newProductData;
+        return newEachCartData;
+      });
+      return newCartData;
+    });
+  };
 
   useEffect(() => {
     fetchCartData(currentUid);
@@ -302,7 +383,7 @@ const CartPage = ({ isSignIn }) => {
     console.log('cartData: ', cartData);
   }, [cartData]);
   useEffect(() => {
-    console.log('buttonState: ', buttonState);
+    // console.log('buttonState: ', buttonState);
     setBarState(() => {
       const newBarState = {
         navBar: { ...INIT_BARSTATE.navBar },
@@ -311,7 +392,28 @@ const CartPage = ({ isSignIn }) => {
       };
       return newBarState;
     });
-  }, [buttonState, cartData]);
+  }, [buttonState, cartData, cartedProductPriceSum]);
+  useEffect(() => {
+    let newCartedProductPriceSum = 0;
+    if (cartData) {
+      cartData.forEach((eachCartData) => {
+        const { sid, products } = eachCartData;
+        const sidButtonState = buttonState[sid];
+        if (!sidButtonState) {
+          return;
+        }
+        products.forEach((productData) => {
+          const { pid, price, cartAmount } = productData;
+          if (!sidButtonState[pid]) {
+            return;
+          }
+          newCartedProductPriceSum += price * cartAmount;
+        });
+      });
+    }
+    // console.log('newCartedProductPriceSum: ', newCartedProductPriceSum);
+    setCartedProductPriceSum(newCartedProductPriceSum);
+  }, [buttonState]);
 
   return (
     <StyledCartPage>
@@ -334,6 +436,7 @@ const CartPage = ({ isSignIn }) => {
                     eachCartData={eachCartData}
                     buttonState={buttonState}
                     updateButtonState={updateButtonState}
+                    updateProductActionCart={updateProductActionCart}
                   />
                 );
               })

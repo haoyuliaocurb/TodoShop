@@ -1,10 +1,18 @@
+/* eslint-disable no-unused-vars */
 import { React } from 'react';
+import { firebase } from '../../utils/firebase/firebase-services';
 import IconSelectAll from '../app/IconSelectAll';
 import StyledCartedProductCard from '../../styles/CartPage/StyledCartedProductCard';
 
 // eslint-disable-next-line no-unused-vars
-const CartedProductCard = ({ productData, buttonState, updateButtonState, sid }) => {
-  const { name, price, images, pid } = productData;
+const CartedProductCard = ({
+  productData,
+  buttonState,
+  updateButtonState,
+  sid,
+  updateProductActionCart,
+}) => {
+  const { name, price, images, pid, cartAmount, cartType } = productData;
   const getButtonSelectAllState = () => {
     if (!buttonState[sid]) {
       return 0;
@@ -31,6 +39,26 @@ const CartedProductCard = ({ productData, buttonState, updateButtonState, sid })
     }
     updateButtonState(updatedButtonStatePart, 1, sid);
   };
+  const handleAddAmountClick = () => {
+    const newUpdateProductActionCart = { cart: { amount: cartAmount + 1 } };
+    if (cartType) {
+      newUpdateProductActionCart.cart.type = cartType;
+    }
+    updateProductActionCart(newUpdateProductActionCart, sid, pid);
+  };
+  const handleSubAmountClick = () => {
+    const subedCartAmount = cartAmount - 1;
+    let newUpdateProductActionCart = {};
+    if (subedCartAmount < 1) {
+      newUpdateProductActionCart.cart = firebase.firestore.FieldValue.delete();
+    } else {
+      newUpdateProductActionCart = { cart: { amount: subedCartAmount } };
+      if (cartType) {
+        newUpdateProductActionCart.cart.type = cartType;
+      }
+    }
+    updateProductActionCart(newUpdateProductActionCart, sid, pid);
+  };
   return (
     <StyledCartedProductCard>
       <IconSelectAll
@@ -47,11 +75,11 @@ const CartedProductCard = ({ productData, buttonState, updateButtonState, sid })
           <span>{price}</span>
         </h3>
         <div className="buttonAdjustAmount">
-          <button className="add" type="button">
+          <button className="sub" type="button" onClick={handleSubAmountClick}>
             <span>-</span>
           </button>
-          <span>1</span>
-          <button className="sub" type="button">
+          <span>{cartAmount}</span>
+          <button className="add" type="button" onClick={handleAddAmountClick}>
             <span>+</span>
           </button>
         </div>

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled/macro';
 import { styledVariables } from '../app/cssMaterial';
 
-const StyledTodolistPageNavBar = styled.nav`
+const StyledCartPageNavBar = styled.nav`
   position: relative;
   width: 100%;
   height: 100%;
@@ -45,4 +45,4 @@ const StyledTodolistPageNavBar = styled.nav`
   }
 `;
 
-export default StyledTodolistPageNavBar;
+export default StyledCartPageNavBar;
