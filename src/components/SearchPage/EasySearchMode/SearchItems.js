@@ -10,11 +10,11 @@ const SearchItem = ({ eachSearchInfo, itemKey, itemIdx, updateSearchCardInfo }) 
   const { products: productsData } = eachSearchInfo;
   // console.log('itemKey: ', itemKey);
 
-  useEffect(() => {
-    return () => {
-      console.log('<SearchItem />: unmount');
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     console.log('<SearchItem />: unmount');
+  //   };
+  // }, []);
   return (
     <StyledSearchItem>
       <div className="SearchItemTitle">

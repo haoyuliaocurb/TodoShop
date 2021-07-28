@@ -37,6 +37,24 @@ const SearchCard = ({
     updateSearchCardInfo(pid, bookmarkedProductAction, itemIdx, cardIdx);
   };
 
+  const handleIconCartClick = () => {
+    const getCurrentCart = () => {
+      if (!isCarted) {
+        return null;
+      }
+      if (!productAction.cart) {
+        return null;
+      }
+      return productAction.cart;
+    };
+    const currentCart = getCurrentCart();
+    const cartedProductAction = {
+      ...productAction,
+      cart: !currentCart ? { amount: 1 } : null,
+    };
+    updateSearchCardInfo(pid, cartedProductAction, itemIdx, cardIdx);
+  };
+
   // <StyledSearchCard className={isBookmarked ? 'bookmarked' : ''}>
   return (
     <StyledSearchCard>
@@ -58,9 +76,9 @@ const SearchCard = ({
         <span>{price}</span>
       </p>
       {isCarted ? (
-        <IconSearchPage.Add2CartSelected className="IconAdd2Cart" />
+        <IconSearchPage.Add2CartSelected className="IconAdd2Cart" onClick={handleIconCartClick} />
       ) : (
-        <IconSearchPage.Add2CartUnselected className="IconAdd2Cart" />
+        <IconSearchPage.Add2CartUnselected className="IconAdd2Cart" onClick={handleIconCartClick} />
       )}
     </StyledSearchCard>
   );
@@ -90,11 +108,11 @@ const SearchCards = ({ productsData, itemKey, itemIdx, updateSearchCardInfo }) =
     });
   }
 
-  useEffect(() => {
-    return () => {
-      console.log('<SearchCards /> unmount');
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     console.log('<SearchCards /> unmount');
+  //   };
+  // }, []);
 
   return <StyledSearchCards>{!productsData ? <div /> : newSearchCards}</StyledSearchCards>;
 };
