@@ -23,8 +23,56 @@ const INIT_BUTTONSTATE = {
 };
 
 const CartPage = ({ isSignIn }) => {
+  const [cartData, setCartData] = useState(null);
   const [cartedProductPriceSum, setCartedProductPriceSum] = useState(0);
   const [buttonState, setButtonState] = useState(INIT_BUTTONSTATE);
+  const updateButtonState = (newButtonStateValue, updateBehavior = 0, sid) => {
+    // console.log('newButtonStateValue: ', newButtonStateValue);
+    switch (updateBehavior) {
+      case 0:
+        setButtonState((preButtonState) => {
+          const newButtonState = {
+            ...preButtonState,
+            ...newButtonStateValue,
+          };
+          return newButtonState;
+        });
+        break;
+      case 1:
+        if (newButtonStateValue === null) {
+          setButtonState((preButtonState) => {
+            const newButtonState = {
+              ...preButtonState,
+            };
+            delete newButtonState[sid];
+            return newButtonState;
+          });
+          return;
+        }
+        setButtonState((preButtonState) => {
+          const newSidButtonState = {
+            ...preButtonState[sid],
+            ...newButtonStateValue,
+          };
+          const newButtonState = {
+            ...preButtonState,
+          };
+          newButtonState[sid] = newSidButtonState;
+          return newButtonState;
+        });
+        break;
+      case 2:
+        setButtonState((preButtonState) => {
+          const newButtonState = {
+            ...preButtonState,
+            buttonSelectAll: 0,
+          };
+          return newButtonState;
+        });
+        break;
+      default:
+    }
+  };
 
   // (1) 處理 scroll bar
   const INIT_BARSTATE = {
@@ -33,7 +81,14 @@ const CartPage = ({ isSignIn }) => {
       visibility: 1,
     },
     toolBar: {
-      content: <CartPageToolBar cartedProductPriceSum={cartedProductPriceSum} />,
+      content: (
+        <CartPageToolBar
+          cartedProductPriceSum={cartedProductPriceSum}
+          buttonState={buttonState}
+          updateButtonState={updateButtonState}
+          cartData={cartData}
+        />
+      ),
       visibility: 1,
       topShadow: 1,
     },
@@ -132,7 +187,6 @@ const CartPage = ({ isSignIn }) => {
 
   // (2) 處理 data
   const currentUid = isSignIn;
-  const [cartData, setCartData] = useState(null);
   // eslint-disable-next-line consistent-return
   const fetchCartData = (uidValue) => {
     if (!uidValue) {
@@ -240,44 +294,6 @@ const CartPage = ({ isSignIn }) => {
     // eslint-disable-next-line consistent-return
     return promiseCartData;
   };
-  const updateButtonState = (newButtonStateValue, updateBehavior = 0, sid) => {
-    // console.log('newButtonStateValue: ', newButtonStateValue);
-    switch (updateBehavior) {
-      case 0:
-        setButtonState((preButtonState) => {
-          const newButtonState = {
-            ...preButtonState,
-            ...newButtonStateValue,
-          };
-          return newButtonState;
-        });
-        break;
-      case 1:
-        if (newButtonStateValue === null) {
-          setButtonState((preButtonState) => {
-            const newButtonState = {
-              ...preButtonState,
-            };
-            delete newButtonState[sid];
-            return newButtonState;
-          });
-          return;
-        }
-        setButtonState((preButtonState) => {
-          const newSidButtonState = {
-            ...preButtonState[sid],
-            ...newButtonStateValue,
-          };
-          const newButtonState = {
-            ...preButtonState,
-          };
-          newButtonState[sid] = newSidButtonState;
-          return newButtonState;
-        });
-        break;
-      default:
-    }
-  };
 
   useEffect(() => {
     fetchCartData(currentUid);
@@ -287,15 +303,15 @@ const CartPage = ({ isSignIn }) => {
   }, [cartData]);
   useEffect(() => {
     console.log('buttonState: ', buttonState);
-    setBarState((preBarState) => {
+    setBarState(() => {
       const newBarState = {
-        navBar: { ...preBarState.navBar },
-        toolBar: { ...preBarState.toolBar },
-        tabBar: { ...preBarState.tabBar },
+        navBar: { ...INIT_BARSTATE.navBar },
+        toolBar: { ...INIT_BARSTATE.toolBar },
+        tabBar: { ...INIT_BARSTATE.tabBar },
       };
       return newBarState;
     });
-  }, [buttonState]);
+  }, [buttonState, cartData]);
 
   return (
     <StyledCartPage>

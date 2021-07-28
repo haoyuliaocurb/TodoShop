@@ -10,6 +10,7 @@ const CartedProductGroupByStore = ({ eachCartData, buttonState, updateButtonStat
     <StyledCartedProductGroupByStore>
       <StoreTitle
         sid={sid}
+        productsData={products}
         storeName={storeName}
         buttonState={buttonState}
         updateButtonState={updateButtonState}

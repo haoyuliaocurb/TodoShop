@@ -10,7 +10,7 @@ const CartedProductCard = ({ productData, buttonState, updateButtonState, sid })
       return 0;
     }
     if (!buttonState[sid][pid]) {
-      if (buttonState[sid].isOnClick) {
+      if (buttonState[sid].isOnClick || buttonState.buttonSelectAll) {
         const updatedButtonStatePart = {};
         updatedButtonStatePart[pid] = 1;
         updateButtonState(updatedButtonStatePart, 1, sid);
@@ -27,6 +27,7 @@ const CartedProductCard = ({ productData, buttonState, updateButtonState, sid })
     } else {
       updatedButtonStatePart[pid] = 0;
       updatedButtonStatePart.isOnClick = 0;
+      updateButtonState(updatedButtonStatePart, 2);
     }
     updateButtonState(updatedButtonStatePart, 1, sid);
   };
