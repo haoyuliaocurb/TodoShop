@@ -24,12 +24,12 @@ exports.createProductToAlgolia = functions
     .firestore
     .document("/products/{pid}")
     .onCreate((event) => {
-      const objectIDArr = event.ref.path.split("/");
-      const objectID = objectIDArr[objectIDArr.length - 1];
+      const docIdArr = event.ref.path.split("/");
+      const docId = docIdArr[docIdArr.length - 1];
 
       const data = {
         ...event.data(),
-        objectID: objectID,
+        docId,
       };
 
       createToAlgolia(data, "products")
@@ -56,8 +56,8 @@ exports.updateProductToAlgolia = functions
     .firestore
     .document("/products/{pid}")
     .onUpdate((event) => {
-      // const objectIDArr = event.after.ref.path.split("/");
-      // const objectID = objectIDArr[objectIDArr.length - 1];
+      // const docIdArr = event.after.ref.path.split("/");
+      // const docId = docIdArr[docIdArr.length - 1];
       const data= {
         ...event.after.data(),
       };
@@ -67,10 +67,10 @@ exports.updateProductToAlgolia = functions
           .catch((err) => console.log("ERROR ALGOLIA product  EDIT", err));
     });
 
-const deleteFromAlgolia = (objectID, indexName) => {
+const deleteFromAlgolia = (docId, indexName) => {
   const index = client.initIndex(indexName);
   return new Promise((resolve, reject) => {
-    index.deleteObject(objectID)
+    index.deleteObject(docId)
         .then((res) => {
           console.log("res GOOD delete product" );
           return resolve(res);
@@ -86,11 +86,11 @@ exports.deleteProductFromAlgolia = functions
     .firestore
     .document("/products/{pid}")
     .onDelete((event) => {
-      const objectIDArr = event.ref.path.split("/");
-      const objectID = objectIDArr[objectIDArr.length - 1];
+      const docIdArr = event.ref.path.split("/");
+      const docId = docIdArr[docIdArr.length - 1];
 
-      return deleteFromAlgolia(objectID, "product")
-          .then((res) => console.log("SUCCESS ALGOLIA product REMOVE"))
+      return deleteFromAlgolia(docId, "product")
+          .then((res) => console.log("SUCCESS ALGOLIA product REMOVE", res))
           .catch((err) => console.log("ERROR ALGOLIA product REMOVE", err));
     });
 
@@ -119,8 +119,8 @@ exports.deleteProductFromAlgolia = functions
 //       return snap.ref.set({uppercase}, {merge: true});
 //     });
 
-exports.helloWorld = (req, res) => {
-  console.log("I am a log entry!");
-  console.error("I am an error!");
-  res.end();
-};
+// exports.helloWorld = (req, res) => {
+//   console.log("I am a log entry!");
+//   console.error("I am an error!");
+//   res.end();
+// };
