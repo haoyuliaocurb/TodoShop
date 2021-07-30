@@ -12,7 +12,6 @@ const TodolistTable = ({
   currentTodolistIdx,
   currentUid,
   handleTableItemClick,
-  handleIcon2SearchClick,
   initTableItemsButtonState,
   handleTableItemSelectButton,
   handleTodolistTableScroll,
@@ -55,10 +54,10 @@ const TodolistTable = ({
           key={`${updateTime}`}
           listItemData={value}
           handleTableItemClick={handleTableItemClick}
-          handleIcon2SearchClick={handleIcon2SearchClick}
           tableItemButtonState={tableItemButtonState}
           handleTableItemSelectButton={handleTableItemSelectButton}
           listId={listId}
+          currentUid={currentUid}
         />
       );
     });

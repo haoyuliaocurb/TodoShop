@@ -27,7 +27,7 @@ const INIT_BUTTONSTATE = {
   },
 };
 
-const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
+const TodolistPages = ({ windowWidth, isSignIn }) => {
   const currentUid = isSignIn;
   console.log('<TodolistPage />: render');
   // console.log('<TodolistPage />: currentUid: ', currentUid);
@@ -696,7 +696,6 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
             <TodolistTable
               pageAmount={pageAmount}
               deleteDBTodolistDate={deleteDBTodolistDate}
-              handleIcon2SearchClick={handleIcon2SearchClick}
               handleTableItemClick={handleTableItemClick}
               currentUid={currentUid}
               todolistData={todolistData}
@@ -720,7 +719,6 @@ const TodolistPages = ({ windowWidth, isSignIn, handleIcon2SearchClick }) => {
             <TodolistTable
               pageAmount={pageAmount}
               deleteDBTodolistDate={deleteDBTodolistDate}
-              handleIcon2SearchClick={handleIcon2SearchClick}
               handleTableItemClick={handleTableItemClick}
               currentUid={currentUid}
               todolistData={todolistData}

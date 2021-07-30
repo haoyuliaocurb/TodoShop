@@ -12,15 +12,6 @@ import CartPage from '../../pages/CartPage';
 // styling
 import StyledMain from '../../styles/app/StyledMain';
 
-const setSearchKeywordsLog = async (isSignInValue, keywordsValue, sourceValue) => {
-  await firestore.collection('users').doc(isSignInValue).collection('searchKeywordsLog').add({
-    updateTime: firebase.firestore.Timestamp.now(),
-    source: sourceValue,
-    keywords: keywordsValue,
-  });
-  // console.log('complete setSearchKeywordsLog');
-};
-
 const Main = () => {
   // 處理視窗大小變化
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -60,22 +51,11 @@ const Main = () => {
     });
   }, []);
 
-  // SearchPage 搜尋資訊
-  // eslint-disable-next-line no-unused-vars
-  const handleIcon2SearchClick = (keywordsValue, sourceValue) => {
-    console.log('trigger handleIcon2SearchClick');
-    setSearchKeywordsLog(isSignIn, keywordsValue, sourceValue);
-  };
-
   return (
     <StyledMain>
       <Switch>
         <Route path="/todolist">
-          <TodolistPage
-            isSignIn={isSignIn}
-            windowWidth={windowWidth}
-            handleIcon2SearchClick={handleIcon2SearchClick}
-          />
+          <TodolistPage isSignIn={isSignIn} windowWidth={windowWidth} />
         </Route>
         <Route path="/auth">
           <AuthPage isSignIn={isSignIn} />
