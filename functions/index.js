@@ -133,6 +133,7 @@ exports.createProductToAlgolia = functions
 
       const data = {
         ...event.data(),
+        pid: objectID,
         objectID: objectID,
       };
 
@@ -164,6 +165,7 @@ exports.updateProductToAlgolia = functions
       const objectID = objectIDArr[objectIDArr.length - 1];
       const data= {
         ...event.after.data(),
+        pid: objectID,
         objectID: objectID,
       };
 
