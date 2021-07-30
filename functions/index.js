@@ -2,10 +2,114 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
 const algoliasearch = require("algoliasearch");
+const express = require("express");
+const cors = require("cors");
 
 const ALGOLIA_ID = functions.config().algolia.appid;
 const ALGOLIA_ADMIN_KEY = functions.config().algolia.adminkey;
 const client = algoliasearch(ALGOLIA_ID, ALGOLIA_ADMIN_KEY);
+const ALGOLIA_SEARCH_ONLY_API_KEY = functions.config().algolia.searchonlykey;
+const searchClient = algoliasearch(ALGOLIA_ID, ALGOLIA_SEARCH_ONLY_API_KEY);
+
+const app = express();
+app.use(cors({origin: true}));
+
+app.post("/searchProducts", async (req, res) =>{
+  const {searchStr, page} = req.body;
+  const option = !req.body.option ? null : req.body.option;
+  const getParams = () => {
+    const newParams = {
+      hitsPerPage: !((option) && (option.hitsPerPage)) ? (
+        12
+      ) : (
+        option.hitsPerPage
+      ),
+      page,
+    };
+    if (option) {
+      if (option.filter) {
+        let filterStr = "";
+        if (option.filter.range) {
+          const rangeData = option.filter.range;
+          const rangeKeyArray = Object.keys(rangeData);
+          if (rangeKeyArray.length) {
+            rangeKeyArray.forEach((key) => {
+              const [min, max] = rangeData[key];
+              if (min && max) {
+                filterStr = filterStr
+                    .concat(` AND (${key} <= ${max} AND ${key} >= ${min})`);
+              }
+              if (min && !max) {
+                filterStr = filterStr.concat(` AND (${key} >= ${min})`);
+              }
+              if (!min && max) {
+                // console.log('filterStr: ', filterStr);
+                filterStr = filterStr.concat(` AND (${key} <= ${max})`);
+              }
+            });
+          }
+        }
+        if (option.filter.facet) {
+          const facetData = option.filter.facet;
+          const facetKeyArray = Object.keys(facetData);
+          if (facetKeyArray.length) {
+            facetKeyArray.forEach((key) => {
+              const convertedFacetArray = typeof facetData[key] === "string" ? (
+                [facetData[key]]
+              ) : (
+                facetData[key]
+              );
+              let eachFacetStr = "";
+              console.log("convertedFacetArray: ", convertedFacetArray);
+              const isNumValue = typeof convertedFacetArray[0] !== "number" ? (
+                0
+              ) : (
+                1
+              );
+              if (isNumValue) {
+                convertedFacetArray.forEach((target) => {
+                  eachFacetStr = eachFacetStr.concat(` OR ${key} = ${target}`);
+                });
+              } else {
+                convertedFacetArray.forEach((target) => {
+                  eachFacetStr = eachFacetStr.concat(` OR ${key}: ${target}`);
+                });
+              }
+              eachFacetStr = eachFacetStr.replace(/^ OR /, "");
+              filterStr = filterStr.concat(` AND (${eachFacetStr})`);
+            });
+          }
+        }
+        filterStr = filterStr.replace(/^ AND /, "");
+        newParams.filters = filterStr;
+      }
+    }
+    return newParams;
+  };
+  const params = getParams();
+
+  let searchIndex = "products";
+  if ((option) && (option.sort)) {
+    const sortData = option.sort;
+    const sortKeyArray = Object.keys(sortData);
+    if (sortKeyArray.length) {
+      const attri = sortKeyArray[0];
+      const isSortDesc = !sortData[attri] ? "asc" : "desc";
+      searchIndex = `${searchIndex}_${attri}_${isSortDesc}`;
+    }
+  }
+  searchClient.initIndex(searchIndex)
+      .search(searchStr, params)
+      .then(({hits}) => {
+        res.send(hits);
+        return;
+      })
+      .catch((err) => {
+        res.send([]);
+      });
+});
+
+exports.widgets = functions.https.onRequest(app);
 
 const createToAlgolia = (object, indexName) => {
   const index = client.initIndex(indexName);
@@ -24,12 +128,12 @@ exports.createProductToAlgolia = functions
     .firestore
     .document("/products/{pid}")
     .onCreate((event) => {
-      const docIdArr = event.ref.path.split("/");
-      const docId = docIdArr[docIdArr.length - 1];
+      const objectIDArr = event.ref.path.split("/");
+      const objectID = objectIDArr[objectIDArr.length - 1];
 
       const data = {
         ...event.data(),
-        docId,
+        objectID: objectID,
       };
 
       createToAlgolia(data, "products")
@@ -46,7 +150,7 @@ const updateToAlgolia = (object, indexName) => {
           return resolve(res);
         })
         .catch((err) => {
-          console.log("err BAD edit product", err);
+          console.log("err BAD edit products", err);
           return reject(err);
         });
   });
@@ -56,21 +160,24 @@ exports.updateProductToAlgolia = functions
     .firestore
     .document("/products/{pid}")
     .onUpdate((event) => {
-      // const docIdArr = event.after.ref.path.split("/");
-      // const docId = docIdArr[docIdArr.length - 1];
+      const objectIDArr = event.after.ref.path.split("/");
+      const objectID = objectIDArr[objectIDArr.length - 1];
       const data= {
         ...event.after.data(),
+        objectID: objectID,
       };
+
+      // functions.logger.log("data:", data);
 
       return updateToAlgolia(data, "products")
           .then((res) => console.log("SUCCESS ALGOLIA product EDIT", res))
           .catch((err) => console.log("ERROR ALGOLIA product  EDIT", err));
     });
 
-const deleteFromAlgolia = (docId, indexName) => {
+const deleteFromAlgolia = (objectID, indexName) => {
   const index = client.initIndex(indexName);
   return new Promise((resolve, reject) => {
-    index.deleteObject(docId)
+    index.deleteObject(objectID)
         .then((res) => {
           console.log("res GOOD delete product" );
           return resolve(res);
@@ -86,41 +193,16 @@ exports.deleteProductFromAlgolia = functions
     .firestore
     .document("/products/{pid}")
     .onDelete((event) => {
-      const docIdArr = event.ref.path.split("/");
-      const docId = docIdArr[docIdArr.length - 1];
+      const objectIDArr = event.ref.path.split("/");
+      const objectID = objectIDArr[objectIDArr.length - 1];
 
-      return deleteFromAlgolia(docId, "product")
-          .then((res) => console.log("SUCCESS ALGOLIA product REMOVE", res))
+      return deleteFromAlgolia(objectID, "products")
+          .then((res) => console.log("SUCCESS ALGOLIA product REMOVE"))
           .catch((err) => console.log("ERROR ALGOLIA product REMOVE", err));
     });
 
-// exports.addMessage = functions.https.onRequest(async (req, res) => {
-//   // Grab the text parameter.
-//   const original = req.query.text;
-//   // Push the new message into Firestore using the Firebase Admin SDK.
-//   const writeResult = await admin.firestore().collection("messages")
-//       .add({original: original});
-//   // Send back a message that we"ve successfully written the message
-//   res.json({result: `Message with ID: ${writeResult.id} added.`});
-// });
-
-// exports.makeUppercase = functions
-//     .firestore.document("/messages/{documentId}")
-//     .onCreate((snap, context) => {
-//       // Grab the current value of what was written to Firestore.
-//       const original = snap.data().original;
-
-//       // Access the parameter `{documentId}` with `context.params`
-//       functions
-//           .logger.log("Uppercasing", context.params.documentId, original);
-
-//       const uppercase = original.toUpperCase();
-
-//       return snap.ref.set({uppercase}, {merge: true});
-//     });
-
-// exports.helloWorld = (req, res) => {
-//   console.log("I am a log entry!");
-//   console.error("I am an error!");
-//   res.end();
-// };
+exports.helloWorld = (req, res) => {
+  console.log("I am a log entry!");
+  console.error("I am an error!");
+  res.end();
+};
