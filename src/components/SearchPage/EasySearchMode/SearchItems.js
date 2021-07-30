@@ -5,6 +5,7 @@ import FeatureBar from './FeatureBar';
 import { getTimeKeyGenerator } from '../../../utils/selfLibrary';
 
 import { StyledSearchItem } from '../../../styles/SearchPage/EasySearchMode/StyledSearchItemsComps';
+import MessageNoResult from '../MessageNoResult';
 
 const SearchItem = ({ eachSearchInfo, itemKey, itemIdx, updateSearchCardInfo }) => {
   const { products: productsData } = eachSearchInfo;
@@ -36,6 +37,9 @@ const SearchItems = ({ searchInfo, updateSearchCardInfo }) => {
   let newSearchItems = [];
 
   if (searchInfo) {
+    if (JSON.stringify(searchInfo) === JSON.stringify({})) {
+      return <MessageNoResult />;
+    }
     newSearchItems = searchInfo.map((eachSearchInfo, index) => {
       const { key: itemKey } = eachSearchInfo;
       return (

@@ -9,7 +9,7 @@ const StyledSearchNavBar = styled.nav`
   justify-content: center;
   align-items: center;
 
-  > div {
+  > form {
     position: relative;
     width: 85%;
     height: 100%;
@@ -66,9 +66,9 @@ const StyledSearchNavBar = styled.nav`
       align-items: center;
       transition: width 0.5s;
       &.unfocus {
-        width: 0;
+        width: 0px;
         * {
-          width: 0;
+          width: 0px;
         }
       }
       > label {
@@ -100,6 +100,9 @@ const StyledSearchNavBar = styled.nav`
           width: 85%;
           height: 100%;
           font-size: 12px;
+          &:focus {
+            background-color: transparent;
+          }
         }
       }
     }

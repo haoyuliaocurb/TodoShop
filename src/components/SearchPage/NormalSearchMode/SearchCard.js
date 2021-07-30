@@ -3,7 +3,7 @@ import StyledSearchCard from '../../../styles/SearchPage/NormalSearchMode/Styled
 import IconSearchPage from '../../../styles/SearchPage/IconSearchPage';
 
 const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchKeywordsIdx }) => {
-  const { name, price, image, productAction, pid } = productInfo;
+  const { name, price, images, productAction, pid } = productInfo;
   const isLiked = productAction ? productAction.like || false : false;
   const isCarted = productAction ? productAction.cart || false : false;
 
@@ -22,7 +22,13 @@ const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchK
       ...productAction,
       like: !currentLike ? true : null,
     };
-    updateSearchCardInfo(pid, likeedProductAction, currentSearchKeywordsIdx, cardIdx);
+    updateSearchCardInfo(
+      pid,
+      likeedProductAction,
+      currentSearchKeywordsIdx,
+      cardIdx,
+      productAction,
+    );
   };
 
   const handleIconCartClick = () => {
@@ -40,7 +46,13 @@ const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchK
       ...productAction,
       cart: !currentCart ? { amount: 1 } : null,
     };
-    updateSearchCardInfo(pid, cartedProductAction, currentSearchKeywordsIdx, cardIdx);
+    updateSearchCardInfo(
+      pid,
+      cartedProductAction,
+      currentSearchKeywordsIdx,
+      cardIdx,
+      productAction,
+    );
   };
 
   return (
@@ -53,7 +65,7 @@ const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchK
           onClick={handleIconLikeClick}
         />
       )}
-      <img alt="" src={image} />
+      <img alt="" src={images[0]} />
       <p className="SearchCardTitle">{name}</p>
       <p className="SearchCardPrice">
         <span className="priceTag">$</span>

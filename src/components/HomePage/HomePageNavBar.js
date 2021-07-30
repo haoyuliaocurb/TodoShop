@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-autofocus */
 import { React } from 'react';
 import { useHistory } from 'react-router-dom';
 import IconHomePage from '../../styles/HomePage/IconHomePage';

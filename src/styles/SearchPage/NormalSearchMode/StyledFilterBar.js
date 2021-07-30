@@ -172,8 +172,6 @@ const StyledFilterBar = styled.div`
 
     > .easySearch {
       left: 60%;
-      border-right: ${styledVariables.color.gray300} solid 1px;
-      padding-right: 18px;
       > svg {
         position: relative;
         top: 0;
@@ -190,6 +188,8 @@ const StyledFilterBar = styled.div`
       margin-left: 18px;
       display: flex;
       align-items: center;
+      padding-left: 18px;
+      border-left: ${styledVariables.color.gray300} solid 1px;
 
       > svg {
         position: relative;

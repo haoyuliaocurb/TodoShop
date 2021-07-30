@@ -29,6 +29,7 @@ const NormalSearchMode = ({
   searchInfo,
   updateSearchCardInfo,
   cartedProductAmount,
+  updateSearchItemInfo,
 }) => {
   const products = currentSearchInfo ? currentSearchInfo.products : null;
   const [scrollOffsetInfo, setScrollOffsetInfo] = useState(INIT_SCROLLOFFSET);
@@ -146,6 +147,8 @@ const NormalSearchMode = ({
         handleEasySearchButtonClick={handleEasySearchButtonClick}
         filterButtonState={filterButtonState}
         scrollOffsetInfo={scrollOffsetInfo}
+        updateSearchItemInfo={updateSearchItemInfo}
+        currentSearchKeywordsIdx={currentSearchKeywordsIdx}
       />
       <FeatureBar scrollOffsetInfo={scrollOffsetInfo} />
       <div
@@ -159,7 +162,7 @@ const NormalSearchMode = ({
           products.map((productInfo, index) => {
             const { pid } = productInfo;
             const cardIdx = index;
-            console.log('productInfo: ', productInfo);
+            // console.log('productInfo: ', productInfo);
             return (
               <SearchCard
                 key={pid}

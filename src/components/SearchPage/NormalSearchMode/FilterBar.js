@@ -9,6 +9,8 @@ const FilterBar = ({
   handleEasySearchButtonClick,
   filterButtonState,
   scrollOffsetInfo,
+  updateSearchItemInfo,
+  currentSearchKeywordsIdx,
 }) => {
   const { generalSort, priceSort, hit } = filterButtonState;
   const getGeneralSortIcon = (generalSortValue) => {
@@ -35,6 +37,22 @@ const FilterBar = ({
         return <IconSearchPage.NoSort />;
     }
   };
+  const handlePriceSortBtnClick2UpdateItemInfo = (priceSortValue) => {
+    const searchOption = {};
+    switch (priceSortValue) {
+      case 0:
+        searchOption.sort = { price: 0 };
+        break;
+      case 1:
+        searchOption.sort = { price: 1 };
+        break;
+      case 2:
+        break;
+      default:
+        break;
+    }
+    updateSearchItemInfo(currentSearchKeywordsIdx, searchOption);
+  };
 
   // (2) scrollable
   const visibility = 1;
@@ -57,14 +75,17 @@ const FilterBar = ({
     >
       <button
         onClick={handleGeneralSortButtonClick}
-        className={`generalSort ${generalSort ? 'notNoSort' : 'noSort'}`}
+        className={`generalSort ${generalSort ? 'notNoSort dp-none' : 'noSort dp-none'}`}
         type="button"
       >
         <p>綜合排序</p>
         <span>{getGeneralSortIcon(generalSort)}</span>
       </button>
       <button
-        onClick={handlePriceSortButtonClick}
+        onClick={() => {
+          handlePriceSortButtonClick();
+          handlePriceSortBtnClick2UpdateItemInfo(priceSort);
+        }}
         className={`priceSort ${priceSort ? 'notNoSort' : 'noSort'}`}
         type="button"
       >
@@ -73,7 +94,7 @@ const FilterBar = ({
       </button>
       <button
         onClick={handleHitButtonClick}
-        className={`hit ${hit ? 'selected' : 'unselected'}`}
+        className={`hit ${hit ? 'selected dp-none' : 'unselected dp-none'}`}
         type="button"
       >
         <p>最高人氣</p>
@@ -82,7 +103,7 @@ const FilterBar = ({
         <button onClick={handleEasySearchButtonClick} className="easySearch" type="button">
           <IconSearchPage.EasySearch />
         </button>
-        <button className="filter" type="button">
+        <button className="filter dp-none" type="button">
           <IconSearchPage.Filter />
           <p>篩選</p>
         </button>

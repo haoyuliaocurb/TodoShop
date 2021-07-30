@@ -66,7 +66,6 @@ const HomePage = ({ isSignIn }) => {
   return (
     <StyledHomePage>
       <NavBar navBarState={barState.navBar} />
-
       <div className="content">
         <div className="carousel">
           <img alt="" src={banner1} />

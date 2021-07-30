@@ -9,7 +9,7 @@ import {
 const SearchCard = ({
   pid,
   name,
-  image,
+  images,
   price,
   productAction,
   cardIdx,
@@ -34,7 +34,7 @@ const SearchCard = ({
       ...productAction,
       bookmark: !currentBookmark ? true : null,
     };
-    updateSearchCardInfo(pid, bookmarkedProductAction, itemIdx, cardIdx);
+    updateSearchCardInfo(pid, bookmarkedProductAction, itemIdx, cardIdx, productAction);
   };
 
   const handleIconCartClick = () => {
@@ -52,7 +52,7 @@ const SearchCard = ({
       ...productAction,
       cart: !currentCart ? { amount: 1 } : null,
     };
-    updateSearchCardInfo(pid, cartedProductAction, itemIdx, cardIdx);
+    updateSearchCardInfo(pid, cartedProductAction, itemIdx, cardIdx, productAction);
   };
 
   // <StyledSearchCard className={isBookmarked ? 'bookmarked' : ''}>
@@ -69,7 +69,7 @@ const SearchCard = ({
           onClick={handleIconBookmarkClick}
         />
       )}
-      <img alt="" src={image} />
+      <img alt="" src={images[0]} />
       <p className="SearchCardTitle">{name}</p>
       <p className="SearchCardPrice">
         <span className="priceTag">$</span>
@@ -91,13 +91,13 @@ const SearchCards = ({ productsData, itemKey, itemIdx, updateSearchCardInfo }) =
 
   if (productsData) {
     newSearchCards = productsData.map((eachProductData, index) => {
-      const { name, image, price, pid, productAction } = eachProductData;
+      const { name, images, price, pid, productAction } = eachProductData;
       return (
         <SearchCard
           key={pid}
           pid={pid}
           name={name}
-          image={image}
+          images={images}
           price={price}
           productAction={productAction}
           cardIdx={index}

@@ -1,8 +1,9 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 import { React, useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { firestore } from '../utils/firebase/firebase-services';
-// import { Link } from 'react-router-dom';
+import { getTimeKeyGenerator } from '../utils/selfLibrary';
 
 import EasySearchMode from '../components/SearchPage/EasySearchMode/EasySearchMode';
 import NormalSearchMode from '../components/SearchPage/NormalSearchMode/NormalSearchMode';
@@ -269,32 +270,68 @@ const SEARCH_INFO_WITH_PID_TEST2 = [
     ],
   },
 ];
-const getSearchInfo = (searchMetaInfo) => {
-  if (!searchMetaInfo.keywords) {
-    return;
-  }
-  const { length } = searchMetaInfo.keywords;
-  if (length > 5) {
-    // eslint-disable-next-line consistent-return
-    return SEARCH_INFO_WITH_PID_TEST2;
-  }
 
-  // eslint-disable-next-line consistent-return
-  return SEARCH_INFO_WITH_PID_TEST1;
+const fetchProductsData = async (searchStr, page, option) => {
+  const getBody = () => {
+    const newBody = { searchStr };
+    newBody.page = !page ? 0 : page;
+    if (option) {
+      newBody.option = option;
+    }
+    return JSON.stringify(newBody);
+  };
+  return fetch('https://us-central1-todoshop-5fd25.cloudfunctions.net/widgets/searchProducts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: getBody(),
+  }).then((srcProductsData) => {
+    return srcProductsData.json();
+  });
 };
 
 const SearchPages = ({ isSignIn }) => {
   const currentUid = isSignIn;
+  const location = useLocation();
   // console.log('currentUid in SearchPages: ', currentUid);
   // eslint-disable-next-line no-unused-vars
   const [searchMetaInfo, setSearchMetaInfo] = useState(SEARCH_META_INFO_TEMPLATE);
+  const [searchInfo, setSearchInfo] = useState(null);
+  const [eachSearchInfoKeyArr, setEachSearchInfoKeyArr] = useState(null);
   // console.log('searchMetaInfo: ', searchMetaInfo);
   // eslint-disable-next-line no-unused-vars
   const { isEasySearchMode, currentSearchKeywordsIdx, filterButtonState } = searchMetaInfo;
-  const [searchInfo, setSearchInfo] = useState(null);
   const [cartedProductAmount, setCartedProductAmount] = useState(0);
+  const getTimeKey = useRef(getTimeKeyGenerator());
 
-  const fetchSearchInfo = () => {};
+  const fetchEachSearchInfo = (keyword, page, option) => {
+    return fetchProductsData(keyword, page, option).then((products) => {
+      return {
+        key: getTimeKey.current(),
+        keyword,
+        products,
+      };
+    });
+  };
+  const fetchAllSearchInfo = (locationValue, page = 0, option) => {
+    // console.log('locationValue: ', locationValue);
+    if (!locationValue.search) {
+      return;
+    }
+    const getKeywordsStr = () => {
+      const srcKeywordsStr = /keywords=[\S]+$/.exec(decodeURI(locationValue.search))[0];
+      return srcKeywordsStr.replace('keywords=', '');
+    };
+    const keywordArray = getKeywordsStr().split('+');
+    return Promise.all(
+      keywordArray.map((keyword) => {
+        return fetchEachSearchInfo(keyword, page, option);
+      }),
+    ).then((newSearchInfo) => {
+      // console.log('newSearchInfo: ', newSearchInfo);
+      return newSearchInfo;
+    });
+  };
+
   const fetchSearchItemInfo = () => {};
   const updateSearchCardProductAction = (pidValue, updatedProductAction) => {
     if (!currentUid) {
@@ -360,19 +397,29 @@ const SearchPages = ({ isSignIn }) => {
         return newSearchCardProductAction;
       });
   };
-  const updateSearchItemInfo = () => {};
-  const updateSearchCardInfo = async (pidValue, updatedProductAction, itemIdx, cardIdx) => {
+  const updateSearchCardInfo = async (
+    pidValue,
+    updatedProductAction,
+    itemIdx,
+    cardIdx,
+    preProductAction,
+  ) => {
     await updateSearchCardProductAction(pidValue, updatedProductAction);
     const newSearchCardProductAction = await fetchSearchCardProductAction(
       pidValue,
       updatedProductAction,
     );
-    setCartedProductAmount((preCartedProductAmount) => {
-      if (!updatedProductAction.cart) {
+    if (preProductAction.cart && !updatedProductAction.cart) {
+      setCartedProductAmount((preCartedProductAmount) => {
+        if (preCartedProductAmount < 1) {
+          return 0;
+        }
         return preCartedProductAmount - 1;
-      }
-      return preCartedProductAmount + 1;
-    });
+      });
+    }
+    if (!preProductAction.cart && updatedProductAction.cart) {
+      setCartedProductAmount((preCartedProductAmount) => preCartedProductAmount + 1);
+    }
     // console.log('newSearchCardProductAction: ', newSearchCardProductAction);
     setSearchInfo((preSearchInfoValue) => {
       const newSearchInfo = [...preSearchInfoValue];
@@ -381,69 +428,90 @@ const SearchPages = ({ isSignIn }) => {
       return newSearchInfo;
     });
   };
-  const updateSearchInfo = async () => {
-    // console.log('getSearchInfo(searchMetaInfo): ', getSearchInfo(searchMetaInfo));
-    const newSearchInfo = JSON.parse(JSON.stringify(getSearchInfo(searchMetaInfo)));
-    const getGetProductActionObj = () => {
-      const pmsGetGetProductActionObj = new Promise((resolve) => {
-        const innerGetProductActionObj = async () => {
-          const productActionObj = {};
-          if (!currentUid) {
-            resolve(productActionObj);
-          }
-          const srcProductActionArray = await firestore
-            .collectionGroup('productAction')
-            .where('uid', '==', currentUid)
-            .get();
-          let counter = 0;
-          srcProductActionArray.forEach((srcProductAction) => {
-            const pid = srcProductAction.id;
-            const productActionData = srcProductAction.data();
-            // console.log('productActionData: ', productActionData);
-            productActionObj[pid] = {};
-            if (productActionData.bookmark) {
-              productActionObj[pid].bookmark = true;
-            }
-            if (productActionData.like) {
-              productActionObj[pid].like = true;
-            }
-            if (productActionData.cart) {
-              productActionObj[pid].cart = {};
-              productActionObj[pid].cart.amount = productActionData.cart.amount;
-              if (productActionData.cart.type) {
-                productActionObj[pid].cart.type = productActionData.cart.type;
-              }
-              counter += 1;
-            }
-          });
-          setCartedProductAmount(counter);
+  const getGetProductActionObj = () => {
+    const pmsGetGetProductActionObj = new Promise((resolve) => {
+      const innerGetProductActionObj = async () => {
+        const productActionObj = {};
+        if (!currentUid) {
           resolve(productActionObj);
-        };
-        innerGetProductActionObj();
-      });
-      return pmsGetGetProductActionObj;
-    };
-    const productActionObj = await getGetProductActionObj();
-    // console.log('productActionObj: ', productActionObj);
-
-    // console.log('newSearchInfo: ', newSearchInfo);
-    for (let i = 0; i < newSearchInfo.length; i += 1) {
-      const productsGroupByKeyword = newSearchInfo[i];
-      for (let j = 0; j < productsGroupByKeyword.products.length; j += 1) {
-        const productInfo = productsGroupByKeyword.products[j];
-        // console.log('j: ', j, 'productInfo: ', productInfo);
-        const { pid } = productInfo;
-        if (productActionObj[pid]) {
-          // console.log('productActionObj[pid]: ', productActionObj[pid]);
-          productInfo.productAction = productActionObj[pid];
-        } else {
-          productInfo.productAction = null;
         }
+        const srcProductActionArray = await firestore
+          .collectionGroup('productAction')
+          .where('uid', '==', currentUid)
+          .get();
+        let counter = 0;
+        srcProductActionArray.forEach((srcProductAction) => {
+          const pid = srcProductAction.id;
+          const productActionData = srcProductAction.data();
+          // console.log('productActionData: ', productActionData);
+          productActionObj[pid] = {};
+          if (productActionData.bookmark) {
+            productActionObj[pid].bookmark = true;
+          }
+          if (productActionData.like) {
+            productActionObj[pid].like = true;
+          }
+          if (productActionData.cart) {
+            productActionObj[pid].cart = {};
+            productActionObj[pid].cart.amount = productActionData.cart.amount;
+            if (productActionData.cart.type) {
+              productActionObj[pid].cart.type = productActionData.cart.type;
+            }
+            counter += 1;
+          }
+        });
+        setCartedProductAmount(counter);
+        resolve(productActionObj);
+      };
+      innerGetProductActionObj();
+    });
+    return pmsGetGetProductActionObj;
+  };
+  const addProductAction2SearchItemInfo = async (productActionObj, productsData) => {
+    for (let j = 0; j < productsData.length; j += 1) {
+      const productInfo = productsData[j];
+      // console.log('j: ', j, 'productInfo: ', productInfo);
+      const { pid } = productInfo;
+      if (productActionObj[pid]) {
+        // console.log('productActionObj[pid]: ', productActionObj[pid]);
+        productInfo.productAction = productActionObj[pid];
+      } else {
+        productInfo.productAction = null;
       }
     }
-
+    return productsData;
+  };
+  const updateSearchInfo = async () => {
+    const newSearchInfo = await fetchAllSearchInfo(location);
     // console.log('newSearchInfo: ', newSearchInfo);
+
+    const productActionObj = await getGetProductActionObj();
+    // console.log('productActionObj: ', productActionObj);
+    const newEachSearchInfoKeyArr = [];
+    for (let i = 0; i < newSearchInfo.length; i += 1) {
+      const productsGroupByKeyword = newSearchInfo[i];
+      const { key, keyword, products: productsData } = productsGroupByKeyword;
+      newEachSearchInfoKeyArr.push({ key, keyword });
+      addProductAction2SearchItemInfo(productActionObj, productsData);
+    }
+    setEachSearchInfoKeyArr(newEachSearchInfoKeyArr);
     setSearchInfo(newSearchInfo);
+  };
+  const updateSearchItemInfo = async (currentKeywordsIdx, searchOption, page = 0) => {
+    console.log(
+      'eachSearchInfoKeyArr[currentKeywordsIdx]: ',
+      eachSearchInfoKeyArr[currentKeywordsIdx],
+    );
+    const { keyword } = eachSearchInfoKeyArr[currentKeywordsIdx];
+    const newEachSearchInfo = await fetchEachSearchInfo(keyword, page, searchOption);
+    const { products: productsData } = newEachSearchInfo;
+    const productActionObj = await getGetProductActionObj();
+    addProductAction2SearchItemInfo(productActionObj, productsData);
+    setSearchInfo((preSearchInfo) => {
+      const newSearchInfo = [...preSearchInfo];
+      newSearchInfo[currentKeywordsIdx] = newEachSearchInfo;
+      return newSearchInfo;
+    });
   };
   const handleNavBarItemClick = (idx) => {
     // console.log('idx: ', idx);
@@ -530,59 +598,56 @@ const SearchPages = ({ isSignIn }) => {
       };
     });
   };
+  // useEffect(() => {
+  //   const updateSearchMetaInfo = async () => {
+  //     // eslint-disable-next-line no-unused-vars
+  //     const getSearchKeywordsLog = async (isSignInValue) => {
+  //       const promiseReturned = new Promise((resolve) => {
+  //         // eslint-disable-next-line consistent-return
+  //         const innerGetSearchKeywordsLog = async (innerIsSignInValue) => {
+  //           // console.log('innerIsSignInValue: ', innerIsSignInValue);
+  //           if (!innerIsSignInValue) {
+  //             // 若未登入，則從 localStorage 取搜尋紀錄，若沒有則導回首頁
+  //             return [];
+  //           }
+  //           const srcSearchKeywordsLog = await firestore
+  //             .collection('users')
+  //             .doc(innerIsSignInValue)
+  //             .collection('searchKeywordsLog')
+  //             .orderBy('updateTime', 'desc')
+  //             .limit(1)
+  //             .get();
+  //           let searchKeywordsLog = {};
+  //           // console.log('srcSearchKeywordsLog: ', srcSearchKeywordsLog);
+  //           // searchKeywordsLog = srcSearchKeywordsLog.data();
+  //           srcSearchKeywordsLog.forEach((searchKeywordsLogValue) => {
+  //             // console.log('searchKeywordsLogValue.data(): ', searchKeywordsLogValue.data());
+  //             searchKeywordsLog = searchKeywordsLogValue.data();
+  //           });
+  //           // console.log('searchKeywordsLog: ', searchKeywordsLog);
+  //           resolve(searchKeywordsLog);
+  //         };
+  //         innerGetSearchKeywordsLog(isSignInValue);
+  //       });
+  //       return promiseReturned;
+  //     };
+  //     const { keywords } = await getSearchKeywordsLog(isSignIn);
+  //     setSearchMetaInfo((preValue) => ({
+  //       ...preValue,
+  //       keywords,
+  //     }));
+  //   };
+  //   updateSearchMetaInfo();
+  // }, [isSignIn]);
   useEffect(() => {
-    const updateSearchMetaInfo = async () => {
-      // eslint-disable-next-line no-unused-vars
-      const getSearchKeywordsLog = async (isSignInValue) => {
-        const promiseReturned = new Promise((resolve) => {
-          // eslint-disable-next-line consistent-return
-          const innerGetSearchKeywordsLog = async (innerIsSignInValue) => {
-            // console.log('innerIsSignInValue: ', innerIsSignInValue);
-            if (!innerIsSignInValue) {
-              // 若未登入，則從 localStorage 取搜尋紀錄，若沒有則導回首頁
-              return [];
-            }
-            const srcSearchKeywordsLog = await firestore
-              .collection('users')
-              .doc(innerIsSignInValue)
-              .collection('searchKeywordsLog')
-              .orderBy('updateTime', 'desc')
-              .limit(1)
-              .get();
-            let searchKeywordsLog = {};
-            // console.log('srcSearchKeywordsLog: ', srcSearchKeywordsLog);
-            // searchKeywordsLog = srcSearchKeywordsLog.data();
-            srcSearchKeywordsLog.forEach((searchKeywordsLogValue) => {
-              // console.log('searchKeywordsLogValue.data(): ', searchKeywordsLogValue.data());
-              searchKeywordsLog = searchKeywordsLogValue.data();
-            });
-            // console.log('searchKeywordsLog: ', searchKeywordsLog);
-            resolve(searchKeywordsLog);
-          };
-          innerGetSearchKeywordsLog(isSignInValue);
-        });
-        return promiseReturned;
-      };
-      const { keywords } = await getSearchKeywordsLog(isSignIn);
-      setSearchMetaInfo((preValue) => ({
-        ...preValue,
-        keywords,
-      }));
-    };
-    updateSearchMetaInfo();
-  }, [isSignIn]);
-  useEffect(() => {
-    // console.log('useEffect on updateSearchInfo');
-    // console.log('searchMetaInfo: ', searchMetaInfo);
-    // console.log('!searchMetaInfo.searchKeywordsLog: ', !searchMetaInfo.searchKeywordsLog);
-    if (!searchMetaInfo.keywords) {
-      return;
-    }
     updateSearchInfo();
-  }, [searchMetaInfo]);
+  }, [isSignIn, location.search]);
   useEffect(() => {
-    console.log('searchInfo: ', searchInfo);
+    // console.log('searchInfo: ', searchInfo);
   }, [searchInfo]);
+  useEffect(() => {
+    // console.log('eachSearchInfoKeyArr: ', eachSearchInfoKeyArr);
+  }, [eachSearchInfoKeyArr]);
   return (
     <StyledSearchPage>
       {isEasySearchMode ? (
@@ -607,6 +672,7 @@ const SearchPages = ({ isSignIn }) => {
           searchInfo={searchInfo}
           updateSearchCardInfo={updateSearchCardInfo}
           cartedProductAmount={cartedProductAmount}
+          updateSearchItemInfo={updateSearchItemInfo}
         />
       )}
     </StyledSearchPage>

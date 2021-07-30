@@ -216,20 +216,20 @@ const TRIAL = () => {
     // });
     // startToSearch('得意 衛生紙', 0)
     // .then(() => { startToSearch('得意 衛生紙', 1); });
-    const option = {
-      filter: {
-        // range: {
-        //   price: [500, 600],
-        // },
-        facet: {
-          price: [489, 659],
-        }
-      },
-      sort: {
-        price: 1,
-      },
-    };
-    startToSearch('衛生紙', 0, option)
+    // const option = {
+    //   filter: {
+    //     // range: {
+    //     //   price: [500, 600],
+    //     // },
+    //     facet: {
+    //       price: [489, 659],
+    //     }
+    //   },
+    //   sort: {
+    //     price: 1,
+    //   },
+    // };
+    // startToSearch('衛生紙', 0, option)
     // .then(() => { startToSearch('得意 衛生紙', 1); });
   }, []);
 
