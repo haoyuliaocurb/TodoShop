@@ -200,10 +200,10 @@ const ProductPage = ({ isSignIn }) => {
     // console.log('scrollTargetValue.scrollTop', scrollTargetValue.scrollTop);
     // console.log('scrollTargetValue.scrollTop > 160', scrollTargetValue.scrollTop > 160);
     // console.log('isSimpleMode !== 0: ', isSimpleMode !== 0);
-    if (scrollTargetValue.scrollTop > 160 && isSimpleMode !== 0) {
+    if (scrollTargetValue.scrollTop > 50 && isSimpleMode !== 0) {
       setIsSimpleMode(0);
     }
-    if (scrollTargetValue.scrollTop <= 160 && isSimpleMode !== 1) {
+    if (scrollTargetValue.scrollTop <= 50 && isSimpleMode !== 1) {
       setIsSimpleMode(1);
     }
 

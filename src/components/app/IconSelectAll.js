@@ -12,16 +12,10 @@ const IconSelectAll = ({ buttonSelectAllState, handleIconSelectAllClick, display
     return 1;
   };
   const displayValue = getDisplayValue();
-  const handleClick = () => {
-    if (!handleIconSelectAllClick) {
-      return;
-    }
-    handleIconSelectAllClick();
-  };
   return (
     <StyledIconSelectAll
       className={!displayValue ? 'iconSelectAll dp-none' : 'iconSelectAll'}
-      onClick={handleClick}
+      onClick={handleIconSelectAllClick}
     >
       <span className={!buttonSelectAllState ? 'dot vb-hidden' : 'dot'} />
     </StyledIconSelectAll>
