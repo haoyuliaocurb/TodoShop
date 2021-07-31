@@ -32,7 +32,7 @@ const CartPageNavBar = ({ buttonState, updateButtonState }) => {
   return (
     <StyledCartPageNavBar>
       <Link
-        to="/todolist/table"
+        to="/"
         onClick={(e) => {
           e.preventDefault();
           handleChevronLeftClick();

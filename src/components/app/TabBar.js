@@ -4,7 +4,7 @@ import StyledTabBar from '../../styles/app/StyledTabBar';
 import { styledVariables } from '../../styles/app/cssMaterial';
 
 const TabBar = ({ backgroundColor, scrollOffsetInfo, tabBarState }) => {
-  const { content, visibility } = tabBarState;
+  const { content, visibility, topShadow } = tabBarState;
   // const { preScrollOffset, scrollOffset, isScrollEnd } = scrollOffsetInfo;
   const preScrollOffset = visibility !== 1 ? null : scrollOffsetInfo.preScrollOffset;
   const scrollOffset = visibility !== 1 ? null : scrollOffsetInfo.scrollOffset;
@@ -18,6 +18,7 @@ const TabBar = ({ backgroundColor, scrollOffsetInfo, tabBarState }) => {
       windowOffset={windowOffset}
       scrollOffset={scrollOffset}
       isScrollEnd={isScrollEnd}
+      topShadow={topShadow}
       // className={`${visibility ? '' : 'vb-hidden'} ${
       //   windowOffset < 0 || isScrollEnd ? 'transition' : ''
       // }`}

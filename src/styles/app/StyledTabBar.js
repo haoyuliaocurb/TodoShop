@@ -25,6 +25,12 @@ const StyledTabBar = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 5;
+  box-shadow: ${({ topShadow }) => {
+    if (!topShadow) {
+      return 'none';
+    }
+    return '0 -5px 10px rgba(0, 0, 0, 0.1)';
+  }};
 
   &.transition {
     transition-property: bottom;

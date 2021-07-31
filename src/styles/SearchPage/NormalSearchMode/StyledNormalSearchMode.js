@@ -22,7 +22,6 @@ const StyledNormalSearchMode = styled.div`
     @media (max-width: 432px) {
       width: 100%;
       min-width: 360px;
-      padding: 0 16px;
     }
 
     @media (min-width: 600px) {

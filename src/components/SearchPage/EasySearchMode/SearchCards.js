@@ -2,8 +2,8 @@
 import { React, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import IconSearchPage from '../../../styles/SearchPage/IconSearchPage';
-import IconCart from '../IconCart';
-import IconBookmark from '../IconBookmark';
+import IconCart from '../../app/IconCart';
+import IconBookmark from '../../app/IconBookmark';
 import {
   StyledSearchCards,
   StyledSearchCard,

@@ -32,6 +32,9 @@ export const styledVariables = {
     pink100: '#ffe8ee',
     pink400: '#fb457b',
     white: 'white',
+    transGray10: 'rgba(0, 0, 0, 0.1)',
+    transGray30: 'rgba(0, 0, 0, 0.3)',
+    transGray50: 'rgba(0, 0, 0, 0.5)',
   },
   shared: {
     barHeight: '50px',
@@ -89,6 +92,10 @@ export const styledVariables = {
       paddingTop: '8px',
       productContentPaddingHor: '16px',
     },
+  },
+  productPage: {
+    contentBreakpoint: '720px',
+    contentPaddingHor: '16px',
   },
 };
 styledVariables.todolistTable.buttonWidthSum = `${

@@ -144,6 +144,9 @@ const SearchNavBar = ({
     history.push(newURL);
     searchBarInput.current.blur();
   };
+  const handleChevronLeftClick = () => {
+    history.go(-1);
+  };
   // window.addEventListener('click', handleSearchBarBlur);
   return (
     <StyledSearchNavBar>
@@ -168,7 +171,7 @@ const SearchNavBar = ({
         <span className="latterItemAmount vb-hidden">1</span>
         <IconSearchPage.Add className="iconAdd" onClick={handleButtonClick} />
       </form>
-      <IconSearchPage.ChenvronLeft className="iconChenvronLeft" />
+      <IconSearchPage.ChenvronLeft className="iconChenvronLeft" onClick={handleChevronLeftClick} />
       <button type="button" className="iconCart" onClick={handleIconCartClick}>
         <IconSearchPage.Cart />
         <span>{cartedProductAmount > 9 ? '+' : cartedProductAmount}</span>

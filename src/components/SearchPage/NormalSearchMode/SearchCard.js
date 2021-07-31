@@ -2,8 +2,8 @@
 import { React, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import StyledSearchCard from '../../../styles/SearchPage/NormalSearchMode/StyledSearchCard';
-import IconLike from '../IconLike';
-import IconCart from '../IconCart';
+import IconLike from '../../app/IconLike';
+import IconCart from '../../app/IconCart';
 
 const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchKeywordsIdx }) => {
   const history = useHistory();

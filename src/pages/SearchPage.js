@@ -409,7 +409,7 @@ const SearchPages = ({ isSignIn }) => {
       pidValue,
       updatedProductAction,
     );
-    if (preProductAction.cart && !updatedProductAction.cart) {
+    if ((!preProductAction || preProductAction.cart) && !updatedProductAction.cart) {
       setCartedProductAmount((preCartedProductAmount) => {
         if (preCartedProductAmount < 1) {
           return 0;
@@ -417,7 +417,7 @@ const SearchPages = ({ isSignIn }) => {
         return preCartedProductAmount - 1;
       });
     }
-    if (!preProductAction.cart && updatedProductAction.cart) {
+    if ((!preProductAction || !preProductAction.cart) && updatedProductAction.cart) {
       setCartedProductAmount((preCartedProductAmount) => preCartedProductAmount + 1);
     }
     // console.log('newSearchCardProductAction: ', newSearchCardProductAction);

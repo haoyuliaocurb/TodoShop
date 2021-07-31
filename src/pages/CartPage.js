@@ -266,52 +266,6 @@ const CartPage = ({ isSignIn }) => {
       default:
     }
   };
-  // const deleteProductActionCart = async (pid2DeleteValue) => {
-  //   const getPidArray2Delete = () => {
-  //     if (typeof pid2Delete === 'string') {
-  //       return [pid2DeleteValue];
-  //     }
-  //     return pid2DeleteValue;
-  //   };
-  //   const pidArray2Delete = getPidArray2Delete();
-  //   const pid2DeleteObj = {};
-  //   await Promise.all(
-  //     pidArray2Delete.map((pid) => {
-  //       pid2DeleteObj[pid] = 1;
-  //       return firestore
-  //         .collection('users')
-  //         .doc(currentUid)
-  //         .collection('productAction')
-  //         .doc(pid)
-  //         .update({ cart: firebase.firestore.FieldValue.delete() });
-  //     }),
-  //   );
-  //   setCartData((preCartData) => {
-  //     console.log('preCartData: ', preCartData);
-  //     if (!preCartData) {
-  //       return null;
-  //     }
-  //     const newCartData = preCartData.map((eachPreCartData) => {
-  //       const { products: productsData } = eachPreCartData;
-  //       const newEachCartData = productsData.map((eachPreProductData) => {
-  //         const { pid } = eachPreProductData;
-  //         if (!pid2DeleteObj[pid]) {
-  //           return eachPreProductData;
-  //         }
-  //         const newEachProductData = {
-  //           ...eachPreProductData,
-  //         };
-  //         delete newEachProductData.cartAmount;
-  //         if (newEachProductData.cartType) {
-  //           delete newEachProductData.cartType;
-  //         }
-  //         return newEachProductData;
-  //       });
-  //       return newEachCartData;
-  //     });
-  //     return newCartData;
-  //   });
-  // };
   const deleteProductActionCart = async (pid2DeleteValue) => {
     const getPidArray2Delete = () => {
       if (typeof pid2Delete === 'string') {
@@ -447,15 +401,14 @@ const CartPage = ({ isSignIn }) => {
   useEffect(() => {
     isOnScroll.current = false;
   }, [scrollOffsetInfo]);
-
   useEffect(() => {
     fetchCartData(currentUid);
   }, [currentUid]);
   useEffect(() => {
-    console.log('cartData: ', cartData);
+    // console.log('cartData: ', cartData);
   }, [cartData]);
   useEffect(() => {
-    console.log('buttonState: ', buttonState);
+    // console.log('buttonState: ', buttonState);
     setBarState(() => {
       const newBarState = {
         navBar: { ...INIT_BARSTATE.navBar },
