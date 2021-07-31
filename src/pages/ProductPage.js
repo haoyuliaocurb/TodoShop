@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 import { React, useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
@@ -8,6 +9,7 @@ import NavBar from '../components/app/NavBar';
 import ProductPageNavBar from '../components/ProductPage/ProductPageNavBar';
 import ProductPageToolBar from '../components/ProductPage/ProductPageToolBar';
 import IconLike from '../components/app/IconLike';
+import IconSearchPage from '../styles/SearchPage/IconSearchPage';
 
 import StyledProductPage from '../styles/ProductPage/StyledProductPage';
 import { styledVariables, removePx } from '../styles/app/cssMaterial';
@@ -30,10 +32,12 @@ const ProductPage = ({ isSignIn }) => {
   const [productAction, setProductAction] = useState({ cart: 1 });
   const iconLikeRef = useRef(null);
   const isLiked = productAction && productAction.like ? 1 : 0;
+  const [carouselIdx, setCarouselIdx] = useState(0);
+  const carouselImgAmount = useRef(null);
 
   // (1) fetch 商品資訊
   const fetchProductData = (pidValue) => {
-    console.log('pidValue: ', pidValue);
+    // console.log('pidValue: ', pidValue);
     return firestore
       .collection('products')
       .doc(pidValue)
@@ -56,13 +60,31 @@ const ProductPage = ({ isSignIn }) => {
       .doc(pidValue)
       .get()
       .then((srcProductActionData) => {
-        console.log('srcProductActionData.data(): ', srcProductActionData.data());
+        // console.log('srcProductActionData.data(): ', srcProductActionData.data());
         return srcProductActionData.data();
       });
   };
   const updateProductData = async (pidValue) => {
     const newProductData = await fetchProductData(pidValue);
     setProductData(newProductData);
+  };
+  const initProductAction = async (pidValue) => {
+    const newProductAction = await fetchProductAction(pidValue);
+    setProductAction(newProductAction);
+  };
+  const updateProductAction = async (pidValue, updatedProductAction) => {
+    if (!currentUid) {
+      return;
+    }
+    await firestore
+      .collection('users')
+      .doc(currentUid)
+      .collection('productAction')
+      .doc(pidValue)
+      .update(updatedProductAction);
+
+    const newProductAction = await fetchProductAction(pidValue);
+    setProductAction(newProductAction);
   };
   const updateCartedProductAmount = async () => {
     if (!currentUid) {
@@ -71,7 +93,7 @@ const ProductPage = ({ isSignIn }) => {
     }
     // eslint-disable-next-line prefer-const
     let newCartedProductAmount = 0;
-    console.log('beforenewCartedProductAmount: ', newCartedProductAmount);
+    // console.log('before newCartedProductAmount: ', newCartedProductAmount);
     await firestore
       .collectionGroup('productAction')
       .where('uid', '==', currentUid)
@@ -79,12 +101,11 @@ const ProductPage = ({ isSignIn }) => {
       .get()
       .then((srcProductActionData) => {
         newCartedProductAmount = srcProductActionData.size;
-        console.log('newCartedProductAmount: ', newCartedProductAmount);
+        // console.log('newCartedProductAmount: ', newCartedProductAmount);
         setCartedProductAmount(newCartedProductAmount);
       });
   };
-  const handleIconLikeClick = (e) => {
-    e.stopPropagation();
+  const handleIconLikeClick = () => {
     iconLikeRef.current.classList.add('animation');
     iconLikeRef.current.addEventListener(
       'animationend',
@@ -95,27 +116,24 @@ const ProductPage = ({ isSignIn }) => {
       { once: true },
     );
 
-    // const getCurrentLike = () => {
-    //   if (!isLiked) {
-    //     return null;
-    //   }
-    //   if (!productAction.like) {
-    //     return null;
-    //   }
-    //   return productAction.like;
-    // };
-    // const currentLike = getCurrentLike();
-    // const likeedProductAction = {
-    //   ...productAction,
-    //   like: !currentLike ? true : null,
-    // };
-    // updateSearchCardInfo(
-    //   pid,
-    //   likeedProductAction,
-    //   currentSearchKeywordsIdx,
-    //   cardIdx,
-    //   productAction,
-    // );
+    const getCurrentLike = () => {
+      // console.log('isLiked: ', isLiked);
+      // console.log('productAction.like: ', productAction.like);
+      if (!isLiked) {
+        return null;
+      }
+      if (!productAction.like) {
+        return null;
+      }
+      return productAction.like;
+    };
+    const currentLike = getCurrentLike();
+    // console.log('currentLike: ', currentLike);
+    const likedProductAction = {
+      ...productAction,
+      like: !currentLike ? true : null,
+    };
+    updateProductAction(pid, likedProductAction);
   };
   useEffect(() => {
     updateProductData(pid);
@@ -124,8 +142,11 @@ const ProductPage = ({ isSignIn }) => {
     // console.log('productData: ', productData);
   }, [productData]);
   useEffect(() => {
-    fetchProductAction(pid);
+    initProductAction(pid);
   }, [isSignIn]);
+  useEffect(() => {
+    // console.log('productAction: ', productAction);
+  }, [productAction]);
 
   // (2) 處理 scroll bar
   const INIT_BARSTATE = {
@@ -146,6 +167,8 @@ const ProductPage = ({ isSignIn }) => {
           buttonState={buttonState}
           updateButtonState={updateButtonState}
           productAction={productAction}
+          updateProductAction={updateProductAction}
+          pid={pid}
         />
       ),
       visibility: 1,
@@ -174,9 +197,9 @@ const ProductPage = ({ isSignIn }) => {
     windowOffset.current = scrollOffsetValue - preScrollOffsetValue;
     preScrollOffset.current = scrollOffsetValue;
 
-    console.log('scrollTargetValue.scrollTop', scrollTargetValue.scrollTop);
-    console.log('scrollTargetValue.scrollTop > 160', scrollTargetValue.scrollTop > 160);
-    console.log('isSimpleMode !== 0: ', isSimpleMode !== 0);
+    // console.log('scrollTargetValue.scrollTop', scrollTargetValue.scrollTop);
+    // console.log('scrollTargetValue.scrollTop > 160', scrollTargetValue.scrollTop > 160);
+    // console.log('isSimpleMode !== 0: ', isSimpleMode !== 0);
     if (scrollTargetValue.scrollTop > 160 && isSimpleMode !== 0) {
       setIsSimpleMode(0);
     }
@@ -242,7 +265,25 @@ const ProductPage = ({ isSignIn }) => {
   }, [buttonState, isSimpleMode, cartedProductAmount, productAction]);
   useEffect(() => {
     updateCartedProductAmount();
-  }, [isSignIn]);
+  }, [isSignIn, productAction]);
+
+  // (3) carousel
+  const handleIconLastImgClick = () => {
+    setCarouselIdx((preCarouselIdx) => {
+      if (preCarouselIdx === 0) {
+        return carouselImgAmount.current - 1;
+      }
+      return preCarouselIdx - 1;
+    });
+  };
+  const handleIconNextImgClick = () => {
+    setCarouselIdx((preCarouselIdx) => {
+      if (preCarouselIdx === carouselImgAmount.current - 1) {
+        return 0;
+      }
+      return preCarouselIdx + 1;
+    });
+  };
   return (
     <StyledProductPage>
       <NavBar scrollOffsetInfo={scrollOffsetInfo} navBarState={barState.navBar} />
@@ -261,14 +302,29 @@ const ProductPage = ({ isSignIn }) => {
               <div className="contentBlock productInfo">
                 <div className="imgProductInfo">
                   <div className="carousel">
-                    <img alt="" src={productData.images[0]} />
+                    {productData.images.map((imageURL, index) => {
+                      if (index === carouselIdx) {
+                        carouselImgAmount.current = productData.images.length;
+                        return <img alt="" src={imageURL} />;
+                      }
+                      return <img alt="" src={imageURL} className="transparent" />;
+                    })}
+                    <IconSearchPage.ChenvronLeft
+                      className="IconLastImg"
+                      onClick={handleIconLastImgClick}
+                    />
+                    <IconSearchPage.ChenvronRight
+                      className="IconNextImg"
+                      onClick={handleIconNextImgClick}
+                    />
                   </div>
                   <div className="dotContainer">
-                    {Array.from({
-                      length: 5,
-                    }).map(() => (
-                      <span className="dot" />
-                    ))}
+                    {productData.images.map((value, index) => {
+                      if (index === carouselIdx) {
+                        return <span className="dot focused" />;
+                      }
+                      return <span className="dot" />;
+                    })}
                   </div>
                 </div>
                 <div className="textProductInfo">

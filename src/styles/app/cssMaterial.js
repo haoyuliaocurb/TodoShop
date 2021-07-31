@@ -33,6 +33,7 @@ export const styledVariables = {
     pink400: '#fb457b',
     white: 'white',
     transGray10: 'rgba(0, 0, 0, 0.1)',
+    transGray20: 'rgba(0, 0, 0, 0.2)',
     transGray30: 'rgba(0, 0, 0, 0.3)',
     transGray50: 'rgba(0, 0, 0, 0.5)',
   },

@@ -4,6 +4,7 @@ import { ReactComponent as LikeUnselected } from './images/icon-like-unselected.
 import { ReactComponent as LikeSelected } from './images/icon-like-selected.svg';
 import { ReactComponent as Bookmark } from './images/icon-bookmark.svg';
 import { ReactComponent as ChenvronLeft } from './images/icon-chevron-left.svg';
+import { ReactComponent as ChenvronRight } from './images/icon-chevron-right.svg';
 import { ReactComponent as Cart } from './images/icon-cart.svg';
 import { ReactComponent as Add } from './images/icon-add.svg';
 import { ReactComponent as EasySearch } from './images/icon-easySearch.svg';
@@ -22,6 +23,7 @@ export default {
   LikeSelected,
   Bookmark,
   ChenvronLeft,
+  ChenvronRight,
   Cart,
   Add,
   EasySearch,

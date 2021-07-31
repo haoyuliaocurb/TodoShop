@@ -67,9 +67,48 @@ const StyledProductPage = styled.div`
               max-height: 306px;
               /* border: black solid 1px; */
               > img {
+                position: absolute;
+                top: 0;
+                left: 0;
                 object-fit: cover;
                 width: 100%;
                 height: 100%;
+                opacity: 1;
+                transition: opacity 0.3s;
+
+                &.transparent {
+                  opacity: 0;
+                }
+              }
+              > .IconLastImg {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: -40px;
+                margin: auto 0;
+                width: 30px;
+                height: 30px;
+                @media (max-width: 410px) {
+                  left: -14px;
+                }
+                @media (min-width: 720px) and (max-width: 820px) {
+                  left: -14px;
+                }
+              }
+              > .IconNextImg {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                right: -40px;
+                margin: auto 0;
+                width: 30px;
+                height: 30px;
+                @media (max-width: 410px) {
+                  right: -14px;
+                }
+                @media (min-width: 720px) and (max-width: 820px) {
+                  right: -14px;
+                }
               }
             }
             > .dotContainer {
@@ -80,7 +119,11 @@ const StyledProductPage = styled.div`
                 width: 8px;
                 height: 8px;
                 border-radius: 100px;
-                background-color: ${styledVariables.color.transGray50};
+                background-color: ${styledVariables.color.transGray20};
+
+                &.focused {
+                  background-color: ${styledVariables.color.transGray50};
+                }
               }
               > :not(span:first-of-type) {
                 margin-left: 8px;

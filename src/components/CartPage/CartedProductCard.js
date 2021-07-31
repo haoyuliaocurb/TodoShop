@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { React } from 'react';
+import { useHistory } from 'react-router-dom';
 import { firebase } from '../../utils/firebase/firebase-services';
 import IconSelectAll from '../app/IconSelectAll';
 import StyledCartedProductCard from '../../styles/CartPage/StyledCartedProductCard';
@@ -13,6 +14,7 @@ const CartedProductCard = ({
   updateProductActionCart,
 }) => {
   const { name, price, images, pid, cartAmount, cartType } = productData;
+  const history = useHistory();
   const getButtonSelectAllState = () => {
     if (!buttonState[sid]) {
       return 0;
@@ -28,7 +30,8 @@ const CartedProductCard = ({
     return 1;
   };
   const buttonSelectAllState = getButtonSelectAllState();
-  const handleIconSelectAllClick = () => {
+  const handleIconSelectAllClick = (e) => {
+    e.stopPropagation();
     const updatedButtonStatePart = {};
     if (!buttonSelectAllState) {
       updatedButtonStatePart[pid] = 1;
@@ -39,14 +42,16 @@ const CartedProductCard = ({
     }
     updateButtonState(updatedButtonStatePart, 1, sid);
   };
-  const handleAddAmountClick = () => {
+  const handleAddAmountClick = (e) => {
+    e.stopPropagation();
     const newUpdateProductActionCart = { cart: { amount: cartAmount + 1 } };
     if (cartType) {
       newUpdateProductActionCart.cart.type = cartType;
     }
     updateProductActionCart(newUpdateProductActionCart, sid, pid);
   };
-  const handleSubAmountClick = () => {
+  const handleSubAmountClick = (e) => {
+    e.stopPropagation();
     const subedCartAmount = cartAmount - 1;
     let newUpdateProductActionCart = {};
     if (subedCartAmount < 1) {
@@ -59,8 +64,11 @@ const CartedProductCard = ({
     }
     updateProductActionCart(newUpdateProductActionCart, sid, pid);
   };
+  const handleSelfClick = () => {
+    history.push(`/product/${pid}`);
+  };
   return (
-    <StyledCartedProductCard>
+    <StyledCartedProductCard onClick={handleSelfClick}>
       <IconSelectAll
         buttonSelectAllState={buttonSelectAllState}
         handleIconSelectAllClick={handleIconSelectAllClick}
