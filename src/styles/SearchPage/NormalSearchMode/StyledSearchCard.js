@@ -4,22 +4,15 @@ import { styledVariables } from '../../app/cssMaterial';
 const StyledSearchCard = styled.div`
   position: relative;
   flex-shrink: 0;
-
   display: inline-block;
   width: 200px;
   height: 264px;
   // padding: 12px 20px 0 12px;
-  // border: black solid 1px;
+  /* border: black solid 1px; */
 
   @media (max-width: 432px) {
     width: 50%;
     min-width: 164px;
-  }
-
-  &.bookmarked {
-    background-color: burlywood;
-    position: absolute;
-    left: 0;
   }
 
   > img {
@@ -45,13 +38,16 @@ const StyledSearchCard = styled.div`
     padding: 0 ${styledVariables.NormalSearchMode.SearchCard.SelfPaddingHor};
     // border: black solid 1px;
     font-size: 14px;
+    width: 200px;
+    /* height: 146px; */
+    height: 70px;
 
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     white-space: normal;
   }
@@ -70,26 +66,13 @@ const StyledSearchCard = styled.div`
     }
   }
 
-  > svg.IconLikeUnselected {
+  > .iconLike {
     position: absolute;
     top: 4px;
-    right: 0;
+    right: 5px;
   }
 
-  > svg.IconLikeSelected {
-    position: absolute;
-    top: 3px;
-    right: 0;
-    width: 22px;
-    height: 22px;
-    fill: ${styledVariables.color.pink400};
-
-    * {
-      fill: ${styledVariables.color.pink400};
-    }
-  }
-
-  > svg.IconAdd2Cart {
+  > .iconAdd2Cart {
     position: absolute;
     bottom: ${styledVariables.NormalSearchMode.SearchCard.SelfPaddingBottom};
     right: 0;

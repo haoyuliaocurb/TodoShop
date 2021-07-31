@@ -8,6 +8,7 @@ import AuthPage from '../../pages/AuthPage';
 import SearchPage from '../../pages/SearchPage';
 import HomePage from '../../pages/HomePage';
 import CartPage from '../../pages/CartPage';
+import ProductPage from '../../pages/ProductPage';
 
 // styling
 import StyledMain from '../../styles/app/StyledMain';
@@ -68,6 +69,9 @@ const Main = () => {
         </Route>
         <Route path="/cart">
           <CartPage isSignIn={isSignIn} />
+        </Route>
+        <Route path="/product/:pid">
+          <ProductPage isSignIn={isSignIn} />
         </Route>
         <Route path="/">
           <HomePage isSignIn={isSignIn} />

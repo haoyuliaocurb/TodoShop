@@ -1,13 +1,30 @@
-import { React } from 'react';
+/* eslint-disable no-unused-vars */
+import { React, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import StyledSearchCard from '../../../styles/SearchPage/NormalSearchMode/StyledSearchCard';
-import IconSearchPage from '../../../styles/SearchPage/IconSearchPage';
+import IconLike from '../IconLike';
+import IconCart from '../IconCart';
 
 const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchKeywordsIdx }) => {
+  const history = useHistory();
   const { name, price, images, productAction, pid } = productInfo;
   const isLiked = productAction ? productAction.like || false : false;
   const isCarted = productAction ? productAction.cart || false : false;
+  const iconLikeRef = useRef(null);
+  const iconCartRef = useRef(null);
 
-  const handleIconLikeClick = () => {
+  const handleIconLikeClick = (e) => {
+    e.stopPropagation();
+    iconLikeRef.current.classList.add('animation');
+    iconLikeRef.current.addEventListener(
+      'animationend',
+      () => {
+        // console.log('true');
+        iconLikeRef.current.classList.remove('animation');
+      },
+      { once: true },
+    );
+
     const getCurrentLike = () => {
       if (!isLiked) {
         return null;
@@ -30,8 +47,17 @@ const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchK
       productAction,
     );
   };
-
-  const handleIconCartClick = () => {
+  const handleIconCartClick = (e) => {
+    e.stopPropagation();
+    iconCartRef.current.classList.add('animation');
+    iconCartRef.current.addEventListener(
+      'animationend',
+      () => {
+        // console.log('true');
+        iconCartRef.current.classList.remove('animation');
+      },
+      { once: true },
+    );
     const getCurrentCart = () => {
       if (!isCarted) {
         return null;
@@ -54,28 +80,28 @@ const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchK
       productAction,
     );
   };
+  const handleSelfClick = () => {
+    history.push(`/product/${pid}`);
+  };
 
   return (
-    <StyledSearchCard>
-      {isLiked ? (
-        <IconSearchPage.LikeSelected className="IconLikeSelected" onClick={handleIconLikeClick} />
-      ) : (
-        <IconSearchPage.LikeUnselected
-          className="IconLikeUnselected"
-          onClick={handleIconLikeClick}
-        />
-      )}
+    <StyledSearchCard onClick={handleSelfClick}>
+      <IconLike
+        isLiked={isLiked}
+        handleIconLikeClick={handleIconLikeClick}
+        iconLikeRef={iconLikeRef}
+      />
       <img alt="" src={images[0]} />
       <p className="SearchCardTitle">{name}</p>
       <p className="SearchCardPrice">
         <span className="priceTag">$</span>
         <span>{price}</span>
       </p>
-      {isCarted ? (
-        <IconSearchPage.Add2CartSelected className="IconAdd2Cart" onClick={handleIconCartClick} />
-      ) : (
-        <IconSearchPage.Add2CartUnselected className="IconAdd2Cart" onClick={handleIconCartClick} />
-      )}
+      <IconCart
+        isCarted={isCarted}
+        handleIconCartClick={handleIconCartClick}
+        iconCartRef={iconCartRef}
+      />
     </StyledSearchCard>
   );
 };

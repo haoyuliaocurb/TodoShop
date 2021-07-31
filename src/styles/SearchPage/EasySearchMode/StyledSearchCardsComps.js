@@ -12,12 +12,6 @@ export const StyledSearchCard = styled.div`
   margin-right: ${styledVariables.EasySearchMode.SearchCard.SelfMarginRight};
   // border: black solid 1px;
 
-  &.bookmarked {
-    background-color: burlywood;
-    position: absolute;
-    left: 0;
-  }
-
   > img {
     // border: solid black 1px;
     display: block;
@@ -55,24 +49,13 @@ export const StyledSearchCard = styled.div`
     }
   }
 
-  > svg.IconBookmarkUnselected {
+  > .iconBookmark {
     position: absolute;
     top: 4px;
     right: 10px;
   }
 
-  > svg.IconBookmarkSelected {
-    position: absolute;
-    top: 4px;
-    right: 10px;
-
-    * {
-      stroke: ${styledVariables.color.pink400};
-      fill: ${styledVariables.color.pink400};
-    }
-  }
-
-  > svg.IconAdd2Cart {
+  > .iconAdd2Cart {
     position: absolute;
     bottom: ${styledVariables.EasySearchMode.SearchCard.SelfPaddingBottom};
     right: 10px;
