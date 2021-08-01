@@ -7,6 +7,7 @@ const TodolistPageNavBar = ({
   handleNavBarManageButton,
   handleNavBarChevronLeft,
   isManageMode,
+  isSignIn,
 }) => {
   return (
     <StyledTodolistPageNavBar>
@@ -20,14 +21,18 @@ const TodolistPageNavBar = ({
         <IconAppContent.ChevronLeft />
       </Link>
       <h1>您的購物清單</h1>
-      <button
-        onClick={() => {
-          handleNavBarManageButton(isManageMode);
-        }}
-        type="button"
-      >
-        管理
-      </button>
+      {!isSignIn ? (
+        <span />
+      ) : (
+        <button
+          onClick={() => {
+            handleNavBarManageButton(isManageMode);
+          }}
+          type="button"
+        >
+          管理
+        </button>
+      )}
     </StyledTodolistPageNavBar>
   );
 };

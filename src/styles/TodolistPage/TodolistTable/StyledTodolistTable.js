@@ -27,6 +27,10 @@ const StyledTodolistTable = styled.div`
     > div {
       border-bottom: solid ${styledVariables.color.gray300} 1px;
     }
+    > p.message {
+      margin-top: 34px;
+      margin-left: 20px;
+    }
   }
 
   > .dividingLine {

@@ -95,7 +95,7 @@ const TodolistTableItem = ({
             : 'selectTableItemButton'
         }`}
         onClick={() => {
-          console.log('trigger TodolistItem onClick');
+          // console.log('trigger TodolistItem onClick');
           handleTableItemSelectButton(isTableItemSelected.current, listId);
           if (isTableItemSelected.current === 0) {
             isTableItemSelected.current = 1;

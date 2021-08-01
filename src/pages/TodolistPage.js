@@ -29,7 +29,7 @@ const INIT_BUTTONSTATE = {
 
 const TodolistPages = ({ windowWidth, isSignIn }) => {
   const currentUid = isSignIn;
-  console.log('<TodolistPage />: render');
+  // console.log('<TodolistPage />: render');
   // console.log('<TodolistPage />: currentUid: ', currentUid);
   const { breakpoint } = styledVariables.todolistPages;
   const [todolistData, setTodolistData] = useState(null);
@@ -47,6 +47,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
   const [isManageMode, setIsManageMode] = useState(0);
   // eslint-disable-next-line no-unused-vars
   const [isAllTodolist, setIsAllTodolist] = useState(0);
+  const [isUpdateTodolistAfterSignIn, setIsUpdateTodolistAfterSignIn] = useState(0);
   // eslint-disable-next-line prefer-const
   let pathArray = useLocation().pathname.split('/');
   pathArray.shift();
@@ -94,8 +95,27 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     return fetchDBTodolistDataPromise;
   };
   const readDBTodolistsData = async (currentUidValue, pageAmountValue = 1) => {
-    // 登入狀態改變時，也會重新 setTodolistData
-    // console.log('pageAmount: ', pageAmount);
+    const newLocalStorageTodolistData = JSON.parse(window.localStorage.getItem('TodoShopTodolist'));
+    // console.log('newLocalStorageTodolistData: ', newLocalStorageTodolistData);
+    if (!isSignIn) {
+      if (!newLocalStorageTodolistData) {
+        return;
+      }
+      setTodolistData(newLocalStorageTodolistData);
+      return;
+    }
+    if (newLocalStorageTodolistData) {
+      await firestore
+        .collection('todolists')
+        .add({
+          uid: currentUidValue,
+          updateTime: firebase.firestore.Timestamp.now(),
+          items: newLocalStorageTodolistData[0].items,
+        })
+        .then(() => {
+          window.localStorage.removeItem('TodoShopTodolist');
+        });
+    }
     const newTodolistData = await fetchDBTodolistData(currentUidValue, pageAmountValue);
     setTodolistData(newTodolistData);
     if (isOnTodolistTableScroll === 1) {
@@ -205,7 +225,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     setCurrentTodolistIdx(currentListIdxValue);
   };
   const handleTodolistClick = () => {
-    console.log('trigger handleTodolistClick.');
+    // console.log('trigger handleTodolistClick.');
     if (!todolistData) {
       return;
     }
@@ -245,8 +265,8 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     }
   };
   const handleNavBarManageButton = (isManageModeValue) => {
-    console.log('trigger handleNavBarManageButton');
-    console.log('isManageModeValue: ', isManageModeValue);
+    // console.log('trigger handleNavBarManageButton');
+    // console.log('isManageModeValue: ', isManageModeValue);
     if (isUpdateButtonState.current !== 0) {
       return;
     }
@@ -307,7 +327,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     });
   };
   const handleTableItemSelectButton = (isTableItemSelectedValue, listIdValue) => {
-    console.log('trigger handleTableItemSelectButton');
+    // console.log('trigger handleTableItemSelectButton');
     if (isUpdateButtonState.current !== 0) {
       return;
     }
@@ -348,6 +368,9 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     if (isUpdateButtonState.current !== 0) {
       return;
     }
+    if (!isSignIn) {
+      return;
+    }
     createDBTodolistData(currentUid);
     setButtonState((preButtonState) => {
       const newTodolistTableItems = {};
@@ -373,7 +396,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     });
   };
   const handleToolBarDeleteTodolistButton = (buttonStateValue) => {
-    console.log('trigger handleToolBarDeleteTodolistButton');
+    // console.log('trigger handleToolBarDeleteTodolistButton');
     // console.log(
     //   'buttonState.todolistTable.todolistTableItems: ',
     //   buttonState.todolistTable.todolistTableItems,
@@ -383,7 +406,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
         return buttonStateValue.todolistTable.todolistTableItems[key] === 5;
       },
     );
-    console.log('listId2Delete: ', listId2Delete);
+    // console.log('listId2Delete: ', listId2Delete);
     deleteDBTodolistDate(listId2Delete, currentUid);
   };
   const handleNavBarChevronLeft = () => {
@@ -433,16 +456,16 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
   };
 
   useEffect(() => {
-    if (!isSignIn) {
-      return;
-    }
     if (isAllTodolist) {
       return;
     }
     readDBTodolistsData(currentUid, pageAmount);
   }, [isSignIn, pageAmount]);
   useEffect(() => {
-    // console.log('<TodolistPage />: useEffect depends on todolistData');
+    // console.log('todolistData: ', todolistData);
+    if (isSignIn) {
+      setIsUpdateTodolistAfterSignIn(1);
+    }
     setCurrentTodolistIdx(0);
     if (isAllTodolist === 1) {
       setIsAllTodolist(0);
@@ -452,7 +475,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     // console.log('currentTodolistIdx: ', currentTodolistIdx);
   }, [currentTodolistIdx]);
   useEffect(() => {
-    console.log('isManageMode: ', isManageMode);
+    // console.log('isManageMode: ', isManageMode);
   }, [isManageMode]);
 
   // (2) 處理 Barstate
@@ -464,6 +487,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
             handleNavBarChevronLeft={handleNavBarChevronLeft}
             handleNavBarManageButton={handleNavBarManageButton}
             isManageMode={isManageMode}
+            isSignIn={isSignIn}
           />
         ),
         visibility: 2,
@@ -522,20 +546,11 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
             visibility: 2,
           },
         });
-        return;
       }
-      if (pathArrayValue[1] === 'id') {
-        // console.log('trigger toolBarState.visibility = 0');
-        setBarState({
-          ...INIT_BARSTATE,
-          toolBar: {
-            content: <TodolistPageToolBar />,
-            visibility: 0,
-          },
-        });
-      }
+      // if (pathArrayValue[1] === 'id') {
+      // }
     };
-    updateBarStateByPath(pathArray);
+    updateBarStateByPath(pathArray, buttonState);
   }, [windowWidth, currentUid]);
 
   useEffect(() => {
@@ -642,6 +657,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
             <TodolistTable
               currentUid={currentUid}
               initTableItemsButtonState={initTableItemsButtonState}
+              isUpdateTodolistAfterSignIn={isUpdateTodolistAfterSignIn}
             />
           </Route>
           <Route exact path="/todolist/id/">
@@ -650,6 +666,9 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               currentUid={currentUid}
               handleTodolistClick={handleTodolistClick}
               initTableItemsButtonState={initTableItemsButtonState}
+              readDBTodolistsData={readDBTodolistsData}
+              currentTodolistData={currentTodolistData}
+              isUpdateTodolistAfterSignIn={isUpdateTodolistAfterSignIn}
             />
           </Route>
           <Redirect from="/todolist" to="/todolist/id/" />
@@ -663,12 +682,16 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
             <TodolistTable
               currentUid={currentUid}
               initTableItemsButtonState={initTableItemsButtonState}
+              isUpdateTodolistAfterSignIn={isUpdateTodolistAfterSignIn}
             />
             <Todolist
               updateDBTodolistData={updateDBTodolistData}
               currentUid={currentUid}
               handleTodolistClick={handleTodolistClick}
               initTableItemsButtonState={initTableItemsButtonState}
+              readDBTodolistsData={readDBTodolistsData}
+              currentTodolistData={currentTodolistData}
+              isUpdateTodolistAfterSignIn={isUpdateTodolistAfterSignIn}
             />
           </Route>
           <Redirect from="/todolist" to="/todolist/id/" />
@@ -690,6 +713,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               buttonState={buttonState}
               initTableItemsButtonState={initTableItemsButtonState}
               currentTodolistIdx={currentTodolistIdx}
+              isUpdateTodolistAfterSignIn={isUpdateTodolistAfterSignIn}
             />
           </Route>
           <Route exact path="/todolist/table">
@@ -705,6 +729,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               handleTableItemSelectButton={handleTableItemSelectButton}
               handleTodolistTableScroll={handleTodolistTableScroll}
               isManageMode={isManageMode}
+              isUpdateTodolistAfterSignIn={isUpdateTodolistAfterSignIn}
             />
           </Route>
           <Redirect from="/todolist" to={`/todolist/id/${currentListId}`} />
@@ -728,6 +753,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               handleTableItemSelectButton={handleTableItemSelectButton}
               handleTodolistTableScroll={handleTodolistTableScroll}
               isManageMode={isManageMode}
+              isUpdateTodolistAfterSignIn={isUpdateTodolistAfterSignIn}
             />
             <Todolist
               currentUid={currentUid}
@@ -741,6 +767,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               buttonState={buttonState}
               initTableItemsButtonState={initTableItemsButtonState}
               currentTodolistIdx={currentTodolistIdx}
+              isUpdateTodolistAfterSignIn={isUpdateTodolistAfterSignIn}
             />
           </Route>
           <Redirect from="/todolist/table" to={`/todolist/id/${currentListId}`} />

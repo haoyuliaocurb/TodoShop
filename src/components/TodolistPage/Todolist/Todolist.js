@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { React, useState, useEffect, useRef } from 'react';
 // import { firestore } from '../../../utils/firebase/firebase-services';
 import { useParams } from 'react-router-dom';
@@ -26,6 +27,7 @@ const Todolist = ({
   // currentTodolistIdx,
   pageAmount,
   // currentListIdx,
+  isUpdateTodolistAfterSignIn,
 }) => {
   const todolistItemsContentObj = useRef({});
   const isKeyUpTriggered = useRef(0);
@@ -34,11 +36,22 @@ const Todolist = ({
   // const preTodolistId = useRef(null);
   const currentTodolistId = !currentTodolistData ? '' : currentTodolistData.id;
   // eslint-disable-next-line no-unused-vars
-  const decodedCurrentTodolistData = !currentTodolistData ? null : currentTodolistData.data();
+  const getDecodedCurrentTodolistData = () => {
+    if (!currentUid) {
+      if (!currentTodolistData) {
+        return null;
+      }
+      return currentTodolistData;
+    }
+    // console.log('isUpdateTodolistAfterSignIn: ', isUpdateTodolistAfterSignIn);
+    return !currentTodolistData || !isUpdateTodolistAfterSignIn ? null : currentTodolistData.data();
+  };
+  const decodedCurrentTodolistData = getDecodedCurrentTodolistData();
   const pathListId = useParams().listId;
   const getTimeKey = getTimeKeyGenerator();
 
-  console.log('<Todolist />: render');
+  // console.log('currentTodolistData: ', currentTodolistData);
+  // console.log('<Todolist />: render');
   // console.log('decodedCurrentTodolistData: ', decodedCurrentTodolistData);
   // console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
 
@@ -51,8 +64,14 @@ const Todolist = ({
     todolistItemsContentObj.current = { ...newTodolistItemsContent };
     // console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
 
-    // 更新資料庫
+    // 更新資料庫、localStorage
     const newTodolistDataItems = convertTodolistItemsContent(newTodolistItemsContent);
+    if (!currentUid) {
+      const newLocalStorageTodolistData = [{ items: newTodolistDataItems }];
+      window.localStorage.setItem('TodoShopTodolist', JSON.stringify(newLocalStorageTodolistData));
+      readDBTodolistsData();
+      return;
+    }
     const newTodolistDataPart = {
       items: newTodolistDataItems,
       updateTime: firebase.firestore.Timestamp.now(),
@@ -126,8 +145,15 @@ const Todolist = ({
     const newTodolistItemsContent = { ...todolistItemsContentObj.current };
     newTodolistItemsContent[createTimeValue] = inputValue;
 
-    // 更新資料庫
+    // 更新資料庫、localStorage
     const newTodolistDataItems = convertTodolistItemsContent(newTodolistItemsContent);
+    if (!currentUid) {
+      const newLocalStorageTodolistData = [{ items: newTodolistDataItems }];
+      window.localStorage.setItem('TodoShopTodolist', JSON.stringify(newLocalStorageTodolistData));
+      readDBTodolistsData();
+      return;
+    }
+
     firestore
       .collection('todolists')
       .doc(pathListId)
@@ -172,26 +198,6 @@ const Todolist = ({
     // }
     setInputDisplayContent(inputValue);
   };
-
-  useEffect(() => {
-    // console.log('inputDisplayContent: ', inputDisplayContent);
-    // console.log('todolistItemsContentObj.current: ', todolistItemsContentObj.current);
-  });
-
-  // useEffect(() => {
-  //   if (preTodolistId.current === null) {
-  //     preTodolistId.current = currentTodolistId;
-  //   }
-  //   if (preTodolistId.current !== currentTodolistId) {
-  //     todolistItemsContentObj.current = {};
-  //   }
-  // }, [currentTodolistData]);
-
-  useEffect(() => {
-    return () => {
-      // console.log('<Todolist />: unmount');
-    };
-  }, []);
 
   const getGrid = () => {
     const getTimeKeyForGrid = getTimeKeyGenerator();

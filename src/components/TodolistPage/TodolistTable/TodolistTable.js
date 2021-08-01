@@ -18,6 +18,7 @@ const TodolistTable = ({
   readDBTodolistsData,
   pageAmount,
   isManageMode,
+  isUpdateTodolistAfterSignIn,
   // deleteDBTodolistDate,
 }) => {
   // console.log('<TodolistTable /> :render');
@@ -64,11 +65,12 @@ const TodolistTable = ({
     return newTodolistTableItem;
   };
   const getTodolistTableContent = () => {
-    if (!currentUid) {
-      return <p>請登入以瀏覽頁面</p>;
+    // console.log('isUpdateTodolistAfterSignIn: ', isUpdateTodolistAfterSignIn);
+    if (!currentUid || !isUpdateTodolistAfterSignIn) {
+      return <p className="message">請登入以瀏覽所有購物清單</p>;
     }
     if (!todolistData) {
-      return <p>無購物清單資料</p>;
+      return <p className="message">目前無購物清單</p>;
     }
     return getTodolistTableItem(todolistData, currentTodolistIdx);
   };

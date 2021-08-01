@@ -34,13 +34,13 @@ const Main = () => {
   // const [isSignIn, setIsSignIn] = useState('kqXYsHFzzTN0DGlBqFdyafGtU052');
 
   useEffect(() => {
-    // console.log('isSignIn after rendering Main: ', isSignIn);
-    // console.log('currentUser when render Main: ', currentUser.current);
+    if (isSignIn) {
+      console.log('sucessfully sign in');
+    }
   }, [isSignIn]);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
-      console.log('trigger onAuthStateChanged');
       // console.log('user: ', user);
       if (!user) {
         setIsSignIn(false);
