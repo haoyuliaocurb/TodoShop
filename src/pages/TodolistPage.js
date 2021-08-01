@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { React, useState, useEffect, useRef } from 'react';
 // import { Route, Redirect, Switch, useHistory, useLocation } from 'react-router-dom';
 import { Route, Redirect, Switch, useLocation, useHistory } from 'react-router-dom';
@@ -33,25 +34,19 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
   // console.log('<TodolistPage />: currentUid: ', currentUid);
   const { breakpoint } = styledVariables.todolistPages;
   const [todolistData, setTodolistData] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const [currentTodolistIdx, setCurrentTodolistIdx] = useState(0);
-  // eslint-disable-next-line no-unused-vars
   const [pageAmount, setPageAmount] = useState(1);
-  // eslint-disable-next-line no-unused-vars
   const [buttonState, setButtonState] = useState(INIT_BUTTONSTATE);
   const isUpdateButtonState = useRef(0);
   const isUpdateToolBar = useRef(0);
   const todolistDataIdxObj = useRef({});
   const [isOnTodolistTableScroll, setIsOnTodolistTableScroll] = useState(0);
-  // eslint-disable-next-line no-unused-vars
   const [isManageMode, setIsManageMode] = useState(0);
-  // eslint-disable-next-line no-unused-vars
+  const [isManageButtonClicked, setIsManageButtonClicked] = useState(0);
   const [isAllTodolist, setIsAllTodolist] = useState(0);
   const [isUpdateTodolistAfterSignIn, setIsUpdateTodolistAfterSignIn] = useState(0);
-  // eslint-disable-next-line prefer-const
   let pathArray = useLocation().pathname.split('/');
   pathArray.shift();
-  // eslint-disable-next-line prefer-const
   let history = useHistory();
 
   const fetchDBTodolistData = async (currentUidValue, pageAmountValue = 1) => {
@@ -83,6 +78,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
             indexCounter += 1;
           });
           todolistDataIdxObj.current = newTodoistDataIdxObj;
+          // console.log('todolistDataIdxObj.current: ', todolistDataIdxObj.current);
           if (!fetchedTodolistData.empty) {
             setIsAllTodolist(1);
             if (pageAmount > 2) {
@@ -164,6 +160,29 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
         // );
         const newTodolistData = await fetchDBTodolistData(currentUidValue, pageAmountValue);
         setTodolistData(newTodolistData);
+        setButtonState((preButtonState) => {
+          console.log('todolistDataIdxObj.current: ', todolistDataIdxObj.current);
+          const newTodolistTableItems = {};
+          const currentListId = Object.keys(todolistDataIdxObj.current).find(
+            (key) => todolistDataIdxObj.current[key] === currentTodolistIdx,
+          );
+          Object.keys(preButtonState.todolistTable.todolistTableItems).forEach((key) => {
+            if (key === currentListId) {
+              newTodolistTableItems[key] = 2;
+            } else {
+              newTodolistTableItems[key] = 1;
+            }
+          });
+          const newButtonState = {
+            ...preButtonState,
+            todolistTable: {
+              ...preButtonState.todolistTable,
+              todolistTableItems: newTodolistTableItems,
+            },
+          };
+          isUpdateToolBar.current = 1;
+          return newButtonState;
+        });
       });
   };
   const deleteDBTodolistDate = async (
@@ -181,6 +200,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     ).then(async () => {
       const newTodolistData = await fetchDBTodolistData(currentUidValue, pageAmountValue);
       setTodolistData(newTodolistData);
+      setIsManageMode(0);
     });
   };
   const handleTableItemClick = (value) => {
@@ -264,61 +284,13 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
       setIsManageMode(0);
     }
   };
-  const handleNavBarManageButton = (isManageModeValue) => {
+  const handleNavBarManageButton = () => {
     // console.log('trigger handleNavBarManageButton');
     // console.log('isManageModeValue: ', isManageModeValue);
     if (isUpdateButtonState.current !== 0) {
       return;
     }
-    if (!isManageModeValue) {
-      setButtonState((preButtonState) => {
-        const newTodolistTableItems = {};
-        Object.keys(preButtonState.todolistTable.todolistTableItems).forEach((key) => {
-          newTodolistTableItems[key] = 4;
-        });
-        const newButtonState = {
-          ...preButtonState,
-          toolBar: {
-            ...preButtonState.toolBar,
-            addTodolistButton: 0,
-            deleteTodolistButton: 1,
-          },
-          todolistTable: {
-            ...preButtonState.todolistTable,
-            todolistTableItems: newTodolistTableItems,
-          },
-        };
-        isUpdateToolBar.current = 1;
-        return newButtonState;
-      });
-    } else {
-      setButtonState((preButtonState) => {
-        const newTodolistTableItems = {};
-        const currentListId = Object.keys(todolistDataIdxObj.current).find(
-          (docId) => todolistDataIdxObj.current[docId] === currentTodolistIdx,
-        );
-        Object.keys(preButtonState.todolistTable.todolistTableItems).forEach((key) => {
-          if (key === currentListId) {
-            newTodolistTableItems[key] = 2;
-          }
-          newTodolistTableItems[key] = 1;
-        });
-        const newButtonState = {
-          ...preButtonState,
-          toolBar: {
-            ...preButtonState.toolBar,
-            addTodolistButton: 1,
-            deleteTodolistButton: 0,
-          },
-          todolistTable: {
-            ...preButtonState.todolistTable,
-            todolistTableItems: newTodolistTableItems,
-          },
-        };
-        isUpdateToolBar.current = 1;
-        return newButtonState;
-      });
-    }
+    setIsManageButtonClicked(1);
     setIsManageMode((preIsManageMode) => {
       if (!preIsManageMode) {
         return 1;
@@ -326,6 +298,67 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
       return 0;
     });
   };
+  useEffect(() => {
+    // console.log('isManageButtonClicked: ', isManageButtonClicked);
+    // console.log('isManageMode: ', isManageMode);
+    if (!isManageButtonClicked) {
+      return;
+    }
+    const toggleButtonStateRelated2ManageMode = (isManageModeValue) => {
+      if (isManageModeValue) {
+        // console.log('trigger toggleButtonState 0');
+        setButtonState((preButtonState) => {
+          const newTodolistTableItems = {};
+          Object.keys(preButtonState.todolistTable.todolistTableItems).forEach((key) => {
+            newTodolistTableItems[key] = 4;
+          });
+          const newButtonState = {
+            ...preButtonState,
+            toolBar: {
+              ...preButtonState.toolBar,
+              addTodolistButton: 0,
+              deleteTodolistButton: 1,
+            },
+            todolistTable: {
+              ...preButtonState.todolistTable,
+              todolistTableItems: newTodolistTableItems,
+            },
+          };
+          isUpdateToolBar.current = 1;
+          return newButtonState;
+        });
+      } else {
+        setButtonState((preButtonState) => {
+          const newTodolistTableItems = {};
+          const currentListId = Object.keys(todolistDataIdxObj.current).find(
+            (docId) => todolistDataIdxObj.current[docId] === currentTodolistIdx,
+          );
+          Object.keys(preButtonState.todolistTable.todolistTableItems).forEach((key) => {
+            if (key === currentListId) {
+              newTodolistTableItems[key] = 2;
+            }
+            newTodolistTableItems[key] = 1;
+          });
+          const newButtonState = {
+            ...preButtonState,
+            toolBar: {
+              ...preButtonState.toolBar,
+              addTodolistButton: 1,
+              deleteTodolistButton: 0,
+            },
+            todolistTable: {
+              ...preButtonState.todolistTable,
+              todolistTableItems: newTodolistTableItems,
+            },
+          };
+          isUpdateToolBar.current = 1;
+          return newButtonState;
+        });
+      }
+    };
+    toggleButtonStateRelated2ManageMode(isManageMode);
+    setIsManageButtonClicked(0);
+  }, [isManageMode]);
   const handleTableItemSelectButton = (isTableItemSelectedValue, listIdValue) => {
     // console.log('trigger handleTableItemSelectButton');
     if (isUpdateButtonState.current !== 0) {
@@ -372,28 +405,6 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
       return;
     }
     createDBTodolistData(currentUid);
-    setButtonState((preButtonState) => {
-      const newTodolistTableItems = {};
-      const currentListId = Object.keys(todolistDataIdxObj.current).find(
-        (key) => todolistDataIdxObj.current[key] === currentTodolistIdx,
-      );
-      Object.keys(preButtonState.todolistTable.todolistTableItems).forEach((key) => {
-        if (key === currentListId) {
-          newTodolistTableItems[key] = 2;
-        } else {
-          newTodolistTableItems[key] = 1;
-        }
-      });
-      const newButtonState = {
-        ...preButtonState,
-        todolistTable: {
-          ...preButtonState.todolistTable,
-          todolistTableItems: newTodolistTableItems,
-        },
-      };
-      isUpdateToolBar.current = 1;
-      return newButtonState;
-    });
   };
   const handleToolBarDeleteTodolistButton = (buttonStateValue) => {
     // console.log('trigger handleToolBarDeleteTodolistButton');
@@ -475,89 +486,72 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     // console.log('currentTodolistIdx: ', currentTodolistIdx);
   }, [currentTodolistIdx]);
   useEffect(() => {
-    // console.log('isManageMode: ', isManageMode);
+    // console.log('isManageMode in useEffect: ', isManageMode);
   }, [isManageMode]);
 
   // (2) 處理 Barstate
-  const getInitBarState = (buttonStateValue) => {
-    const INIT_BARSTATE = {
-      navBar: {
-        content: (
-          <TodolistPageNavBar
-            handleNavBarChevronLeft={handleNavBarChevronLeft}
-            handleNavBarManageButton={handleNavBarManageButton}
-            isManageMode={isManageMode}
-            isSignIn={isSignIn}
-          />
-        ),
-        visibility: 2,
-      },
-      tabBar: {
-        content: (
-          <GeneralTabBar
-          // handleTabBarSearchTabClick={handleTabBarSearchTabClick}
-          // handleTabBarHomeTabClick={handleTabBarHomeTabClick}
-          // handleTabBarCartTabClick={handleTabBarCartTabClick}
-          // handleTabBarAuthTabClick={handleTabBarAuthTabClick}
-          // handleTabBarListTabClick={handleTabBarListTabClick}
-          />
-        ),
-        visibility: 2,
-      },
-      toolBar: {
-        content: (
-          <TodolistPageToolBar
-            buttonState={buttonStateValue}
-            handleToolBarCreateTodolistButton={handleToolBarCreateTodolistButton}
-            handleToolBarDeleteTodolistButton={handleToolBarDeleteTodolistButton}
-          />
-        ),
-        visibility: 2,
-      },
-    };
-    return INIT_BARSTATE;
+  const INIT_BARSTATE = {
+    navBar: {
+      content: (
+        <TodolistPageNavBar
+          handleNavBarChevronLeft={handleNavBarChevronLeft}
+          handleNavBarManageButton={handleNavBarManageButton}
+          isManageMode={isManageMode}
+          currentUid={currentUid}
+        />
+      ),
+      visibility: 2,
+    },
+    tabBar: {
+      content: (
+        <GeneralTabBar
+        // handleTabBarSearchTabClick={handleTabBarSearchTabClick}
+        // handleTabBarHomeTabClick={handleTabBarHomeTabClick}
+        // handleTabBarCartTabClick={handleTabBarCartTabClick}
+        // handleTabBarAuthTabClick={handleTabBarAuthTabClick}
+        // handleTabBarListTabClick={handleTabBarListTabClick}
+        />
+      ),
+      visibility: 2,
+    },
+    toolBar: {
+      content: (
+        <TodolistPageToolBar
+          buttonState={buttonState}
+          handleToolBarCreateTodolistButton={handleToolBarCreateTodolistButton}
+          handleToolBarDeleteTodolistButton={handleToolBarDeleteTodolistButton}
+          currentUid={currentUid}
+        />
+      ),
+      visibility: 2,
+    },
   };
-  const INIT_BARSTATE = getInitBarState(buttonState);
-  // console.log('INIT_BARSTATE: ', INIT_BARSTATE);
-
   const [barState, setBarState] = useState(INIT_BARSTATE);
 
   // eslint-disable-next-line no-unused-vars
   const location = useLocation();
-  useEffect(() => {
-    const updateBarStateByPath = (pathArrayValue) => {
-      // console.log('trigger updateBarStateByPath');
-      // console.log('pathArrayValue[1]: ', pathArrayValue[1]);
-      if (!(windowWidth <= breakpoint)) {
-        setBarState({
-          ...INIT_BARSTATE,
-          toolBar: {
-            ...INIT_BARSTATE.toolBar,
-            visibility: 2,
-          },
-        });
-        return;
-      }
-      if (pathArrayValue[1] === 'table') {
-        setBarState({
-          ...INIT_BARSTATE,
-          toolBar: {
-            ...INIT_BARSTATE.toolBar,
-            visibility: 2,
-          },
-        });
-      }
-      // if (pathArrayValue[1] === 'id') {
-      // }
-    };
-    updateBarStateByPath(pathArray, buttonState);
-  }, [windowWidth, currentUid]);
-
-  useEffect(() => {
-    // console.log('<TodolistPage />: useEffect depends on barState');
-    // console.log('barState.toolBar: ', barState.toolBar);
-  }, [barState]);
-
+  // useEffect(() => {
+  //   const updateBarStateByPath = () => {
+  //     // console.log('trigger updateBarStateByPath');
+  //     // console.log('pathArrayValue[1]: ', pathArrayValue[1]);
+  //     if (!(windowWidth <= breakpoint)) {
+  //       setBarState({
+  //         ...INIT_BARSTATE,
+  //         toolBar: {
+  //           ...INIT_BARSTATE.toolBar,
+  //           visibility: 2,
+  //         },
+  //         navBar: {
+  //           ...INIT_BARSTATE.navBar,
+  //           visibility: 2,
+  //         },
+  //       });
+  //     }
+  //     // if (pathArrayValue[1] === 'id') {
+  //     // }
+  //   };
+  //   updateBarStateByPath(pathArray, buttonState);
+  // }, [windowWidth]);
   const initTableItemsButtonState = (tableItemsButtonStateObj) => {
     if (isUpdateButtonState.current !== 0) {
       return;
@@ -589,41 +583,39 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
       return newButtonState;
     });
   };
-
   useEffect(() => {
     // console.log('buttonState: ', buttonState);
     isUpdateButtonState.current = 0;
     // console.log('isUpdateButtonState.current: ', isUpdateButtonState.current);
-    if (isUpdateToolBar.current === 1) {
-      setBarState((preBarState) => {
-        const newBarState = {
-          ...preBarState,
-          navBar: {
-            content: (
-              <TodolistPageNavBar
-                handleNavBarChevronLeft={handleNavBarChevronLeft}
-                handleNavBarManageButton={handleNavBarManageButton}
-                isManageMode={isManageMode}
-              />
-            ),
-            visibility: 2,
-          },
-          toolBar: {
-            content: (
-              <TodolistPageToolBar
-                buttonState={buttonState}
-                handleToolBarCreateTodolistButton={handleToolBarCreateTodolistButton}
-                handleToolBarDeleteTodolistButton={handleToolBarDeleteTodolistButton}
-              />
-            ),
-            visibility: 2,
-          },
-        };
-        return newBarState;
-      });
-      isUpdateToolBar.current = 0;
-    }
-  }, [buttonState]);
+    setBarState((preBarState) => {
+      const newBarState = {
+        ...preBarState,
+        navBar: {
+          content: (
+            <TodolistPageNavBar
+              handleNavBarChevronLeft={handleNavBarChevronLeft}
+              handleNavBarManageButton={handleNavBarManageButton}
+              isManageMode={isManageMode}
+              currentUid={currentUid}
+            />
+          ),
+          visibility: 2,
+        },
+        toolBar: {
+          content: (
+            <TodolistPageToolBar
+              buttonState={buttonState}
+              handleToolBarCreateTodolistButton={handleToolBarCreateTodolistButton}
+              handleToolBarDeleteTodolistButton={handleToolBarDeleteTodolistButton}
+              currentUid={currentUid}
+            />
+          ),
+          visibility: 2,
+        },
+      };
+      return newBarState;
+    });
+  }, [buttonState, currentUid, isManageMode]);
 
   useEffect(() => {
     // console.log('update barState');

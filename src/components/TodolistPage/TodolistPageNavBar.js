@@ -7,8 +7,10 @@ const TodolistPageNavBar = ({
   handleNavBarManageButton,
   handleNavBarChevronLeft,
   isManageMode,
-  isSignIn,
+  currentUid,
 }) => {
+  // console.log('currentUid:', currentUid);
+  // console.log('isManageMode: ', isManageMode);
   return (
     <StyledTodolistPageNavBar>
       <Link
@@ -21,7 +23,7 @@ const TodolistPageNavBar = ({
         <IconAppContent.ChevronLeft />
       </Link>
       <h1>您的購物清單</h1>
-      {!isSignIn ? (
+      {!currentUid ? (
         <span />
       ) : (
         <button
@@ -30,7 +32,7 @@ const TodolistPageNavBar = ({
           }}
           type="button"
         >
-          管理
+          {!isManageMode ? '管理' : '完成'}
         </button>
       )}
     </StyledTodolistPageNavBar>

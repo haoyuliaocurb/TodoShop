@@ -6,6 +6,7 @@ import { auth } from '../../utils/firebase/firebase-services';
 import StyledUser from '../../styles/AuthPage/StyledUser';
 
 const User = ({ isSignIn }) => {
+  // console.log('isSignIn: ', isSignIn);
   const history = useHistory();
   const redirect2SiginIn = () => {
     history.push('/auth/signIn');

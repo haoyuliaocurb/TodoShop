@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { React, useState } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { auth, uiConfig, StyledFirebaseAuth, firebase } from '../utils/firebase/firebase-services';
 // import { auth } from '../utils/firebase/firebase-services';
 
@@ -46,129 +46,45 @@ const INIT_BARSTATE = {
 
 const AuthPage = ({ isSignIn }) => {
   // eslint-disable-next-line no-unused-vars
+  // console.log('isSignIn: ', isSignIn);
   const [barState, setBarState] = useState(INIT_BARSTATE);
-  /*
-  useEffect(async () => {
-      let signInInfo = null;
-  
-      if (!signInInfo) {
-        signInInfo = await auth.signInWithEmailAndPassword(
-          'jeffery84115@gmail.com',
-          'haoyuliao'
-        );
-      }
-  }, [])
-  */
-
-  const [emailValue, setEmailValue] = useState(USER_INFO_TEST.email);
-  const [passwordValue, setPasswordValue] = useState(USER_INFO_TEST.password);
+  // const history = useHistory();
+  // const [emailValue, setEmailValue] = useState(USER_INFO_TEST.email);
+  // const [passwordValue, setPasswordValue] = useState(USER_INFO_TEST.password);
   // let currentUser = useRef(null);
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   // console.log('trigger submit');
+  //   auth.signInWithEmailAndPassword(emailValue, passwordValue);
+  // };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('trigger submit');
-    auth.signInWithEmailAndPassword(emailValue, passwordValue);
-  };
+  // const handleEmailInput = (e) => {
+  //   setEmailValue(e.target.value);
+  // };
 
-  const handleEmailInput = (e) => {
-    setEmailValue(e.target.value);
-  };
-
-  const handlePasswordInput = (e) => {
-    setPasswordValue(e.target.value);
-  };
-
-  const getAuthPageContent = (isSignInValue) => {
-    if (!isSignInValue) {
-      return (
-        <Route path="/auth/signIn">
-          <SignIn />
-        </Route>
-      );
-    }
-    return (
-      <Route exact path="/auth/uid/:uid">
-        <User isSignIn={isSignIn} />
-      </Route>
-    );
-  };
-
+  // const handlePasswordInput = (e) => {
+  //   setPasswordValue(e.target.value);
+  // };
   return (
     <StyledAuthPage>
-      <Switch>
-        <Route exact path="/auth/uid/:uid">
-          <User isSignIn={isSignIn} />
-        </Route>
-        <Route path="/auth/signIn">
-          <SignIn isSignIn={isSignIn} />
-        </Route>
-        {!isSignIn ? (
+      {!isSignIn ? (
+        <Switch>
+          <Route exact path="/auth/signIn">
+            <SignIn isSignIn={isSignIn} />
+          </Route>
           <Redirect from="/auth" to="/auth/signIn" />
-        ) : (
+        </Switch>
+      ) : (
+        <Switch>
+          <Route exact path="/auth/uid/:uid">
+            <User isSignIn={isSignIn} />
+          </Route>
           <Redirect from="/auth" to={`/auth/uid/${isSignIn}`} />
-        )}
-      </Switch>
+        </Switch>
+      )}
       <TabBar backgroundColor={styledVariables.color.gray100} tabBarState={barState.tabBar} />
     </StyledAuthPage>
   );
 };
 
 export default AuthPage;
-
-/*
-<Switch>
-  {getAuthPageContent(isSignIn)}
-  <Redirect from="/auth" to="/auth/signIn" />
-</Switch>
-
-*/
-
-/*
-<form onSubmit={handleSubmit}>
-<label htmlFor="AuthEmailInput">
-  <span>email:</span>
-  <input id="AuthEmailInput" value={emailValue} onInput={handleEmailInput} />
-</label>
-<label htmlFor="AuthPasswordInput">
-  <span>password:</span>
-  <input
-    id="AuthPasswordInput"
-    type="password"
-    value={passwordValue}
-    onInput={handlePasswordInput}
-  />
-</label>
-<p>{!isSignIn ? '尚未登入' : `已登入，使用者 ${isSignIn}`}</p>
-<button type="submit">Submit</button>
-<button
-  type="button"
-  onClick={() => {
-    auth.signOut();
-  }}
->
-  Sign Out
-</button>
-</form> 
-*/
-
-/*
-  const onAuthSubmit = async (emailValueInput, passwordValueInput) => {
-    // console.log('trigger submit event');
-
-    const signInResult = await auth.signInWithEmailAndPassword(emailValueInput, passwordValueInput);
-    console.log('signInResult: ', signInResult);
-    if (!signInResult) {
-      // 顯示 sign in 失敗 modal
-      // console.log('Fail to sign in');
-      // currentUser.current = null;
-      setIsSignIn(false);
-      return;
-    }
-
-    // 顯示 sign in 成功 modal
-    // console.log('Successfully sign in', 'signInResult: ', signInResult, 'type of signInResult: ', typeof(signInResult));
-    // console.log(auth.currentUser);
-    // currentUser.current = signInResult.user;
-    setIsSignIn(signInResult.user.uid);
-  };
-*/

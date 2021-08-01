@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { React, useState, useEffect } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 
 // eslint-disable-next-line no-unused-vars
 import { auth, firestore, firebase } from '../../utils/firebase/firebase-services';
@@ -31,26 +32,34 @@ const Main = () => {
   // 處理登入狀態
   // eslint-disable-next-line no-unused-vars
   const [isSignIn, setIsSignIn] = useState(null);
+  const history = useHistory();
+  const location = useLocation();
   // const [isSignIn, setIsSignIn] = useState('kqXYsHFzzTN0DGlBqFdyafGtU052');
 
   useEffect(() => {
-    if (isSignIn) {
-      console.log('sucessfully sign in');
-    }
-  }, [isSignIn]);
-
-  useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      // console.log('user: ', user);
+    const unsubscribeOnAuthStateChanged = auth.onAuthStateChanged((user) => {
       if (!user) {
         setIsSignIn(false);
         return;
         // console.log('setIsSignIn(false)');
       }
       setIsSignIn(user.uid);
-      // console.log('setIsSignIn(user.uid)');
     });
+    return () => {
+      unsubscribeOnAuthStateChanged();
+    };
   }, []);
+
+  useEffect(() => {
+    const isAskedForward2SignIn = Number(
+      window.localStorage.getItem('TodoShopIsAskedForward2SignIn'),
+    );
+    if (!isAskedForward2SignIn) {
+      return;
+    }
+    window.localStorage.removeItem('TodoShopIsAskedForward2SignIn');
+    history.go(-1);
+  }, [isSignIn]);
 
   return (
     <StyledMain>
