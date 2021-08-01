@@ -47,13 +47,16 @@ const Main = () => {
     });
     return () => {
       unsubscribeOnAuthStateChanged();
+      const isAskedForward2SignIn = window.localStorage.getItem('TodoShopIsAskedForward2SignIn');
+      if (!isAskedForward2SignIn) {
+        return;
+      }
+      window.localStorage.removeItem('TodoShopIsAskedForward2SignIn');
     };
   }, []);
 
   useEffect(() => {
-    const isAskedForward2SignIn = Number(
-      window.localStorage.getItem('TodoShopIsAskedForward2SignIn'),
-    );
+    const isAskedForward2SignIn = window.localStorage.getItem('TodoShopIsAskedForward2SignIn');
     if (!isAskedForward2SignIn) {
       return;
     }
