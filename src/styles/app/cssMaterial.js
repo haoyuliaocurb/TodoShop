@@ -101,6 +101,10 @@ export const styledVariables = {
     contentBreakpoint: '720px',
     contentPaddingHor: '16px',
   },
+  HomePage: {
+    welcomingHeight: '680px',
+    categoryCardWidth: '110px',
+  },
 };
 styledVariables.todolistTable.buttonWidthSum = `${
   removePx(styledVariables.todolistTable.selectTableItemButtonWidth) +

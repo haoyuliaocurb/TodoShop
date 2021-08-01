@@ -18,6 +18,17 @@ const StyledSearchNavBar = styled.nav`
     justify-content: center;
     align-items: center;
 
+    > .container {
+      margin: 0 20px;
+      padding: 10px 0;
+      display: inline-block;
+      width: 80%;
+      max-width: ${styledVariables.shared.contentMaxWidth};
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: scroll;
+    }
+
     > span.formerItemAmount {
       margin-left: 10px;
       width: 16px;

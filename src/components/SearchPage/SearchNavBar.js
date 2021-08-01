@@ -2,53 +2,9 @@
 import { React, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import SearchNavBarItem from './SearchNavBarItem';
 import IconSearchPage from '../../styles/SearchPage/IconSearchPage';
 import StyledSearchNavBar from '../../styles/SearchPage/StyledSearchNavBar';
-import StyledSearchNavBarItems from '../../styles/SearchPage/StyledSearchNavBarItems';
-
-const SearchNavBarItem = ({ index, handleNavBarItemClick, content, selected }) => {
-  const location = useLocation();
-  const history = useHistory();
-  const handleIconCloseClick = (e) => {
-    e.stopPropagation();
-    const queryStrArr = decodeURI(location.search).split('=');
-    let targetIdx = null;
-    let length = 0;
-    queryStrArr[queryStrArr.length - 1] = queryStrArr[queryStrArr.length - 1]
-      .split('+')
-      .map((keyword, tardetIdx) => {
-        length += 1;
-        if (keyword !== content) {
-          return keyword;
-        }
-        targetIdx = tardetIdx;
-        return '';
-      })
-      .join('+');
-    if (targetIdx === 0) {
-      queryStrArr[queryStrArr.length - 1] = queryStrArr[queryStrArr.length - 1].replace(/^\+/, '');
-    } else if (targetIdx === length - 1) {
-      queryStrArr[queryStrArr.length - 1] = queryStrArr[queryStrArr.length - 1].replace(/\+$/, '');
-    } else {
-      queryStrArr[queryStrArr.length - 1] = queryStrArr[queryStrArr.length - 1].replace('++', '+');
-    }
-    const newURL = `${location.pathname}${queryStrArr.join('=')}`;
-    // console.log('newURL: ', newURL);
-    history.push(newURL);
-  };
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        handleNavBarItemClick(index);
-      }}
-      className={selected ? 'selected' : ''}
-    >
-      {content}
-      <IconSearchPage.Close onClick={handleIconCloseClick} />
-    </button>
-  );
-};
 
 const SearchNavBar = ({
   currentSearchKeywordsIdx,
@@ -165,9 +121,7 @@ const SearchNavBar = ({
           </label>
         </span>
         <span className="formerItemAmount vb-hidden">1</span>
-        <StyledSearchNavBarItems className="container">
-          {!searchInfo ? '' : getSearchNavBarItems(searchInfo)}
-        </StyledSearchNavBarItems>
+        <div className="container">{!searchInfo ? '' : getSearchNavBarItems(searchInfo)}</div>
         <span className="latterItemAmount vb-hidden">1</span>
         <IconSearchPage.Add className="iconAdd" onClick={handleButtonClick} />
       </form>
