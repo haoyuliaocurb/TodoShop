@@ -202,10 +202,58 @@ const HomePage = ({ isSignIn }) => {
     });
   }, [cartedProductAmount]);
 
-  // (2)
+  // (2) 處理資料
+  const [activitiesDataInfoObj, setActivitiesDataInfoObj] = useState({});
+  const [activitiesData, setActivitiesData] = useState(null);
+  const [activitiesProductsData, setActivitiesProductsData] = useState(null);
+  const updateActivitiesData = () => {
+    return firestore
+      .collection('activities')
+      .get()
+      .then((srcActivitiesData) => {
+        const newActivitiesData = [];
+        const newActivitiesDataInfoObj = {};
+        let counter = 0;
+        srcActivitiesData.forEach((srcEachActivitiesData) => {
+          const activityId = srcEachActivitiesData.id;
+          const decodedEachActivitiesData = srcEachActivitiesData.data();
+          const { length } = decodedEachActivitiesData.products;
+          const eachActivitiesData = {
+            ...decodedEachActivitiesData,
+            activityId,
+          };
+          newActivitiesData.push(eachActivitiesData);
+          newActivitiesDataInfoObj[activityId] = {
+            idx: counter,
+            length,
+          };
+          counter += 1;
+        });
+        // console.log('newActivitiesDataInfoObj: ', newActivitiesDataInfoObj);
+        const newActivitiesRelatedData = {
+          newActivitiesData,
+          newActivitiesDataInfoObj,
+        };
+        return newActivitiesRelatedData;
+      })
+      .then((newActivitiesRelatedData) => {
+        const { newActivitiesData, newActivitiesDataInfoObj } = newActivitiesRelatedData;
+        setActivitiesData(newActivitiesData);
+        setActivitiesDataInfoObj(newActivitiesDataInfoObj);
+      });
+  };
+  const fetchActivitiesProductData = (ActivityId, page) => {};
+  const initActivitiesProductsData = () => {};
   useEffect(() => {
     fetchCartedProductAmount();
   }, [isSignIn]);
+  useEffect(() => {
+    updateActivitiesData();
+  }, []);
+  useEffect(() => {
+    console.log('activitiesData: ', activitiesData);
+    console.log('activitiesDataInfoObj: ', activitiesDataInfoObj);
+  }, [activitiesData, activitiesDataInfoObj]);
 
   return (
     <StyledHomePage>
