@@ -9,6 +9,9 @@ const StyledHomePageTabBarContainer = styled.div`
     }
     const barHeight = removePx(styledVariables.shared.barHeight);
     // console.log('windowOffset: ', windowOffset);
+    if (windowOffset === 0) {
+      return `${-barHeight}px`;
+    }
     if (windowOffset > 0 && isScrollEnd) {
       return '0';
     }

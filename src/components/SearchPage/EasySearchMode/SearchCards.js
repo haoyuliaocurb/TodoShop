@@ -99,6 +99,7 @@ const SearchCard = ({
 const SearchCards = ({ productsData, itemKey, itemIdx, updateSearchCardInfo }) => {
   // const [preProductsData, setPreProductsData] = useState(null);
   // const preItemKey = useRef(null);
+  console.log('productsData: ', productsData);
   let newSearchCards = [];
 
   if (productsData) {
@@ -126,7 +127,15 @@ const SearchCards = ({ productsData, itemKey, itemIdx, updateSearchCardInfo }) =
   //   };
   // }, []);
 
-  return <StyledSearchCards>{!productsData ? <div /> : newSearchCards}</StyledSearchCards>;
+  return (
+    <StyledSearchCards>
+      {!productsData || JSON.stringify(productsData) === JSON.stringify([]) ? (
+        <p>目前無相關搜尋結果</p>
+      ) : (
+        newSearchCards
+      )}
+    </StyledSearchCards>
+  );
 };
 
 export default SearchCards;

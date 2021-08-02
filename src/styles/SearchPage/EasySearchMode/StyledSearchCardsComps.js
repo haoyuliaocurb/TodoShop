@@ -66,6 +66,15 @@ export const StyledSearchCards = styled.div`
   display: flex;
   overflow-x: scroll;
 
+  > p {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
   /* ::before {
     display: inline-block;
     content: '';

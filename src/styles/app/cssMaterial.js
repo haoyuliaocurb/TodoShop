@@ -38,6 +38,7 @@ export const styledVariables = {
     transGray20: 'rgba(0, 0, 0, 0.2)',
     transGray30: 'rgba(0, 0, 0, 0.3)',
     transGray50: 'rgba(0, 0, 0, 0.5)',
+    transGray80: 'rgba(0, 0, 0, 0.8)',
     transWhite95: 'rgba(255, 255, 255, 0.95)',
   },
   shared: {
@@ -102,7 +103,7 @@ export const styledVariables = {
     contentPaddingHor: '16px',
   },
   HomePage: {
-    welcomingHeight: '680px',
+    welcomingHeight: '880px',
     categoryCardWidth: '110px',
   },
 };

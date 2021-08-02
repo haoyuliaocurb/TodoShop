@@ -15,10 +15,11 @@ import { styledVariables, removePx } from '../styles/app/cssMaterial';
 import SearchCard from '../components/HomePage/SearchCard';
 import ActivityTag from '../components/HomePage/ActivityTag';
 import CategoryCard from '../components/HomePage/CategoryCard';
-import categoryData from '../components/HomePage/categoryData';
+import categoryData from '../components/HomePage/data/categoryData';
 import ModalMessage from '../components/app/ModalMessage';
+import Carousel from '../components/shared/Carousel';
 
-import banner1 from '../styles/HomePage/images/banner-1.jpg';
+import bannerImages from '../components/HomePage/data/bannerImages';
 
 const TRIAL_DATA = [
   {
@@ -517,10 +518,16 @@ const HomePage = ({ isSignIn }) => {
         <div className="scroll">
           <Welcoming />
           <div className="content">
-            <div className="carousel">
-              <img alt="" src={banner1} />
+            <div className="carouselBlock">
+              <div className="carouselTitle">
+                <h2 className="divider">ACTIVITIES 活動</h2>
+              </div>
+              <Carousel imagesData={bannerImages} />
             </div>
             <div className="category">
+              <div className="categoryTitle">
+                <h2 className="divider">CATEGORIES 商品類別</h2>
+              </div>
               <div className="CategoryCardsScrollContainer">
                 <div className="CategoryCards">
                   {categoryData.map((data) => (
@@ -530,6 +537,9 @@ const HomePage = ({ isSignIn }) => {
               </div>
             </div>
             <div className="activityBlock">
+              <div className="activityTitle">
+                <h2 className="divider">SALES 強檔商品</h2>
+              </div>
               <div className="activityBar">
                 <div className="ActivityTags">
                   {!activitiesData ? (

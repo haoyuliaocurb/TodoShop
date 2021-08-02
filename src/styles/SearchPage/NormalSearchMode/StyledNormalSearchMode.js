@@ -33,6 +33,10 @@ const StyledNormalSearchMode = styled.div`
       width: 800px;
       margin: 0 auto;
     }
+
+    > p {
+      text-align: center;
+    }
   }
 `;
 

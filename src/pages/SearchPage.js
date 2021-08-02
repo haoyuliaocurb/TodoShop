@@ -10,7 +10,7 @@ import NormalSearchMode from '../components/SearchPage/NormalSearchMode/NormalSe
 import StyledSearchPage from '../styles/SearchPage/StyledSearchPage';
 
 const SEARCH_META_INFO_TEMPLATE = {
-  isEasySearchMode: 1,
+  isEasySearchMode: 0,
   currentSearchKeywordsIdx: 0,
   filterButtonState: {
     generalSort: 0,
@@ -288,13 +288,35 @@ const fetchProductsData = async (searchStr, page, option) => {
     return srcProductsData.json();
   });
 };
-
 const SearchPages = ({ isSignIn }) => {
   const currentUid = isSignIn;
   const location = useLocation();
   // console.log('currentUid in SearchPages: ', currentUid);
   // eslint-disable-next-line no-unused-vars
-  const [searchMetaInfo, setSearchMetaInfo] = useState(SEARCH_META_INFO_TEMPLATE);
+  const getSearchMetaInfo = () => {
+    const source = location.search
+      .match(/source=\S+&/)[0]
+      .split('&')[0]
+      .split('')
+      .pop();
+    console.log('source: ', source);
+    let NEW_SEARCH_META_INFO_TEMPLATE = {};
+    switch (Number(source)) {
+      case 1:
+        NEW_SEARCH_META_INFO_TEMPLATE = {
+          ...SEARCH_META_INFO_TEMPLATE,
+          isEasySearchMode: 1,
+        };
+        console.log('NEW_SEARCH_META_INFO_TEMPLATE: ', NEW_SEARCH_META_INFO_TEMPLATE);
+        return NEW_SEARCH_META_INFO_TEMPLATE;
+      default:
+        console.log('SEARCH_META_INFO_TEMPLATE: ', SEARCH_META_INFO_TEMPLATE);
+        return SEARCH_META_INFO_TEMPLATE;
+    }
+  };
+  const [searchMetaInfo, setSearchMetaInfo] = useState(() => {
+    return getSearchMetaInfo();
+  });
   const [searchInfo, setSearchInfo] = useState(null);
   const [eachSearchInfoKeyArr, setEachSearchInfoKeyArr] = useState(null);
   // console.log('searchMetaInfo: ', searchMetaInfo);

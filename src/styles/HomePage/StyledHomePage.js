@@ -18,27 +18,43 @@ const StyledHomePage = styled.div`
       > .content {
         width: 100%;
         background-color: ${styledVariables.color.white};
-        > .carousel {
-          width: 100%;
-          height: 300px;
-          > img {
+        .divider {
+          display: inline-block;
+          letter-spacing: 10px;
+          word-spacing: 10px;
+        }
+        > .carouselBlock {
+          > .carouselTitle {
+            position: relative;
+            top: 14px;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
           }
         }
         > .category {
           position: relative;
           width: 100%;
-          height: 200px;
           padding: 20px 0;
           overflow-x: hidden;
-          border-top: ${styledVariables.color.gray100} solid 10px;
+          > .categoryTitle {
+            width: 100%;
+            height: ${styledVariables.shared.barHeight};
+            margin-top: 30px;
+            /* background-color: ${styledVariables.color.gray100}; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
           > .CategoryCardsScrollContainer {
             width: 80%;
-            height: 100%;
+            height: 220px;
             margin: 0 auto;
             overflow-x: scroll;
+            padding-top: 20px;
 
             @media (min-width: 600px) {
               width: 600px;
@@ -57,6 +73,14 @@ const StyledHomePage = styled.div`
           }
         }
         > .activityBlock {
+          > .activityTitle {
+            width: 100%;
+            height: ${styledVariables.shared.barHeight};
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 16px;
+          }
           > .activityBar {
             width: 100%;
             height: ${styledVariables.shared.barHeight};

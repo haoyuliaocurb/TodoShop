@@ -32,6 +32,7 @@ const NormalSearchMode = ({
   updateSearchItemInfo,
 }) => {
   const products = currentSearchInfo ? currentSearchInfo.products : null;
+  console.log('products: ', products);
   const [scrollOffsetInfo, setScrollOffsetInfo] = useState(INIT_SCROLLOFFSET);
   const preScrollOffset = useRef(0);
   const isOnScroll = useRef(false);
@@ -158,7 +159,7 @@ const NormalSearchMode = ({
           handleScroll(scrollTarget.current);
         }}
       >
-        {products ? (
+        {products && JSON.stringify(products) !== JSON.stringify([]) ? (
           products.map((productInfo, index) => {
             const { pid } = productInfo;
             const cardIdx = index;
@@ -174,7 +175,7 @@ const NormalSearchMode = ({
             );
           })
         ) : (
-          <div />
+          <p>目前無相關搜尋結果</p>
         )}
       </div>
       <TabBar

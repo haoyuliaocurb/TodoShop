@@ -9,7 +9,7 @@ const StyledHomePageNavBar = styled.nav`
   justify-content: center;
   align-items: center;
 
-  > div {
+  > form {
     position: relative;
     width: 85%;
     height: 100%;

@@ -10,6 +10,9 @@ const StyledHomePageNavBarContainer = styled.div`
     const barHeight = removePx(styledVariables.shared.barHeight);
     // console.log('windowOffset: ', windowOffset);
     // console.log('scrollOffset: ', scrollOffset);
+    if (windowOffset === 0) {
+      return `${-barHeight}px`;
+    }
     if (windowOffset > 0 && isScrollEnd) {
       return '0';
     }
