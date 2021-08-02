@@ -35,8 +35,9 @@ const StyledHomePage = styled.div`
           overflow-x: hidden;
           border-top: ${styledVariables.color.gray100} solid 10px;
           > .CategoryCardsScrollContainer {
-            width: 100%;
+            width: 80%;
             height: 100%;
+            margin: 0 auto;
             overflow-x: scroll;
 
             @media (min-width: 600px) {
@@ -80,7 +81,7 @@ const StyledHomePage = styled.div`
           }
           > .SearchCardContainer {
             margin: 0 auto;
-            /* padding-top: calc(${styledVariables.shared.barHeight} * 3);*/
+            padding-top: 20px;
             // border: black solid 1px;
             width: 400px;
             overflow-y: scroll;

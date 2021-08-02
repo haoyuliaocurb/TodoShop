@@ -21,6 +21,7 @@ const PRODUCTS_DATA = {
     name: '花王 KAO 洗髮精兒童專用 (750ml/瓶)',
     price: 109,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
+    categories: '美妝保健 嬰幼童與母親',
   },
   '7c8f8Ab6OQFVpGaAxzCj': {
     delivery: [0, 2],
@@ -30,6 +31,7 @@ const PRODUCTS_DATA = {
     name: '淨世代環保抽取式衛生紙100抽x12包x6串/箱',
     price: 600,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
+    categories: '居家生活',
   },
   'CLuaEILOo0NGuBHpaP6V': {
     images:[
@@ -40,6 +42,7 @@ const PRODUCTS_DATA = {
     name: 'BeniBear邦尼熊復古酒紅條紋抽取式衛生紙100抽8包6袋',
     price: 489,
     sid: 'TMkP20NeQYklf4pcFyAZ',
+    categories: '居家生活 文創商品',
   },
   'ENMagTFwTJgEaqCk4bzj': {
     images: [
@@ -49,6 +52,7 @@ const PRODUCTS_DATA = {
     name: '我的心機 黑珍珠絲光潤白黑面膜8入',
     price: 299,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
+    categories: '美妝保健',
   },
   'FgFiYn1pAYkV2gLxNSJh': {
     images: [
@@ -57,6 +61,7 @@ const PRODUCTS_DATA = {
     name: 'KOSE高絲 雪肌精化妝水100ml+雪肌精乳液33ml*3',
     price: 425,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
+    categories: '美妝保健',
   },
   'HyiZa79unVEQY197SEre': {
     images: [
@@ -65,6 +70,7 @@ const PRODUCTS_DATA = {
     name: 'DOVE 多芬 潤澤水嫩洗面乳 100G',
     price: 79,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
+    categories: '美妝保健',
   },
   'IsnfDRNJcPGWezEgQ266': {
     images: [
@@ -73,6 +79,7 @@ const PRODUCTS_DATA = {
     name: 'Combi 康貝和草極潤嬰兒保濕乳液 plus-250ml',
     price: 288,
     sid: 'gRIyvKUAGdMnhRzgg9RGw5tB22z2',
+    categories: '美妝保健 嬰幼童與母親',
   },
   'LH6uNAwmJMWgpQOwqySz': {
     images: [
@@ -81,6 +88,7 @@ const PRODUCTS_DATA = {
     name: "MEN'S Biore 痘痘調理洗面乳 100g",
     price: 119,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
+    categories: '美妝保健',
   },
   'NYUjT2vn7uKuMw02BUYT': {
     images: [
@@ -89,6 +97,7 @@ const PRODUCTS_DATA = {
     name: '茶樹莊園 茶樹／茶樹檸檬 超濃縮洗碗精(500g)',
     price: 69,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
+    categories: '居家生活',
   },
   'SWUNApoWStoWaW7RP4hh': {
     delivery: [0, 10, 11],
@@ -98,6 +107,7 @@ const PRODUCTS_DATA = {
     name: '春風柔膚感抽取式衛生紙 110抽x24包x3串/箱',
     price: 829,
     sid: 'TMkP20NeQYklf4pcFyAZ',
+    categories: '居家生活',
   },
   'SeFCJJMAzLXBxbJ2MdI1': {
     delivery: [0, 10, 11],
@@ -107,6 +117,7 @@ const PRODUCTS_DATA = {
     name: '蒲公英環保抽取衛生紙100抽x72包',
     price: 659,
     sid: 'TMkP20NeQYklf4pcFyAZ',
+    categories: '居家生活',
   },
   'SiQ8ExzVc2VzXs4jCXA0': {
     images: [
@@ -115,6 +126,7 @@ const PRODUCTS_DATA = {
     name: '春風抽取式廚房紙巾一秒抽 120抽x3包x8串/箱',
     price: 670,
     sid: 'TMkP20NeQYklf4pcFyAZ',
+    categories: '居家生活',
   },
   'SnnWbfqOFz0Z5CIMdglT': {
     images: [
@@ -134,7 +146,8 @@ const PRODUCTS_DATA = {
         price: 139,
         tag: '含蠟滑順型',
       },
-    ]
+    ],
+    categories: '美妝保健',
   },
   'WstK2EjRmnTBp8fGHNtR': {
     images: [
@@ -143,6 +156,7 @@ const PRODUCTS_DATA = {
     name: 'KOSE 高絲 雪肌精乳液45mlX2',
     price: 348,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
+    categories: '美妝保健',
   },
   'aOHwl9peu1BQI7Bq7Kt0': {
     images: [
@@ -151,6 +165,7 @@ const PRODUCTS_DATA = {
     name: '刷樂扁線牙線棒(薄荷味)600支入',
     price: 199,
     sid: 'TMkP20NeQYklf4pcFyAZ',
+    categories: '美妝保健',
   },
   'hzLK7rDYOAIQWx5C5OkI': {
     images: [
@@ -159,6 +174,7 @@ const PRODUCTS_DATA = {
     name: '得意連續抽取式花紋衛生紙100抽 x70包/箱',
     price: 659,
     sid: 'TMkP20NeQYklf4pcFyAZ',
+    categories: '居家生活',
   },
   'l43uxe5pY1Accmi6OPqW': {
     images: [
@@ -167,6 +183,7 @@ const PRODUCTS_DATA = {
     name: '百齡Smiling 護牙周到漱口水超級護齦W-綠茶薄荷750ml',
     price: 149,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
+    categories: '美妝保健',
   },
   'rnMzEpgykhBfNWOmsNFd': {
     images: [
@@ -175,6 +192,7 @@ const PRODUCTS_DATA = {
     name: '樂扣樂扣 純淨抗菌保鮮盒 600ML (長方/淺灰)',
     price: 289,
     sid: 'TMkP20NeQYklf4pcFyAZ',
+    categories: '居家生活',
   },
   'uym9FbUNRTPpE11GRTwk': {
     images: [
@@ -183,6 +201,7 @@ const PRODUCTS_DATA = {
     name: '五月花厚棒抽取式衛生紙90抽x10包/袋',
     price: 229,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
+    categories: '居家生活',
   },
 };
 

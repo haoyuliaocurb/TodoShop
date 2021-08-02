@@ -1,6 +1,8 @@
+/* eslint-disable consistent-return */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-unused-vars */
 import { React, useState, useEffect, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 import { firestore } from '../utils/firebase/firebase-services';
 
 import HomePageTabBarContainer from '../components/HomePage/HomePageTabBarContainer';
@@ -14,6 +16,7 @@ import SearchCard from '../components/HomePage/SearchCard';
 import ActivityTag from '../components/HomePage/ActivityTag';
 import CategoryCard from '../components/HomePage/CategoryCard';
 import categoryData from '../components/HomePage/categoryData';
+import ModalMessage from '../components/app/ModalMessage';
 
 import banner1 from '../styles/HomePage/images/banner-1.jpg';
 
@@ -68,9 +71,7 @@ const TRIAL_DATA = [
     pid: 'FgFiYn1pAYkV2gLxNSJh',
   },
 ];
-
 const TRIAL_ACTIVITY_ARR = ['每日精選', '夏日強檔', '日用商品推薦', '最強疫援'];
-
 const INIT_SCROLLOFFSET = {
   preScrollOffset: 0,
   pageYOffset: 0,
@@ -80,6 +81,7 @@ const INIT_SCROLLOFFSET = {
 const HomePage = ({ isSignIn }) => {
   // eslint-disable-next-line no-unused-vars
   const currentUid = isSignIn;
+  const history = useHistory();
   const [cartedProductAmount, setCartedProductAmount] = useState(0);
   const fetchCartedProductAmount = async () => {
     if (!currentUid) {
@@ -93,6 +95,292 @@ const HomePage = ({ isSignIn }) => {
     const newCartedProductAmount = srcCartedProductAmountData.size;
     setCartedProductAmount(newCartedProductAmount);
   };
+  // (1) 處理資料
+  const ModolMessagePleaseSignInRef = useRef(null);
+  const [activitiesDataInfoObj, setActivitiesDataInfoObj] = useState(null);
+  const [activitiesData, setActivitiesData] = useState(null);
+  const [currentProductsData, setCurrentProductsData] = useState(null);
+  const [currentActivitiesDataIdx, setCurrentActivitiesDataIdx] = useState(0);
+  const preCurrentActivitiesDataIdx = useRef(null);
+  const preCurrentUid = useRef(null);
+  const isCurrentProductsDataAll = useRef(0);
+  const nextPage = useRef(0);
+
+  const updateActivitiesData = () => {
+    return firestore
+      .collection('activities')
+      .get()
+      .then((srcActivitiesData) => {
+        return new Promise((resolve) => {
+          const newActivitiesData = [];
+          const newActivitiesDataInfoObj = {};
+          let counter = 0;
+          srcActivitiesData.forEach((srcEachActivitiesData) => {
+            const activityId = srcEachActivitiesData.id;
+            const decodedEachActivitiesData = srcEachActivitiesData.data();
+            const { length } = decodedEachActivitiesData.products;
+            const eachActivitiesData = {
+              ...decodedEachActivitiesData,
+              activityId,
+            };
+            newActivitiesData.push(eachActivitiesData);
+            newActivitiesDataInfoObj[activityId] = {
+              idx: counter,
+              length,
+            };
+            counter += 1;
+          });
+          // console.log('newActivitiesDataInfoObj: ', newActivitiesDataInfoObj);
+          const newActivitiesRelatedData = {
+            newActivitiesData,
+            newActivitiesDataInfoObj,
+          };
+          resolve(newActivitiesRelatedData);
+        });
+      })
+      .then((newActivitiesRelatedData) => {
+        const { newActivitiesData, newActivitiesDataInfoObj } = newActivitiesRelatedData;
+        setActivitiesData(newActivitiesData);
+        setActivitiesDataInfoObj(newActivitiesDataInfoObj);
+      });
+  };
+  const fetchActivitiesProductsData = (ActivityId, page, currentUidValue = null) => {
+    // console.log('page in fetchActivitiesProductsData:', page);
+    const hitsPerPage = 8;
+    const { idx, length } = activitiesDataInfoObj[ActivityId];
+    const startPoint = hitsPerPage * page;
+    const nextStartPoint = hitsPerPage * (page + 1);
+    if (length <= startPoint) {
+      isCurrentProductsDataAll.current = 1;
+      return null;
+    }
+    nextPage.current = page + 1;
+    // console.log('nextPage.current: ', nextPage.current);
+    const productsIdArr = activitiesData[idx].products;
+    const fetchProductData = (pidValue) => {
+      return firestore
+        .collection('products')
+        .doc(pidValue)
+        .get()
+        .then((srcProductData) => {
+          return new Promise((resolve) => {
+            const pid = srcProductData.id;
+            resolve({
+              pid,
+              ...srcProductData.data(),
+            });
+          });
+        })
+        .then((decodedProductData) => {
+          if (!currentUidValue) {
+            return {
+              ...decodedProductData,
+              productAction: {},
+            };
+          }
+          const { pid } = decodedProductData;
+          // console.log('pid: ', pid);
+          return firestore
+            .collection('users')
+            .doc(currentUidValue)
+            .collection('productAction')
+            .doc(pid)
+            .get()
+            .then((srcProductActionData) => {
+              const isSrcProductActionDataExist = srcProductActionData.exists;
+              if (!isSrcProductActionDataExist) {
+                // console.log(srcProductActionData.data());
+                return {
+                  ...decodedProductData,
+                  productAction: {},
+                };
+              }
+              const productActionData = srcProductActionData.data();
+              // console.log(srcProductActionData.data());
+              return {
+                ...decodedProductData,
+                productAction: {
+                  like: !productActionData.like ? null : productActionData.like,
+                  cart: !productActionData.cart ? null : productActionData.cart,
+                },
+              };
+            });
+        });
+    };
+    if (length <= nextStartPoint) {
+      return Promise.all(
+        productsIdArr.slice(startPoint).map((productId) => {
+          return fetchProductData(productId);
+        }),
+      );
+    }
+    return Promise.all(
+      productsIdArr.slice(startPoint, nextStartPoint).map((productId) => {
+        return fetchProductData(productId);
+      }),
+    );
+  };
+  const updateCurrentProductsData = async (currentIdxValue, page, currentUidValue = null) => {
+    // console.log('trigger updateCurrentProductsData');
+    const currentActivitiesDataId = activitiesData[currentIdxValue].activityId;
+    const newCurrentProductsData = await fetchActivitiesProductsData(
+      currentActivitiesDataId,
+      page,
+      currentUidValue,
+    );
+    // console.log('newCurrentProductsData: ', newCurrentProductsData);
+    setCurrentProductsData((preCurrentProductsData) => {
+      if (!newCurrentProductsData) {
+        return preCurrentProductsData;
+      }
+      if (page === 0) {
+        return newCurrentProductsData;
+      }
+      return [...preCurrentProductsData, ...newCurrentProductsData];
+    });
+  };
+  const updateSearchCardProductAction = (pidValue, updatedProductAction) => {
+    if (!currentUid) {
+      return;
+    }
+    return firestore
+      .collection('users')
+      .doc(currentUid)
+      .collection('productAction')
+      .limit(1)
+      .get()
+      .then(() => {
+        return firestore
+          .collection('users')
+          .doc(currentUid)
+          .collection('productAction')
+          .doc(pidValue)
+          .update(updatedProductAction);
+      })
+      .catch((e) => {
+        const { message: errorMessage } = e;
+        const createProductActionColl = () => {
+          return firestore
+            .collection('users')
+            .doc(currentUid)
+            .collection('productAction')
+            .doc(pidValue)
+            .set({
+              uid: currentUid,
+            });
+        };
+        const promiseHandleHasNoCollError = new Promise((resolve) => {
+          const handleHasNoCollError = async () => {
+            await createProductActionColl();
+            await updateSearchCardProductAction(pidValue, updatedProductAction);
+            resolve();
+          };
+          handleHasNoCollError();
+        });
+        switch (errorMessage) {
+          case 'Requested entity was not found.':
+            return promiseHandleHasNoCollError;
+          default:
+        }
+      });
+  };
+  const fetchSearchCardProductAction = (pidValue) => {
+    if (!currentUid) {
+      return;
+    }
+    return firestore
+      .collection('users')
+      .doc(currentUid)
+      .collection('productAction')
+      .doc(pidValue)
+      .get()
+      .then((srcSearchCardProductAction) => {
+        if (!srcSearchCardProductAction) {
+          return null;
+        }
+        const newSearchCardProductAction = srcSearchCardProductAction.data();
+        // console.log('inner newSearchCardProductAction: ', newSearchCardProductAction);
+        return newSearchCardProductAction;
+      });
+  };
+  const updateSearchCardInfo = async (
+    pidValue,
+    updatedProductAction,
+    preProductAction,
+    cardIdx,
+  ) => {
+    // console.log('trigger updateSearchCardInfo');
+    if (!currentUid) {
+      if (!ModolMessagePleaseSignInRef.current) {
+        return;
+      }
+      ModolMessagePleaseSignInRef.current.classList.remove('op-zero');
+      ModolMessagePleaseSignInRef.current.addEventListener(
+        'transitionend',
+        () => {
+          ModolMessagePleaseSignInRef.current.classList.add('op-zero');
+          ModolMessagePleaseSignInRef.current.addEventListener(
+            'transitionend',
+            () => {
+              window.localStorage.setItem('TodoShopIsAskedForward2SignIn', '1');
+              history.push('/auth/signIn');
+            },
+            { once: true },
+          );
+        },
+        { once: true },
+      );
+      return;
+    }
+    await updateSearchCardProductAction(pidValue, updatedProductAction);
+    const newSearchCardProductAction = await fetchSearchCardProductAction(pidValue);
+    if ((!preProductAction || preProductAction.cart) && !updatedProductAction.cart) {
+      setCartedProductAmount((preCartedProductAmount) => {
+        if (preCartedProductAmount < 1) {
+          return 0;
+        }
+        return preCartedProductAmount - 1;
+      });
+    }
+    if ((!preProductAction || !preProductAction.cart) && updatedProductAction.cart) {
+      setCartedProductAmount((preCartedProductAmount) => preCartedProductAmount + 1);
+    }
+    // console.log('newSearchCardProductAction: ', newSearchCardProductAction);
+    setCurrentProductsData((preCurrentProductsData) => {
+      const newCurrentProductsData = [...preCurrentProductsData];
+      newCurrentProductsData[cardIdx].productAction = newSearchCardProductAction;
+      return newCurrentProductsData;
+    });
+  };
+  useEffect(() => {
+    fetchCartedProductAmount();
+    preCurrentUid.current = isSignIn;
+  }, [isSignIn]);
+  useEffect(() => {
+    updateActivitiesData();
+  }, []);
+  useEffect(() => {
+    if (!activitiesData || !activitiesDataInfoObj) {
+      return;
+    }
+    if (currentUid === preCurrentUid.current) {
+      if (currentActivitiesDataIdx === preCurrentActivitiesDataIdx.current) {
+        return;
+      }
+    }
+    // console.log(
+    //   'before preCurrentActivitiesDataIdx.current: ',
+    //   preCurrentActivitiesDataIdx.current,
+    // );
+    preCurrentActivitiesDataIdx.current = currentActivitiesDataIdx;
+    // console.log('after preCurrentActivitiesDataIdx.current: ', preCurrentActivitiesDataIdx.current);
+    updateCurrentProductsData(currentActivitiesDataIdx, 0, currentUid);
+  }, [activitiesData, activitiesDataInfoObj, currentActivitiesDataIdx, currentUid]);
+  useEffect(() => {
+    // console.log('currentProductsData: ', currentProductsData);
+  }, [currentProductsData]);
+
+  // (2) 處理 scroll
   const INIT_BARSTATE = {
     navBar: {
       content: <HomePageNavBar cartedProductAmount={cartedProductAmount} />,
@@ -179,6 +467,11 @@ const HomePage = ({ isSignIn }) => {
       scrollOffset: scrollOffsetValue,
       isScrollEnd: isScrollEnd.current,
     });
+    // console.log('isCurrentProductsDataAll.current: ', isCurrentProductsDataAll.current);
+    if (isCurrentProductsDataAll.current) {
+      return;
+    }
+    updateCurrentProductsData(currentActivitiesDataIdx, nextPage.current, currentUid);
   };
 
   useEffect(() => {
@@ -203,152 +496,12 @@ const HomePage = ({ isSignIn }) => {
     });
   }, [cartedProductAmount]);
 
-  // (2) 處理資料
-  const [activitiesDataInfoObj, setActivitiesDataInfoObj] = useState(null);
-  const [activitiesData, setActivitiesData] = useState(null);
-  const [currentProductsData, setCurrentProductsData] = useState(null);
-  const [currentActivitiesDataIdx, setCurrentActivitiesDataIdx] = useState(0);
-  const preCurrentActivitiesDataIdx = useRef(null);
-  const updateActivitiesData = () => {
-    return firestore
-      .collection('activities')
-      .get()
-      .then((srcActivitiesData) => {
-        return new Promise((resolve) => {
-          const newActivitiesData = [];
-          const newActivitiesDataInfoObj = {};
-          let counter = 0;
-          srcActivitiesData.forEach((srcEachActivitiesData) => {
-            const activityId = srcEachActivitiesData.id;
-            const decodedEachActivitiesData = srcEachActivitiesData.data();
-            const { length } = decodedEachActivitiesData.products;
-            const eachActivitiesData = {
-              ...decodedEachActivitiesData,
-              activityId,
-            };
-            newActivitiesData.push(eachActivitiesData);
-            newActivitiesDataInfoObj[activityId] = {
-              idx: counter,
-              length,
-            };
-            counter += 1;
-          });
-          // console.log('newActivitiesDataInfoObj: ', newActivitiesDataInfoObj);
-          const newActivitiesRelatedData = {
-            newActivitiesData,
-            newActivitiesDataInfoObj,
-          };
-          resolve(newActivitiesRelatedData);
-        });
-      })
-      .then((newActivitiesRelatedData) => {
-        const { newActivitiesData, newActivitiesDataInfoObj } = newActivitiesRelatedData;
-        setActivitiesData(newActivitiesData);
-        setActivitiesDataInfoObj(newActivitiesDataInfoObj);
-      });
-  };
-  const fetchActivitiesProductsData = (ActivityId, page, currentUidValue = null) => {
-    const hitsPerPage = 8;
-    const { idx, length } = activitiesDataInfoObj[ActivityId];
-    const startPoint = hitsPerPage * page;
-    const nextStartPoint = hitsPerPage * (page + 1);
-    if (length <= startPoint) {
-      return null;
-    }
-    const productsIdArr = activitiesData[idx].products;
-    const fetchProductData = (pidValue) => {
-      return firestore
-        .collection('products')
-        .doc(pidValue)
-        .get()
-        .then((srcProductData) => {
-          return new Promise((resolve) => {
-            const pid = srcProductData.id;
-            resolve({
-              pid,
-              ...srcProductData.data(),
-            });
-          });
-        })
-        .then((decodedProductData) => {
-          if (!currentUidValue) {
-            return {
-              ...decodedProductData,
-              productAction: {},
-            };
-          }
-          const { pid } = decodedProductData;
-          return firestore
-            .collection('users')
-            .doc(currentUidValue)
-            .collection('productAction')
-            .doc(pid)
-            .get()
-            .then((srcProductActionData) => {
-              const isSrcProductActionDataEmpty = srcProductActionData.empty;
-              if (!isSrcProductActionDataEmpty) {
-                return {
-                  ...decodedProductData,
-                  productAction: {},
-                };
-              }
-              const productActionData = srcProductActionData.data();
-              return {
-                ...decodedProductData,
-                productAction: {
-                  like: !productActionData.like ? null : productActionData.like,
-                  cart: !productActionData.cart ? null : productActionData.cart,
-                },
-              };
-            });
-        });
-    };
-    if (length <= nextStartPoint) {
-      return Promise.all(
-        productsIdArr.slice(startPoint).map((productId) => {
-          return fetchProductData(productId);
-        }),
-      );
-    }
-    return Promise.all(
-      productsIdArr.slice(startPoint, nextStartPoint).map((productId) => {
-        return fetchProductData(productId);
-      }),
-    );
-  };
-  const updateCurrentProductsData = async (currentIdxValue) => {
-    const currentActivitiesDataId = activitiesData[currentIdxValue].activityId;
-    const newCurrentProductsData = await fetchActivitiesProductsData(
-      currentActivitiesDataId,
-      0,
-      currentUid,
-    );
-    setCurrentProductsData(newCurrentProductsData);
-  };
-  useEffect(() => {
-    fetchCartedProductAmount();
-  }, [isSignIn]);
-  useEffect(() => {
-    updateActivitiesData();
-  }, []);
-  useEffect(() => {
-    if (!activitiesData || !activitiesDataInfoObj) {
-      return;
-    }
-    if (currentActivitiesDataIdx === preCurrentActivitiesDataIdx.current) {
-      return;
-    }
-    updateCurrentProductsData(currentActivitiesDataIdx);
-  }, [activitiesData, activitiesDataInfoObj, currentActivitiesDataIdx]);
-  useEffect(() => {
-    // console.log('currentProductsData: ', currentProductsData);
-    preCurrentActivitiesDataIdx.current = currentProductsData;
-  }, [currentProductsData]);
-
   // (3) event 動態
   const handleActivityTagClick = (indexValue) => {
     // console.log('indexValue: ', indexValue);
     setCurrentActivitiesDataIdx(indexValue);
+    isCurrentProductsDataAll.current = 0;
+    nextPage.current = 0;
   };
 
   return (
@@ -419,6 +572,9 @@ const HomePage = ({ isSignIn }) => {
                         key={pid}
                         currentUid={currentUid}
                         eachProductData={eachProductData}
+                        // eslint-disable-next-line no-undef
+                        updateSearchCardInfo={updateSearchCardInfo}
+                        cardIdx={index}
                       />
                     );
                   })
@@ -432,6 +588,16 @@ const HomePage = ({ isSignIn }) => {
         scrollOffsetInfo={scrollOffsetInfo}
         backgroundColor={styledVariables.color.gray100}
         tabBarState={barState.tabBar}
+      />
+      <ModalMessage
+        message={
+          <span>
+            請登入帳戶
+            <br />
+            以進一步動作
+          </span>
+        }
+        ModolMessageRef={ModolMessagePleaseSignInRef}
       />
     </StyledHomePage>
   );

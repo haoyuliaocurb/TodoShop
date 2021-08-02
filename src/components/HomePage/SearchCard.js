@@ -5,13 +5,7 @@ import StyledSearchCard from '../../styles/SearchPage/NormalSearchMode/StyledSea
 import IconLike from '../app/IconLike';
 import IconCart from '../app/IconCart';
 
-const SearchCard = ({
-  eachProductData,
-  updateSearchCardInfo,
-  cardIdx,
-  currentSearchKeywordsIdx,
-  currentUid,
-}) => {
+const SearchCard = ({ eachProductData, updateSearchCardInfo, cardIdx, currentUid }) => {
   const history = useHistory();
   const { name, price, images, productAction, pid } = eachProductData;
   const isLiked = productAction ? productAction.like || false : false;
@@ -20,9 +14,13 @@ const SearchCard = ({
   const iconCartRef = useRef(null);
 
   const handleIconLikeClick = (e) => {
+    // console.log('trigger handleIconLikeClick');
     e.stopPropagation();
+    if (!updateSearchCardInfo) {
+      return;
+    }
     if (!currentUid) {
-      // 跳出請登入 modal
+      updateSearchCardInfo();
       return;
     }
     iconLikeRef.current.classList.add('animation');
@@ -49,18 +47,15 @@ const SearchCard = ({
       ...productAction,
       like: !currentLike ? true : null,
     };
-    updateSearchCardInfo(
-      pid,
-      likeedProductAction,
-      currentSearchKeywordsIdx,
-      cardIdx,
-      productAction,
-    );
+    updateSearchCardInfo(pid, likeedProductAction, productAction, cardIdx);
   };
   const handleIconCartClick = (e) => {
     e.stopPropagation();
+    if (!updateSearchCardInfo) {
+      return;
+    }
     if (!currentUid) {
-      // 跳出請登入 modal
+      updateSearchCardInfo();
       return;
     }
     iconCartRef.current.classList.add('animation');
@@ -86,13 +81,7 @@ const SearchCard = ({
       ...productAction,
       cart: !currentCart ? { amount: 1 } : null,
     };
-    updateSearchCardInfo(
-      pid,
-      cartedProductAction,
-      currentSearchKeywordsIdx,
-      cardIdx,
-      productAction,
-    );
+    updateSearchCardInfo(pid, cartedProductAction, productAction, cardIdx);
   };
   const handleSelfClick = () => {
     history.push(`/product/${pid}`);

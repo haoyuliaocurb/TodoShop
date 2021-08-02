@@ -405,10 +405,7 @@ const SearchPages = ({ isSignIn }) => {
     preProductAction,
   ) => {
     await updateSearchCardProductAction(pidValue, updatedProductAction);
-    const newSearchCardProductAction = await fetchSearchCardProductAction(
-      pidValue,
-      updatedProductAction,
-    );
+    const newSearchCardProductAction = await fetchSearchCardProductAction(pidValue);
     if ((!preProductAction || preProductAction.cart) && !updatedProductAction.cart) {
       setCartedProductAmount((preCartedProductAmount) => {
         if (preCartedProductAmount < 1) {
