@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-unused-vars */
 import { React, useState, useEffect, useRef } from 'react';
 import { firestore } from '../utils/firebase/firebase-services';
@@ -9,7 +10,7 @@ import HomePageNavBar from '../components/HomePage/HomePageNavBar';
 import Welcoming from '../components/HomePage/Welcoming';
 import StyledHomePage from '../styles/HomePage/StyledHomePage';
 import { styledVariables, removePx } from '../styles/app/cssMaterial';
-import SearchCard from '../components/SearchPage/NormalSearchMode/SearchCard';
+import SearchCard from '../components/HomePage/SearchCard';
 import ActivityTag from '../components/HomePage/ActivityTag';
 import CategoryCard from '../components/HomePage/CategoryCard';
 import categoryData from '../components/HomePage/categoryData';
@@ -203,38 +204,42 @@ const HomePage = ({ isSignIn }) => {
   }, [cartedProductAmount]);
 
   // (2) 處理資料
-  const [activitiesDataInfoObj, setActivitiesDataInfoObj] = useState({});
+  const [activitiesDataInfoObj, setActivitiesDataInfoObj] = useState(null);
   const [activitiesData, setActivitiesData] = useState(null);
-  const [activitiesProductsData, setActivitiesProductsData] = useState(null);
+  const [currentProductsData, setCurrentProductsData] = useState(null);
+  const [currentActivitiesDataIdx, setCurrentActivitiesDataIdx] = useState(0);
+  const preCurrentActivitiesDataIdx = useRef(null);
   const updateActivitiesData = () => {
     return firestore
       .collection('activities')
       .get()
       .then((srcActivitiesData) => {
-        const newActivitiesData = [];
-        const newActivitiesDataInfoObj = {};
-        let counter = 0;
-        srcActivitiesData.forEach((srcEachActivitiesData) => {
-          const activityId = srcEachActivitiesData.id;
-          const decodedEachActivitiesData = srcEachActivitiesData.data();
-          const { length } = decodedEachActivitiesData.products;
-          const eachActivitiesData = {
-            ...decodedEachActivitiesData,
-            activityId,
+        return new Promise((resolve) => {
+          const newActivitiesData = [];
+          const newActivitiesDataInfoObj = {};
+          let counter = 0;
+          srcActivitiesData.forEach((srcEachActivitiesData) => {
+            const activityId = srcEachActivitiesData.id;
+            const decodedEachActivitiesData = srcEachActivitiesData.data();
+            const { length } = decodedEachActivitiesData.products;
+            const eachActivitiesData = {
+              ...decodedEachActivitiesData,
+              activityId,
+            };
+            newActivitiesData.push(eachActivitiesData);
+            newActivitiesDataInfoObj[activityId] = {
+              idx: counter,
+              length,
+            };
+            counter += 1;
+          });
+          // console.log('newActivitiesDataInfoObj: ', newActivitiesDataInfoObj);
+          const newActivitiesRelatedData = {
+            newActivitiesData,
+            newActivitiesDataInfoObj,
           };
-          newActivitiesData.push(eachActivitiesData);
-          newActivitiesDataInfoObj[activityId] = {
-            idx: counter,
-            length,
-          };
-          counter += 1;
+          resolve(newActivitiesRelatedData);
         });
-        // console.log('newActivitiesDataInfoObj: ', newActivitiesDataInfoObj);
-        const newActivitiesRelatedData = {
-          newActivitiesData,
-          newActivitiesDataInfoObj,
-        };
-        return newActivitiesRelatedData;
       })
       .then((newActivitiesRelatedData) => {
         const { newActivitiesData, newActivitiesDataInfoObj } = newActivitiesRelatedData;
@@ -242,8 +247,84 @@ const HomePage = ({ isSignIn }) => {
         setActivitiesDataInfoObj(newActivitiesDataInfoObj);
       });
   };
-  const fetchActivitiesProductData = (ActivityId, page) => {};
-  const initActivitiesProductsData = () => {};
+  const fetchActivitiesProductsData = (ActivityId, page, currentUidValue = null) => {
+    const hitsPerPage = 8;
+    const { idx, length } = activitiesDataInfoObj[ActivityId];
+    const startPoint = hitsPerPage * page;
+    const nextStartPoint = hitsPerPage * (page + 1);
+    if (length <= startPoint) {
+      return null;
+    }
+    const productsIdArr = activitiesData[idx].products;
+    const fetchProductData = (pidValue) => {
+      return firestore
+        .collection('products')
+        .doc(pidValue)
+        .get()
+        .then((srcProductData) => {
+          return new Promise((resolve) => {
+            const pid = srcProductData.id;
+            resolve({
+              pid,
+              ...srcProductData.data(),
+            });
+          });
+        })
+        .then((decodedProductData) => {
+          if (!currentUidValue) {
+            return {
+              ...decodedProductData,
+              productAction: {},
+            };
+          }
+          const { pid } = decodedProductData;
+          return firestore
+            .collection('users')
+            .doc(currentUidValue)
+            .collection('productAction')
+            .doc(pid)
+            .get()
+            .then((srcProductActionData) => {
+              const isSrcProductActionDataEmpty = srcProductActionData.empty;
+              if (!isSrcProductActionDataEmpty) {
+                return {
+                  ...decodedProductData,
+                  productAction: {},
+                };
+              }
+              const productActionData = srcProductActionData.data();
+              return {
+                ...decodedProductData,
+                productAction: {
+                  like: !productActionData.like ? null : productActionData.like,
+                  cart: !productActionData.cart ? null : productActionData.cart,
+                },
+              };
+            });
+        });
+    };
+    if (length <= nextStartPoint) {
+      return Promise.all(
+        productsIdArr.slice(startPoint).map((productId) => {
+          return fetchProductData(productId);
+        }),
+      );
+    }
+    return Promise.all(
+      productsIdArr.slice(startPoint, nextStartPoint).map((productId) => {
+        return fetchProductData(productId);
+      }),
+    );
+  };
+  const updateCurrentProductsData = async (currentIdxValue) => {
+    const currentActivitiesDataId = activitiesData[currentIdxValue].activityId;
+    const newCurrentProductsData = await fetchActivitiesProductsData(
+      currentActivitiesDataId,
+      0,
+      currentUid,
+    );
+    setCurrentProductsData(newCurrentProductsData);
+  };
   useEffect(() => {
     fetchCartedProductAmount();
   }, [isSignIn]);
@@ -251,9 +332,24 @@ const HomePage = ({ isSignIn }) => {
     updateActivitiesData();
   }, []);
   useEffect(() => {
-    console.log('activitiesData: ', activitiesData);
-    console.log('activitiesDataInfoObj: ', activitiesDataInfoObj);
-  }, [activitiesData, activitiesDataInfoObj]);
+    if (!activitiesData || !activitiesDataInfoObj) {
+      return;
+    }
+    if (currentActivitiesDataIdx === preCurrentActivitiesDataIdx.current) {
+      return;
+    }
+    updateCurrentProductsData(currentActivitiesDataIdx);
+  }, [activitiesData, activitiesDataInfoObj, currentActivitiesDataIdx]);
+  useEffect(() => {
+    // console.log('currentProductsData: ', currentProductsData);
+    preCurrentActivitiesDataIdx.current = currentProductsData;
+  }, [currentProductsData]);
+
+  // (3) event 動態
+  const handleActivityTagClick = (indexValue) => {
+    // console.log('indexValue: ', indexValue);
+    setCurrentActivitiesDataIdx(indexValue);
+  };
 
   return (
     <StyledHomePage>
@@ -283,19 +379,50 @@ const HomePage = ({ isSignIn }) => {
             <div className="activityBlock">
               <div className="activityBar">
                 <div className="ActivityTags">
-                  {TRIAL_ACTIVITY_ARR.map((content, index) => {
-                    if (index === 0) {
-                      // eslint-disable-next-line react/jsx-curly-brace-presence
-                      return <ActivityTag className="selected" content={content} />;
-                    }
-                    return <ActivityTag content={content} />;
-                  })}
+                  {!activitiesData ? (
+                    <div />
+                  ) : (
+                    activitiesData.map((eachActivitiesData, index) => {
+                      const { name } = eachActivitiesData;
+                      if (index === currentActivitiesDataIdx) {
+                        // eslint-disable-next-line react/jsx-curly-brace-presence
+                        return (
+                          <ActivityTag
+                            key={index}
+                            index={index}
+                            className="selected"
+                            content={name}
+                            handleActivityTagClick={handleActivityTagClick}
+                          />
+                        );
+                      }
+                      return (
+                        <ActivityTag
+                          key={index}
+                          index={index}
+                          content={name}
+                          handleActivityTagClick={handleActivityTagClick}
+                        />
+                      );
+                    })
+                  )}
                 </div>
               </div>
               <div className="SearchCardContainer">
-                {TRIAL_DATA.map((productInfo, index) => {
-                  return <SearchCard productInfo={productInfo} />;
-                })}
+                {!currentProductsData ? (
+                  <div />
+                ) : (
+                  currentProductsData.map((eachProductData, index) => {
+                    const { pid } = eachProductData;
+                    return (
+                      <SearchCard
+                        key={pid}
+                        currentUid={currentUid}
+                        eachProductData={eachProductData}
+                      />
+                    );
+                  })
+                )}
               </div>
             </div>
           </div>

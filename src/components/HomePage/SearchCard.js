@@ -5,9 +5,15 @@ import StyledSearchCard from '../../styles/SearchPage/NormalSearchMode/StyledSea
 import IconLike from '../app/IconLike';
 import IconCart from '../app/IconCart';
 
-const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchKeywordsIdx }) => {
+const SearchCard = ({
+  eachProductData,
+  updateSearchCardInfo,
+  cardIdx,
+  currentSearchKeywordsIdx,
+  currentUid,
+}) => {
   const history = useHistory();
-  const { name, price, images, productAction, pid } = productInfo;
+  const { name, price, images, productAction, pid } = eachProductData;
   const isLiked = productAction ? productAction.like || false : false;
   const isCarted = productAction ? productAction.cart || false : false;
   const iconLikeRef = useRef(null);
@@ -15,6 +21,10 @@ const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchK
 
   const handleIconLikeClick = (e) => {
     e.stopPropagation();
+    if (!currentUid) {
+      // 跳出請登入 modal
+      return;
+    }
     iconLikeRef.current.classList.add('animation');
     iconLikeRef.current.addEventListener(
       'animationend',
@@ -49,6 +59,10 @@ const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchK
   };
   const handleIconCartClick = (e) => {
     e.stopPropagation();
+    if (!currentUid) {
+      // 跳出請登入 modal
+      return;
+    }
     iconCartRef.current.classList.add('animation');
     iconCartRef.current.addEventListener(
       'animationend',
