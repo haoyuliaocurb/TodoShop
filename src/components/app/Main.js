@@ -10,6 +10,7 @@ import SearchPage from '../../pages/SearchPage';
 import HomePage from '../../pages/HomePage';
 import CartPage from '../../pages/CartPage';
 import ProductPage from '../../pages/ProductPage';
+import SwitchPaymentPage from '../PaymentPage/SwitchPaymentPage';
 
 // styling
 import StyledMain from '../../styles/app/StyledMain';
@@ -39,9 +40,8 @@ const Main = () => {
   useEffect(() => {
     const unsubscribeOnAuthStateChanged = auth.onAuthStateChanged((user) => {
       if (!user) {
-        setIsSignIn(false);
+        setIsSignIn(null);
         return;
-        // console.log('setIsSignIn(false)');
       }
       setIsSignIn(user.uid);
     });
@@ -84,6 +84,9 @@ const Main = () => {
         </Route>
         <Route path="/product/:pid">
           <ProductPage isSignIn={isSignIn} />
+        </Route>
+        <Route path="/payment">
+          <SwitchPaymentPage isSignIn={isSignIn} />
         </Route>
         <Route path="/">
           <HomePage isSignIn={isSignIn} />

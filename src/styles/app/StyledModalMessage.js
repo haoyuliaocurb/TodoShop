@@ -6,7 +6,7 @@ const StyledModalMessage = styled.div`
   display: flex;
   width: 100vw;
   height: 100vh;
-  /* background-color: rgba(0, 0, 0, 0.5); */
+  background-color: ${({ isShowMask }) => !isShowMask ? 'transparent' : 'rgba(0, 0, 0, 0.5)'};
   position: fixed;
   top: 0;
   left: 0;
@@ -15,7 +15,7 @@ const StyledModalMessage = styled.div`
   align-items: center;
   pointer-events: none;
   opacity: 1;
-  transition: opacity 1s;
+  transition: all 1s;
   &.op-zero {
     opacity: 0 !important;
   }

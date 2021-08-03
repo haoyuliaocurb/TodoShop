@@ -4,9 +4,10 @@ import { React } from 'react';
 import StyledModalMessage from '../../styles/app/StyledModalMessage';
 import IconAppContent from '../../styles/app/IconAppContent';
 
-const ModalMessage = ({ message, ModolMessageRef }) => {
+const ModalMessage = ({ message, ModolMessageRef, mask }) => {
+  const isShowMask = !mask ? 0 : 1;
   return (
-    <StyledModalMessage ref={ModolMessageRef} className="op-zero">
+    <StyledModalMessage ref={ModolMessageRef} className="op-zero" isShowMask={isShowMask}>
       <div className="messageBox">
         <div className="img">
           <IconAppContent.Info />

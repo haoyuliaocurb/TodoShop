@@ -123,6 +123,10 @@ const CartPage = ({ isSignIn }) => {
             let counter = 0;
             srcStoreDate.forEach((srcEachStoreData) => {
               const eachStoreData = srcEachStoreData.data();
+              if (!eachStoreData) {
+                return;
+              }
+              // console.log('eachStoreData: ', eachStoreData);
               const { name: storeName } = eachStoreData;
               cartDataResolved[counter].storeName = storeName;
               counter += 1;
