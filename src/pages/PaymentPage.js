@@ -1,71 +1,80 @@
-/* eslint-disable no-unused-vars */
-import { React, useEffect, useState, useRef } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { React, useState, useEffect } from 'react';
 import StyledPaymentPage from '../styles/PaymentPage/StyledPaymentPage';
-import HistoryBackword from '../components/shared/HistoryBackword';
-import LoaderDotFullPage from '../components/shared/LoaderDotFullPage';
 import { firestore } from '../utils/firebase/firebase-services';
+import TapPayFields from '../components/PaymentPage/TapPayFields';
 
-const PaymentPage = ({ isSignIn }) => {
-  const currentUid = isSignIn;
-  const preIsSignIn = useRef(null);
-  const { orderId } = useParams();
-  const history = useHistory();
-  const [isPaymentAuthChecked, setIsPaymentAuthChecked] = useState(0);
-  const fetchOrderData = () => {
+// eslint-disable-next-line no-unused-vars
+const PaymentPage = ({ isSignIn, orderData }) => {
+  // console.log('isSignIn: ', isSignIn);
+  // console.log('orderData: ', orderData);
+  const [fullOrderData, setFullOrderData] = useState(null);
+  const [orderPriceSum, setOrderPriceSum] = useState(null);
+  const fetchProductData = (pidValue) => {
     return firestore
-      .collection('orders')
-      .doc(orderId)
+      .collection('products')
+      .doc(pidValue)
       .get()
-      .then((srcOrderData) => {
-        if (!srcOrderData.exists) {
+      .then((srcProductData) => {
+        if (!srcProductData.exists) {
           return null;
         }
-        console.log(srcOrderData.exists);
-        return srcOrderData.data();
+        return srcProductData.data();
       });
   };
-  const checkPaymentAuth = async () => {
-    const newOrderData = await fetchOrderData();
-    if (!newOrderData || newOrderData.uid !== currentUid) {
-      console.log(2);
-      setIsPaymentAuthChecked(2);
+  const initOrderData = async (orderDataValue) => {
+    const { products: productsData } = orderDataValue;
+    // console.log('productsData: ', productsData);
+    const newProductData = await Promise.all(
+      productsData.map((productData) => {
+        const { pid } = productData;
+        return fetchProductData(pid).then((srcProductData) => {
+          return {
+            ...productData,
+            ...srcProductData,
+          };
+        });
+      }),
+    );
+    // console.log('newProductData: ', newProductData);
+    const newFullOrderData = {
+      ...orderDataValue,
+      products: newProductData,
+    };
+    setFullOrderData(newFullOrderData);
+  };
+  useEffect(() => {
+    if (!orderData) {
       return;
     }
-    setIsPaymentAuthChecked(1);
-  };
+    initOrderData(orderData);
+  }, []);
   useEffect(() => {
-    // console.log('isSignIn: ', isSignIn);
-    const innerHistoryBackwordIfNoAnswer = () => {
-      if (currentUid) {
-        return;
-      }
+    // console.log('fullOrderData: ', fullOrderData);
+    if (!fullOrderData) {
+      return;
+    }
+    setOrderPriceSum(() => {
       // console.log(true);
-      history.push('/');
-    };
-    innerHistoryBackwordIfNoAnswer.bind(this);
-    const HistoryBackwordIfNoAnswer = setTimeout(innerHistoryBackwordIfNoAnswer, 2000);
-    if (preIsSignIn.current !== isSignIn) {
-      checkPaymentAuth();
-    }
-    return () => {
-      clearTimeout(HistoryBackwordIfNoAnswer);
-    };
-  }, [isSignIn]);
-  useEffect(() => {
-    // console.log('rerender');
-  }, [isPaymentAuthChecked]);
+      let newOrderPriceSum = 0;
+      fullOrderData.products.forEach((productData) => {
+        const { price, amount } = productData;
+        if (!price || !amount) {
+          return;
+        }
+        newOrderPriceSum += price * amount;
+      });
+      // console.log('newOrderPriceSum: ', newOrderPriceSum);
+      return newOrderPriceSum;
+    });
+  }, [fullOrderData]);
 
-  const getPaymentPageContent = () => {
-    if (!isPaymentAuthChecked) {
-      return <LoaderDotFullPage />;
-    }
-    if (isPaymentAuthChecked === 2) {
-      return <HistoryBackword />;
-    }
-    return <p>paymentPage</p>;
-  };
-  return <StyledPaymentPage>{getPaymentPageContent()}</StyledPaymentPage>;
+  return (
+    <StyledPaymentPage>
+      <button type="button">付款</button>
+      <p>{!orderPriceSum ? 0 : orderPriceSum}</p>
+      <TapPayFields />
+    </StyledPaymentPage>
+  );
 };
 
 export default PaymentPage;

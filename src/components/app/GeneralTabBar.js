@@ -133,7 +133,7 @@ const GeneralTabBar = (
           <p className="textIcon">首頁</p>
         </StyledIconApp>
       </Link>
-      <Link to="/activity" id="activity" onClick={handleSearchTabClick}>
+      <Link to="/payment/3kQyb943mbk9bv57uNs5" id="payment" onClick={handleSearchTabClick}>
         <StyledIconApp disabled={iconState.disabled.activity} active={iconState.active.activity}>
           <IconApp.Activity />
           <p className="textIcon">優惠活動</p>
