@@ -4,7 +4,8 @@ admin.initializeApp();
 const algoliasearch = require("algoliasearch");
 const express = require("express");
 const cors = require("cors");
-const https = require("https");
+// const https = require("https");
+const axios = require("axios");
 
 const ALGOLIA_ID = functions.config().algolia.appid;
 const ALGOLIA_ADMIN_KEY = functions.config().algolia.adminkey;
@@ -139,35 +140,70 @@ const getTapPayRequestMaterial = (reqValue) => {
 app.use(cors());
 app.post("/orders", async (reqOrder, resOreder) => {
   const tapPayRequestMaterial = getTapPayRequestMaterial(reqOrder);
-  const data = new TextEncoder().encode(
-      JSON.stringify(tapPayRequestMaterial.body)
-  );
-  functions.logger.log("hello");
-  const options = {
-    hostname: "sandbox.tappaysdk.com",
-    port: 443,
-    path: "/tpc/payment/pay-by-prime",
-    method: "POST",
+  const data = JSON.stringify(tapPayRequestMaterial.body);
+  const tapPayConfig = axios.create({
+    baseURL: "https://sandbox.tappaysdk.com",
     headers: {
       "Content-Type": "application/json",
-      "Content-Length": data.length,
       "x-api-key":
         "partner_c4LGHUS1P9TeTSm53cblCCjVws22XInlCuCNR5AomcwM0N1AKqUnBMeP",
     },
-  };
-  const reqTapPay = https.request(options, (resTapPay) => {
-    functions.logger.log(`statusCode: ${resTapPay.statusCode}`);
-    resTapPay.on("data", (d) => {
-      functions.logger.log(`data: ${d}`);
-      // process.stdout.write(d);
-      resOreder.json(JSON.stringify(d));
-    });
   });
-  reqTapPay.on("error", (error) => {
-    functions.logger.error(error);
+  const postTapPay =
+    (dataValue) => tapPayConfig.post("/tpc/payment/pay-by-prime", dataValue);
+  postTapPay(data).then((tapPaySrcResponse) => {
+    const tapPayResponse = tapPaySrcResponse.json;
+    resOreder.send(tapPayResponse);
   });
-  reqTapPay.end();
+  // const data = new TextEncoder().encode(
+  //     JSON.stringify(tapPayRequestMaterial.body)
+  // );
+  // functions.logger.log("hello");
+  // const options = {
+  //   hostname: "sandbox.tappaysdk.com",
+  //   port: 443,
+  //   path: "/tpc/payment/pay-by-prime",
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     "Content-Length": data.length,
+  //     "x-api-key":
+  //       "partner_c4LGHUS1P9TeTSm53cblCCjVws22XInlCuCNR5AomcwM0N1AKqUnBMeP",
+  //   },
+  // };
+
+  // const reqTapPay = https.request(options, (resTapPay) => {
+  //   functions.logger.log(`statusCode: ${resTapPay.statusCode}`);
+  //   resTapPay.on("data", (d) => {
+  //     functions.logger.log(`data: ${d}`);
+  //     // process.stdout.write(d);
+  //     resOreder.json(JSON.stringify(d));
+  //   });
+  // });
+  // reqTapPay.on("error", (error) => {
+  //   functions.logger.error(error);
+  // });
+  // reqTapPay.end();
 });
+
+app.post("/account", async (reqAccount, resAccount) => {
+  const data = reqAccount.body;
+  functions.logger.log("data: ", data);
+  const accountConfig = axios.create({
+    baseURL: "https://hexschool-tutorial.herokuapp.com/api",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const postAccount =
+    (dataValue) => accountConfig.post("/signup", accountConfig);
+  postAccount(data).then((srcApiRes) => {
+    const apiRes = srcApiRes.data;
+    functions.logger.log("apiRes: ", apiRes);
+    resAccount.send(apiRes);
+  });
+});
+
 exports.widgets = functions.https.onRequest(app);
 
 const createToAlgolia = (object, indexName) => {

@@ -78,8 +78,8 @@ const TapPayFields = () => {
     if (!checkCardDetailsForm()) {
       return;
     }
-    // const prime = await getTPPrime();
-    // console.log('prime: ', prime);
+    const prime = await getTPPrime();
+    console.log('prime: ', prime);
     const response = await fetch('https://us-central1-todoshop-5fd25.cloudfunctions.net/widgets/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -91,6 +91,19 @@ const TapPayFields = () => {
       }})
       .then((srcData) => srcData.json);
     console.log('response: ', response);
+    // const trial = await fetch('https://us-central1-todoshop-5fd25.cloudfunctions.net/widgets/account', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: {
+    //     email: 'haoyuliaocurb@gmail.com',
+    //     password: 'trialtrial',
+    //   },
+    // })
+    // .then((srcResValue) => srcResValue.json)
+    // .then((resValue) => {
+    //   console.log('resValue: ', resValue);
+    // });
+    // trial();
     // let dateStringObj = lib.transferMysqlDateString(bookingDataArray[i]['date']);
     // model.section_unpaidBooking._fetchPostOrderMaterial = {
     //     prime: null,
