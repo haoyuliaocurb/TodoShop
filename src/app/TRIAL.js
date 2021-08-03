@@ -12,7 +12,6 @@ const PRODUCT_DATA = {
   price: 109,
   sid: 'ZcpPQBq3Sji2xHcD79g0',
 };
-
 const PRODUCTS_DATA = {
   '2mS9J1zTXPXX604zb4ik': {
     images:[
@@ -228,6 +227,45 @@ const TRIAL = () => {
       });
     });
   };
+  // useEffect(() => {
+  //   const req = {
+  //     body: {
+  //       phoneNumber: '0958155898',
+  //       name: 'haoyuliao',
+  //       email: 'haoyuliaocurb@gmail.com',
+  //       priceSum: 1000,
+  //     },
+  //   };
+  //   const getTapPayRequestMaterial = (reqValue) => {
+  //     const {phoneNumber, name, email, priceSum} = reqValue.body;
+  //     const tapPayRequestMaterial = {
+  //       "body": {
+  //         "prime":
+  //           "test_3a2fb2b7e892b914a03c95dd4dd5dc7970c908df67a49527c0a648b2bc9",
+  //         "partner_key":
+  //           "partner_c4LGHUS1P9TeTSm53cblCCjVws22XInlCuCNR5AomcwM0N1AKqUnBMeP",
+  //         "merchant_id": "haoyuliaocurb_CTBC",
+  //         "amount": String(priceSum),
+  //         "details": "e-commerce",
+  //         "order_number": `orderNumber${Date.now()}`,
+  //         "bank_transaction_id": `bankTransactionId${Date.now()}`,
+  //         "cardholder": {
+  //           "phone_number": phoneNumber,
+  //           "name": name,
+  //           "email": email,
+  //           "zip_code": "",
+  //           "address": "",
+  //           "national_id": "",
+  //         },
+  //         "remember": true,
+  //       },
+  //     };
+  //     return tapPayRequestMaterial;
+  //   };
+  //   const trial = getTapPayRequestMaterial(req);
+  //   console.log('trial: ', trial);
+  //   console.log('JSON:', JSON.parse(JSON.stringify(trial)));
+  // });
 
   useEffect(() => {
     // Array.from({length: 1}).forEach((value, index) => {

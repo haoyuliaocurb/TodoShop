@@ -4,6 +4,7 @@ admin.initializeApp();
 const algoliasearch = require("algoliasearch");
 const express = require("express");
 const cors = require("cors");
+const https = require("https");
 
 const ALGOLIA_ID = functions.config().algolia.appid;
 const ALGOLIA_ADMIN_KEY = functions.config().algolia.adminkey;
@@ -12,8 +13,8 @@ const ALGOLIA_SEARCH_ONLY_API_KEY = functions.config().algolia.searchonlykey;
 const searchClient = algoliasearch(ALGOLIA_ID, ALGOLIA_SEARCH_ONLY_API_KEY);
 
 const app = express();
-app.use(cors({origin: true}));
-
+// app.use(cors({origin: true}));
+app.use(cors());
 app.post("/searchProducts", async (req, res) =>{
   const {searchStr, page} = req.body;
   const option = !req.body.option ? null : req.body.option;
@@ -108,7 +109,65 @@ app.post("/searchProducts", async (req, res) =>{
         res.send([]);
       });
 });
+const getTapPayRequestMaterial = (reqValue) => {
+  const {phoneNumber, name, email, priceSum} = reqValue.body;
+  const tapPayRequestMaterial = {
+    "body": {
+      "prime":
+        "test_3a2fb2b7e892b914a03c95dd4dd5dc7970c908df67a49527c0a648b2bc9",
+      "partner_key":
+        "partner_c4LGHUS1P9TeTSm53cblCCjVws22XInlCuCNR5AomcwM0N1AKqUnBMeP",
+      "merchant_id": "haoyuliaocurb_CTBC",
+      "amount": String(priceSum),
+      "details": "e-commerce",
+      "order_number": `orderNumber${Date.now()}`,
+      "bank_transaction_id": `bankTransactionId${Date.now()}`,
+      "cardholder": {
+        "phone_number": phoneNumber,
+        "name": name,
+        "email": email,
+        "zip_code": "",
+        "address": "",
+        "national_id": "",
+      },
+      "remember": true,
+    },
+  };
+  return tapPayRequestMaterial;
+};
 
+app.use(cors());
+app.post("/orders", async (reqOrder, resOreder) => {
+  const tapPayRequestMaterial = getTapPayRequestMaterial(reqOrder);
+  const data = new TextEncoder().encode(
+      JSON.stringify(tapPayRequestMaterial.body)
+  );
+  functions.logger.log("hello");
+  const options = {
+    hostname: "sandbox.tappaysdk.com",
+    port: 443,
+    path: "/tpc/payment/pay-by-prime",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Content-Length": data.length,
+      "x-api-key":
+        "partner_c4LGHUS1P9TeTSm53cblCCjVws22XInlCuCNR5AomcwM0N1AKqUnBMeP",
+    },
+  };
+  const reqTapPay = https.request(options, (resTapPay) => {
+    functions.logger.log(`statusCode: ${resTapPay.statusCode}`);
+    resTapPay.on("data", (d) => {
+      functions.logger.log(`data: ${d}`);
+      // process.stdout.write(d);
+      resOreder.json(JSON.stringify(d));
+    });
+  });
+  reqTapPay.on("error", (error) => {
+    functions.logger.error(error);
+  });
+  reqTapPay.end();
+});
 exports.widgets = functions.https.onRequest(app);
 
 const createToAlgolia = (object, indexName) => {

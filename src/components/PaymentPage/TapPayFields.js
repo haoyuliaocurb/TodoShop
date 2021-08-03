@@ -44,13 +44,26 @@ const TP_FIELDS_CONFIG = {
     },
   },
 };
-
 const TapPayFields = () => {
   // const [isTapPaySDKSet, setIsTapPaySDKSet] = useState(0);
   const TAPPAY_APP_ID = 20704;
   const TAPPAY_APP_KEY = 'app_aZCYMha5Pc1ywLOxmUgD3O1g3i90rnEx7DFMqwf1QGpEZgpRvF96fFMC2h8i';
-  const handleSubmit = (e) => {
-    console.log(true);
+
+  // eslint-disable-next-line no-unused-vars
+  const getTPPrime = () => {
+    return new Promise((resolve) => {
+      // eslint-disable-next-line no-undef
+      TPDirect.card.getPrime((result) => {
+        if (result.status === 0) {
+          resolve(result.card.prime);
+        }
+        else {
+          console.log('error message of getting  tappay prime: ', result.msg);
+        }
+      });
+    });
+  };
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const checkCardDetailsForm = () => {
       // eslint-disable-next-line no-undef
@@ -65,7 +78,19 @@ const TapPayFields = () => {
     if (!checkCardDetailsForm()) {
       return;
     }
-    console.log('checkCardDetailsForm() is true');
+    // const prime = await getTPPrime();
+    // console.log('prime: ', prime);
+    const response = await fetch('https://us-central1-todoshop-5fd25.cloudfunctions.net/widgets/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: {
+        phoneNumber: '0958155898',
+        name: 'haoyuliao',
+        email: 'haoyuliaocurb@gmail.com',
+        priceSum: 1000,
+      }})
+      .then((srcData) => srcData.json);
+    console.log('response: ', response);
     // let dateStringObj = lib.transferMysqlDateString(bookingDataArray[i]['date']);
     // model.section_unpaidBooking._fetchPostOrderMaterial = {
     //     prime: null,
@@ -91,30 +116,6 @@ const TapPayFields = () => {
     // }
     // controller.section_unpaidBooking.postOrder();
   };
-  // useEffect(() => {
-  //   if (isTapPaySDKSet) {
-  //     return;
-  //   }
-  //   const TapPaySDK = document.createElement('script');
-  //   TapPaySDK.src = 'https://js.tappaysdk.com/tpdirect/v5.7.0';
-  //   TapPaySDK.defer = true;
-  //   document.body.appendChild(TapPaySDK);
-  //   setIsTapPaySDKSet(1);
-  //   // eslint-disable-next-line consistent-return
-  //   return () => {
-  //     document.body.removeChild(TapPaySDK);
-  //   };
-  // }, []);
-  // useEffect(() => {
-  //   if (!isTapPaySDKSet) {
-  //     return;
-  //   }
-  //   console.log('document.body.childNodes: ', document.body.childNodes);
-  //   // eslint-disable-next-line no-undef
-  //   TPDirect.setupSDK(TAPPAY_APP_ID, TAPPAY_APP_KEY, 'sandbox');
-  //   // eslint-disable-next-line no-undef
-  //   TPDirect.card.setup(TP_FIELDS_CONFIG);
-  // }, [isTapPaySDKSet]);
   useEffect(() => {
     // eslint-disable-next-line no-undef
     TPDirect.setupSDK(TAPPAY_APP_ID, TAPPAY_APP_KEY, 'sandbox');
@@ -127,8 +128,34 @@ const TapPayFields = () => {
       <div className="tpfield" id="card-number" />
       <div className="tpfield" id="card-expiration-date" />
       <div className="tpfield" id="card-ccv" />
+      <button type="submit">送出</button>
     </StyledTapPayFields>
   );
 };
 
 export default TapPayFields;
+
+// useEffect(() => {
+//   if (isTapPaySDKSet) {
+//     return;
+//   }
+//   const TapPaySDK = document.createElement('script');
+//   TapPaySDK.src = 'https://js.tappaysdk.com/tpdirect/v5.7.0';
+//   TapPaySDK.defer = true;
+//   document.body.appendChild(TapPaySDK);
+//   setIsTapPaySDKSet(1);
+//   // eslint-disable-next-line consistent-return
+//   return () => {
+//     document.body.removeChild(TapPaySDK);
+//   };
+// }, []);
+// useEffect(() => {
+//   if (!isTapPaySDKSet) {
+//     return;
+//   }
+//   console.log('document.body.childNodes: ', document.body.childNodes);
+//   // eslint-disable-next-line no-undef
+//   TPDirect.setupSDK(TAPPAY_APP_ID, TAPPAY_APP_KEY, 'sandbox');
+//   // eslint-disable-next-line no-undef
+//   TPDirect.card.setup(TP_FIELDS_CONFIG);
+// }, [isTapPaySDKSet]);
