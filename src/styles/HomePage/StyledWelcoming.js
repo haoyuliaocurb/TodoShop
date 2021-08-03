@@ -195,6 +195,31 @@ const StyledWelcoming = styled.div`
         }
       }
     }
+    > button {
+      margin-top: 24px;
+      border: white solid 1px;
+      padding: 10px 20px;
+      border-radius: 100px;
+      background-color: black;
+      display: flex;
+      align-items: center;
+      /* box-shadow: 2px 2px 5px 5px rgba(207, 185, 151, 0.5); */
+      > p {
+        display: inline-block;
+        font-size: 20px;
+        color: white;
+        letter-spacing: 4px;
+      }
+      > svg {
+        margin-left: 10px;
+        width: 24px;
+        height: 24px;
+        fill: white;
+        * {
+          fill: white;
+        }
+      }
+    }
   }
   > img {
     display: block;
