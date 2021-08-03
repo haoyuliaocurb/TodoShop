@@ -121,8 +121,8 @@ const getTapPayRequestMaterial = (reqValue) => {
       "merchant_id": "haoyuliaocurb_CTBC",
       "amount": String(priceSum),
       "details": "e-commerce",
-      "order_number": `orderNumber${Date.now()}`,
-      "bank_transaction_id": `bankTransactionId${Date.now()}`,
+      "order_number": `OrderNumber${Date.now()}`,
+      "bank_transaction_id": `B${Date.now()}`,
       "cardholder": {
         "phone_number": phoneNumber,
         "name": name,
@@ -151,10 +151,11 @@ app.post("/orders", async (reqOrder, resOreder) => {
   });
   const postTapPay =
     (dataValue) => tapPayConfig.post("/tpc/payment/pay-by-prime", dataValue);
-  postTapPay(data).then((tapPaySrcResponse) => {
-    const tapPayResponse = tapPaySrcResponse.json;
-    resOreder.send(tapPayResponse);
-  });
+  const tapPaySrcResponse = await postTapPay(data);
+  const tapPayResponse = tapPaySrcResponse.data;
+  resOreder.send(tapPayResponse);
+  // resOreder.send(tapPayResponse);
+  // resOreder.json(JSON.stringify({a: "a"}));
   // const data = new TextEncoder().encode(
   //     JSON.stringify(tapPayRequestMaterial.body)
   // );

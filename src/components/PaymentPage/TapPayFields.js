@@ -83,14 +83,20 @@ const TapPayFields = () => {
     const response = await fetch('https://us-central1-todoshop-5fd25.cloudfunctions.net/widgets/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: {
+      body: JSON.stringify({
         phoneNumber: '0958155898',
         name: 'haoyuliao',
         email: 'haoyuliaocurb@gmail.com',
         priceSum: 1000,
-      }})
-      .then((srcData) => srcData.json);
-    console.log('response: ', response);
+      })})
+      .then((responseValue) => {
+        console.log(responseValue.status);
+        return responseValue.json();
+      })
+      .then((data) => {
+        return data;
+      })
+      console.log('response: ', response);
     // const trial = await fetch('https://us-central1-todoshop-5fd25.cloudfunctions.net/widgets/account', {
     //   method: 'POST',
     //   headers: { 'Content-Type': 'application/json' },
