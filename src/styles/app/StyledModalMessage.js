@@ -28,6 +28,9 @@ const StyledModalMessage = styled.div`
     border-radius: 20px;
     background-color: ${styledVariables.color.transWhite95};
     box-shadow: 0 3px 10px 5px ${styledVariables.color.transGray5};
+    display: ${({ isShowIconInfo }) => !isShowIconInfo ? 'flex' : 'block'};
+    justify-content: center;
+    align-items: center;
 
     > .img {
       position: relative;

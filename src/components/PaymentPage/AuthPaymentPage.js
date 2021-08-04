@@ -24,7 +24,10 @@ const AuthPaymentPage = ({ isSignIn }) => {
           return null;
         }
         // console.log(srcOrderData.exists);
-        return srcOrderData.data();
+        return {
+          ...srcOrderData.data(),
+          orderId,
+        };
       });
   };
   const checkPaymentAuth = async () => {

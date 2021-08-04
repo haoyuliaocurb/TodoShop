@@ -106,6 +106,17 @@ export const styledVariables = {
     welcomingHeight: '880px',
     categoryCardWidth: '110px',
   },
+  PaymentPage: {
+    formWidth: '290px',
+    formPaddingVer: '20px',
+    formPaddingHor: '10px',
+    labelHeight: '30px',
+    inputWidth: '200px',
+    inputPaddingHor: '10px',
+    labelMarginBottom: '6px',
+    ButtonSubmitHeight: '30px',
+    columnMarginHor: '20px',
+  },
 };
 styledVariables.todolistTable.buttonWidthSum = `${
   removePx(styledVariables.todolistTable.selectTableItemButtonWidth) +

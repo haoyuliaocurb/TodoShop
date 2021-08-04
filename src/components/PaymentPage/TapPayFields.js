@@ -1,7 +1,11 @@
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line no-unused-vars
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useRef } from 'react';
 import StyledTapPayFields from '../../styles/PaymentPage/StyledTapPayFields';
+import LoaderDotModal from '../shared/LoaderDotModal';
+import ModalMessageError from '../app/ModalMessageError';
+import ModalMessageChecked from '../app/ModalMessageChecked';
+import { firestore } from '../../utils/firebase/firebase-services';
 
 const TP_FIELDS = {
   number: {
@@ -24,7 +28,7 @@ const TP_FIELDS_CONFIG = {
       'color': 'black',
       'font-family': 'Noto Sans TC',
       'font-style': 'normal',
-      'font-size': '16px',
+      'font-size': '12px',
       'line-height': '21px',
       'font-weight': 'normal',
     },
@@ -44,12 +48,15 @@ const TP_FIELDS_CONFIG = {
     },
   },
 };
-const TapPayFields = () => {
+const TapPayFields = ({ orderPriceSum, orderUserInfo, orderId }) => {
   // const [isTapPaySDKSet, setIsTapPaySDKSet] = useState(0);
   const TAPPAY_APP_ID = 20704;
   const TAPPAY_APP_KEY = 'app_aZCYMha5Pc1ywLOxmUgD3O1g3i90rnEx7DFMqwf1QGpEZgpRvF96fFMC2h8i';
+  const LoaderDotModalRef = useRef(null);
+  const ModolMessagErrorSubmitRef = useRef(null);
+  const ModolMessagCheckedSubmitRef = useRef(null);
+  const ModolMessagErrorUpdateDBRef = useRef(null);
 
-  // eslint-disable-next-line no-unused-vars
   const getTPPrime = () => {
     return new Promise((resolve) => {
       // eslint-disable-next-line no-undef
@@ -63,8 +70,20 @@ const TapPayFields = () => {
       });
     });
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleTapPayFieldsSubmit = async () => {
+    if (!orderPriceSum) {
+      console.log('orderPriceSum is empty');
+      return;
+    }
+    if (!orderUserInfo) {
+      console.log('orderUserInfo columns is empty');
+      return;
+    };
+    const { phoneNumber, name, email } = orderUserInfo;
+    if (!phoneNumber || !name || !email) {
+      console.log('orderUserInfo columns is empty');
+      return;
+    }
     const checkCardDetailsForm = () => {
       // eslint-disable-next-line no-undef
       const tappayStatus = TPDirect.card.getTappayFieldsStatus();
@@ -74,66 +93,65 @@ const TapPayFields = () => {
       }
       return true;
     };
-
     if (!checkCardDetailsForm()) {
+      console.log('cardDetails columns is empty');
       return;
     }
+    LoaderDotModalRef.current.classList.remove('op-zero');
+    // eslint-disable-next-line no-unused-vars
     const prime = await getTPPrime();
-    console.log('prime: ', prime);
+    // console.log('prime: ', prime);
     const response = await fetch('https://us-central1-todoshop-5fd25.cloudfunctions.net/widgets/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        phoneNumber: '0958155898',
-        name: 'haoyuliao',
-        email: 'haoyuliaocurb@gmail.com',
-        priceSum: 1000,
+        phoneNumber,
+        name,
+        email,
+        priceSum: orderPriceSum,
       })})
       .then((responseValue) => {
-        console.log(responseValue.status);
+        // console.log(responseValue.status);
         return responseValue.json();
       })
       .then((data) => {
         return data;
-      })
-      console.log('response: ', response);
-    // const trial = await fetch('https://us-central1-todoshop-5fd25.cloudfunctions.net/widgets/account', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: {
-    //     email: 'haoyuliaocurb@gmail.com',
-    //     password: 'trialtrial',
-    //   },
-    // })
-    // .then((srcResValue) => srcResValue.json)
-    // .then((resValue) => {
-    //   console.log('resValue: ', resValue);
-    // });
-    // trial();
-    // let dateStringObj = lib.transferMysqlDateString(bookingDataArray[i]['date']);
-    // model.section_unpaidBooking._fetchPostOrderMaterial = {
-    //     prime: null,
-    //     order: {
-    //         id: bookingDataArray[i].id,
-    //         price: bookingDataArray[i]['price'],
-    //         trip: {
-    //             attraction: {
-    //             id: bookingDataArray[i]['attraction']['id'],
-    //             name: bookingDataArray[i]['attraction']['name'],
-    //             address: bookingDataArray[i]['attraction']['address'],
-    //             image: bookingDataArray[i]['attraction']['image']
-    //             },
-    //             date: `${dateStringObj['year']}-${dateStringObj['month']}-${dateStringObj['day']}`,
-    //             time: bookingDataArray[i]['time']
-    //         },
-    //         contact: {
-    //             name: gen.exportFunc.getSignInData().name,
-    //             email: gen.exportFunc.getSignInData().email,
-    //             phone: contact_label_phone_input.value,
-    //         },
-    //     }
-    // }
-    // controller.section_unpaidBooking.postOrder();
+      });
+    // console.log('response: ', response);
+    if (response.status !== 0) {
+      LoaderDotModalRef.current.classList.add('op-zero');
+      LoaderDotModalRef.current.addEventListener('transitionend', () => {
+        ModolMessagErrorSubmitRef.current.classList.remove('op-zero');
+        ModolMessagErrorSubmitRef.current.addEventListener('transitionend', () => {
+          ModolMessagErrorSubmitRef.current.classList.add('op-zero');
+        }, { once: true });          
+      }, { once: true })
+      return;
+    }
+    const checkStatus = await firestore.collection('orders').doc(orderId).update({ status: 1 }).then(async () => {
+      const srcCheckStatus = await firestore.collection('orders').doc(orderId).get();
+      if (!srcCheckStatus.exists) {
+        return 0;
+      }
+      return srcCheckStatus.data();
+    });
+    if (!checkStatus) {
+      LoaderDotModalRef.current.classList.add('op-zero');
+      LoaderDotModalRef.current.addEventListener('transitionend', () => {
+        ModolMessagErrorUpdateDBRef.current.classList.remove('op-zero');
+        ModolMessagErrorUpdateDBRef.current.addEventListener('transitionend', () => {
+          ModolMessagErrorUpdateDBRef.current.classList.add('op-zero');
+        }, { once: true });
+      }, { once: true });
+      return;
+    }
+    LoaderDotModalRef.current.classList.add('op-zero');
+    LoaderDotModalRef.current.addEventListener('transitionend', () => {
+      ModolMessagCheckedSubmitRef.current.classList.remove('op-zero');
+      ModolMessagCheckedSubmitRef.current.addEventListener('transitionend', () => {
+        ModolMessagCheckedSubmitRef.current.classList.add('op-zero');
+      }, { once: true });
+    }, { once: true });
   };
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -141,13 +159,40 @@ const TapPayFields = () => {
     // eslint-disable-next-line no-undef
     TPDirect.card.setup(TP_FIELDS_CONFIG);
   }, []);
+  useEffect(() => {
+    // ModolMessagErrorUpdateDBRef.current.classList.remove('op-zero');
+  }, []);
 
   return (
-    <StyledTapPayFields onSubmit={handleSubmit}>
-      <div className="tpfield" id="card-number" />
-      <div className="tpfield" id="card-expiration-date" />
-      <div className="tpfield" id="card-ccv" />
-      <button type="submit">送出</button>
+    <StyledTapPayFields
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleTapPayFieldsSubmit();
+      }}
+      className="block"
+    >
+      <div className="title">
+        <h3>信用卡資訊</h3>
+      </div>
+      <div className="label">
+        <p>信用卡號</p>
+        <div className="tpfield" id="card-number" />
+      </div>
+      <div className="label">
+        <p>有效期限</p>
+        <div className="tpfield" id="card-expiration-date" />
+      </div>
+      <div className="label">
+        <p>驗證碼</p>
+        <div className="tpfield" id="card-ccv" />
+      </div>
+      <button type="submit">
+        <p>確認付款</p>
+      </button>
+      <LoaderDotModal LoaderDotModalRef={LoaderDotModalRef} />
+      <ModalMessageError ModolMessagErrorRef={ModolMessagErrorSubmitRef} message={<span>付款連線未成功<br />請再試一次</span>} />
+      <ModalMessageError ModolMessagErrorRef={ModolMessagErrorUpdateDBRef} message={<span>資料庫連線未成功<br />請聯繫客服</span>} />
+      <ModalMessageChecked ModolMessageCheckedeRef={ModolMessagCheckedSubmitRef} message={<span>付款成功</span>} />
     </StyledTapPayFields>
   );
 };

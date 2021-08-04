@@ -4,17 +4,17 @@ import { React } from 'react';
 import StyledModalMessage from '../../styles/app/StyledModalMessage';
 import IconAppContent from '../../styles/app/IconAppContent';
 
-const ModalMessage = ({ message, ModolMessageRef, mask, IconInfo = 1 }) => {
+const ModalMessageError = ({ message, ModolMessagErrorRef, mask, IconInfo = 1 }) => {
   const isShowMask = !mask ? 0 : 1;
   const isShowIconInfo = !IconInfo ? 0 : 1;
   return (
-    <StyledModalMessage ref={ModolMessageRef} className="op-zero" isShowMask={isShowMask} isShowIconInfo={isShowIconInfo}>
+    <StyledModalMessage ref={ModolMessagErrorRef} className="op-zero" isShowMask={isShowMask} isShowIconInfo={isShowIconInfo}>
       <div className="messageBox">
         {!isShowIconInfo ? (
           <div />
         ) : (
           <div className="img">
-            <IconAppContent.Info />
+            <IconAppContent.Close />
           </div>
         )}
         <h3 className="message center">{message}</h3>
@@ -23,4 +23,4 @@ const ModalMessage = ({ message, ModolMessageRef, mask, IconInfo = 1 }) => {
   );
 };
 
-export default ModalMessage;
+export default ModalMessageError;
