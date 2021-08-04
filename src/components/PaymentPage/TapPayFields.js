@@ -1,6 +1,8 @@
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line no-unused-vars
 import { React, useState, useEffect, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
+
 import StyledTapPayFields from '../../styles/PaymentPage/StyledTapPayFields';
 import LoaderDotModal from '../shared/LoaderDotModal';
 import ModalMessageError from '../app/ModalMessageError';
@@ -56,6 +58,7 @@ const TapPayFields = ({ orderPriceSum, orderUserInfo, orderId }) => {
   const ModolMessagErrorSubmitRef = useRef(null);
   const ModolMessagCheckedSubmitRef = useRef(null);
   const ModolMessagErrorUpdateDBRef = useRef(null);
+  const history = useHistory();
 
   const getTPPrime = () => {
     return new Promise((resolve) => {
@@ -150,6 +153,9 @@ const TapPayFields = ({ orderPriceSum, orderUserInfo, orderId }) => {
       ModolMessagCheckedSubmitRef.current.classList.remove('op-zero');
       ModolMessagCheckedSubmitRef.current.addEventListener('transitionend', () => {
         ModolMessagCheckedSubmitRef.current.classList.add('op-zero');
+        ModolMessagCheckedSubmitRef.current.addEventListener('transitionend', () => {
+          history.push('/cart');
+        }, { once: true })
       }, { once: true });
     }, { once: true });
   };

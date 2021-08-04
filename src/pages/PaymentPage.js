@@ -7,6 +7,7 @@ import TabBar from '../components/app/TabBar';
 import SimpleNavBar from '../components/shared/SimpleNavBar';
 import GeneralTabBar from '../components/app/GeneralTabBar';
 import IconShared from '../styles/shared/IconShared';
+import ProductGroupByStore from '../components/PaymentPage/ProductGroupByStore';
 
 const INIT_ORDER_USER_INFO = {
   name: '',
@@ -38,7 +39,19 @@ const PaymentPage = ({ isSignIn, orderData }) => {
   const initOrderData = async (orderDataValue) => {
     const { products: productsData } = orderDataValue;
     // console.log('productsData: ', productsData);
-    const newProductData = await Promise.all(
+    const updateOrderPriceSum = (flatProductsData) => {
+      console.log('flatProductsData: ', flatProductsData);
+      let newOrderPriceSum = 0;
+      flatProductsData.forEach((productData) => {
+        const { price, amount } = productData;
+        if (!price || !amount) {
+          return;
+        }
+        newOrderPriceSum += price * amount;
+      });
+      setOrderPriceSum(newOrderPriceSum);
+    };
+    const newProductsData = await Promise.all(
       productsData.map((productData) => {
         const { pid } = productData;
         return fetchProductData(pid).then((srcProductData) => {
@@ -48,12 +61,58 @@ const PaymentPage = ({ isSignIn, orderData }) => {
           };
         });
       }),
-    );
-    // console.log('newProductData: ', newProductData);
+    ).then((newProductsDataValue) => {
+      console.log('newProductsDataValue: ', newProductsDataValue);
+      updateOrderPriceSum(newProductsDataValue);
+      return newProductsDataValue;
+    });
+    const classifyProductsDataBySid = async (flatProductsData) => {
+      const srcClassifiedProductsData = [];
+      const sidIdxObj = {};
+      let sidIdxCounter = 0;
+      flatProductsData.forEach((productData) => {
+        const { sid } = productData;
+        const sidIdx = sidIdxObj[sid];
+        if (sidIdx === undefined) {
+          sidIdxObj[sid] = sidIdxCounter;
+          sidIdxCounter += 1;
+          // console.log('sidIdxObj: ', sidIdxObj);
+          const newSidIdx = sidIdxObj[sid];
+          srcClassifiedProductsData[newSidIdx] = {};
+          srcClassifiedProductsData[newSidIdx].sid = sid;
+          srcClassifiedProductsData[newSidIdx].products = [];
+          srcClassifiedProductsData[newSidIdx].products.push(productData);
+          return;
+        }
+        srcClassifiedProductsData[sidIdx].products.push(productData);
+      });
+      return Promise.all(
+        srcClassifiedProductsData.map((srcClassifiedProductData) => {
+          const { sid } = srcClassifiedProductData;
+          // console.log('sid: ', sid);
+          return firestore
+            .collection('stores')
+            .doc(sid)
+            .get()
+            .then((srcStoreData) => {
+              const storeData = srcStoreData.data();
+              const { name } = storeData;
+              const storeName = !name ? '' : name;
+              return {
+                ...srcClassifiedProductData,
+                storeName,
+              };
+            });
+        }),
+      );
+    };
+    const classifiedProductsData = await classifyProductsDataBySid(newProductsData);
+    // console.log('classifiedProductsData: ', classifiedProductsData);
     const newFullOrderData = {
       ...orderDataValue,
-      products: newProductData,
+      orderProducts: classifiedProductsData,
     };
+    delete newFullOrderData.products;
     setFullOrderData(newFullOrderData);
   };
   useEffect(() => {
@@ -61,25 +120,9 @@ const PaymentPage = ({ isSignIn, orderData }) => {
       return;
     }
     initOrderData(orderData);
-  }, []);
+  }, [orderData]);
   useEffect(() => {
     // console.log('fullOrderData: ', fullOrderData);
-    if (!fullOrderData) {
-      return;
-    }
-    setOrderPriceSum(() => {
-      // console.log(true);
-      let newOrderPriceSum = 0;
-      fullOrderData.products.forEach((productData) => {
-        const { price, amount } = productData;
-        if (!price || !amount) {
-          return;
-        }
-        newOrderPriceSum += price * amount;
-      });
-      // console.log('newOrderPriceSum: ', newOrderPriceSum);
-      return newOrderPriceSum;
-    });
   }, [fullOrderData]);
 
   // (2) 處理 bar
@@ -106,7 +149,15 @@ const PaymentPage = ({ isSignIn, orderData }) => {
     });
   }, []);
 
-  // (3) form 動態
+  // (3) 元件動態
+  const [orderProductsVisibility, setOrderProductsVisibility] = useState(0);
+  const handleButtonToggleProductCardsClick = () => {
+    if (!orderProductsVisibility) {
+      setOrderProductsVisibility(1);
+      return;
+    }
+    setOrderProductsVisibility(0);
+  };
   useEffect(() => {
     // console.log('orderUserInfo: ', orderUserInfo);
   }, [orderUserInfo]);
@@ -136,12 +187,28 @@ const PaymentPage = ({ isSignIn, orderData }) => {
               </p>
             </div>
           </div>
-          <div className="block productsInfo">
+          <div className="block orderProductsInfo">
             <div className="title">
               <h3>商品資訊</h3>
             </div>
-            <button className="ButtonToggleProductCards" type="button">
-              <p>展開全部</p>
+            {!fullOrderData || !fullOrderData.orderProducts ? (
+              <div />
+            ) : (
+              fullOrderData.orderProducts.map((eachStoreProductsData) => {
+                // eslint-disable-next-line prettier/prettier
+                return <ProductGroupByStore visibility={orderProductsVisibility} eachCartData={eachStoreProductsData} />;
+              })
+            )}
+            <button
+              className={
+                !orderProductsVisibility
+                  ? 'ButtonToggleProductCards'
+                  : 'ButtonToggleProductCards clicked'
+              }
+              type="button"
+              onClick={handleButtonToggleProductCardsClick}
+            >
+              <p>{!orderProductsVisibility ? '展開資訊' : '收合資訊'}</p>
               <IconShared.ChenvronBottom />
             </button>
           </div>
@@ -203,6 +270,7 @@ const PaymentPage = ({ isSignIn, orderData }) => {
               orderPriceSum={orderPriceSum}
               orderUserInfo={orderUserInfo}
               orderId={orderId}
+              fullOrderData={fullOrderData}
             />
           </div>
         </div>

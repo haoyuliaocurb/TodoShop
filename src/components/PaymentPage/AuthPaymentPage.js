@@ -33,8 +33,7 @@ const AuthPaymentPage = ({ isSignIn }) => {
   const checkPaymentAuth = async () => {
     isCheckPaymentAuthTrigger.current = 1;
     const newOrderData = await fetchOrderData();
-    if (!newOrderData || newOrderData.uid !== currentUid) {
-      console.log(2);
+    if (!newOrderData || newOrderData.uid !== currentUid || newOrderData.status !== 0) {
       setIsPaymentAuthChecked(2);
       return;
     }

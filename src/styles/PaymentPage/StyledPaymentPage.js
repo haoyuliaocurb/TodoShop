@@ -35,7 +35,7 @@ const StyledPaymentPage = styled.div`
       margin-top: 40px;
     }
   }
-  .productsInfo {
+  .orderProductsInfo {
     width: 100%;
     > .ButtonToggleProductCards {
       display: block;
@@ -58,6 +58,11 @@ const StyledPaymentPage = styled.div`
         margin-left: 6px;
         width: 16px;
         height: 16px;
+      }
+      &.clicked {
+        > svg {
+          transform: rotate(180deg);
+        }
       }
     }
   }
