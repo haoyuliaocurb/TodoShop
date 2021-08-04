@@ -223,6 +223,9 @@ const HomePage = ({ isSignIn }) => {
   };
   const updateCurrentProductsData = async (currentIdxValue, page, currentUidValue = null) => {
     // console.log('trigger updateCurrentProductsData');
+    if (!activitiesData) {
+      return;
+    }
     const currentActivitiesDataId = activitiesData[currentIdxValue].activityId;
     const newCurrentProductsData = await fetchActivitiesProductsData(
       currentActivitiesDataId,

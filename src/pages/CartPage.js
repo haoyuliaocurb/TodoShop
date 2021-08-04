@@ -308,6 +308,7 @@ const CartPage = ({ isSignIn }) => {
           updateButtonState={updateButtonState}
           cartData={cartData}
           deleteProductActionCart={deleteProductActionCart}
+          currentUid={currentUid}
         />
       ),
       visibility: 1,
