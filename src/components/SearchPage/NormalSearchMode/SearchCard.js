@@ -5,7 +5,14 @@ import StyledSearchCard from '../../../styles/SearchPage/NormalSearchMode/Styled
 import IconLike from '../../app/IconLike';
 import IconCart from '../../app/IconCart';
 
-const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchKeywordsIdx }) => {
+const SearchCard = ({
+  productInfo,
+  updateSearchCardInfo,
+  cardIdx,
+  currentSearchKeywordsIdx,
+  showModolMessagePleaseSignIn,
+  currentUid,
+}) => {
   const history = useHistory();
   const { name, price, images, productAction, pid } = productInfo;
   const isLiked = productAction ? productAction.like || false : false;
@@ -15,6 +22,10 @@ const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchK
 
   const handleIconLikeClick = (e) => {
     e.stopPropagation();
+    if (!currentUid) {
+      showModolMessagePleaseSignIn();
+      return;
+    }
     iconLikeRef.current.classList.add('animation');
     iconLikeRef.current.addEventListener(
       'animationend',
@@ -49,6 +60,10 @@ const SearchCard = ({ productInfo, updateSearchCardInfo, cardIdx, currentSearchK
   };
   const handleIconCartClick = (e) => {
     e.stopPropagation();
+    if (!currentUid) {
+      showModolMessagePleaseSignIn();
+      return;
+    }
     iconCartRef.current.classList.add('animation');
     iconCartRef.current.addEventListener(
       'animationend',

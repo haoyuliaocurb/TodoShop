@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-nested-ternary */
 import { React, useState, useEffect, useRef } from 'react';
 
 import FilterBar from './FilterBar';
@@ -7,6 +9,8 @@ import NavBar from '../../app/NavBar';
 import TabBar from '../../app/TabBar';
 import SearchNavBar from '../SearchNavBar';
 import GeneralTabBar from '../../app/GeneralTabBar';
+import ColumnMessage from '../../shared/ColumnMessage';
+import IconShared from '../../../styles/shared/IconShared';
 
 import StyledNormalSearchMode from '../../../styles/SearchPage/NormalSearchMode/StyledNormalSearchMode';
 import { styledVariables, removePx } from '../../../styles/app/cssMaterial';
@@ -30,9 +34,11 @@ const NormalSearchMode = ({
   updateSearchCardInfo,
   cartedProductAmount,
   updateSearchItemInfo,
+  showModolMessagePleaseSignIn,
+  currentUid,
 }) => {
   const products = currentSearchInfo ? currentSearchInfo.products : null;
-  console.log('products: ', products);
+  // console.log('products: ', products);
   const [scrollOffsetInfo, setScrollOffsetInfo] = useState(INIT_SCROLLOFFSET);
   const preScrollOffset = useRef(0);
   const isOnScroll = useRef(false);
@@ -171,11 +177,15 @@ const NormalSearchMode = ({
                 updateSearchCardInfo={updateSearchCardInfo}
                 cardIdx={cardIdx}
                 currentSearchKeywordsIdx={currentSearchKeywordsIdx}
+                showModolMessagePleaseSignIn={showModolMessagePleaseSignIn}
+                currentUid={currentUid}
               />
             );
           })
         ) : (
-          <p>目前無相關搜尋結果</p>
+          products === null ?
+          <div /> :
+          <ColumnMessage text="目前無相關搜尋結果" img={<IconShared.NoSearch />} />
         )}
       </div>
       <TabBar

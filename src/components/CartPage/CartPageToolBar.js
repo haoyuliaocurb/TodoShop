@@ -5,6 +5,7 @@ import StyledCartPageToolBar from '../../styles/CartPage/StyledCartPageToolBar';
 import { firestore, firebase } from '../../utils/firebase/firebase-services';
 import IconSelectAll from '../app/IconSelectAll';
 import ModalMessageChecked from '../app/ModalMessageChecked';
+import ModalMessage from '../app/ModalMessage';
 
 const CartPageToolBar = ({
   cartedProductPriceSum,
@@ -17,6 +18,7 @@ const CartPageToolBar = ({
   // console.log('cartData: ', cartData);
   const toolBarState = !buttonState.management ? 1 : 2;
   const ModolCheckedCreateOrderRef = useRef(null);
+  const ModalMessagAddAtLeastOneItemRef = useRef(null);
   const history = useHistory();
   // console.log('<TodolistPageToolBar />: render');
   const getButtonSelectAllState = () => {
@@ -39,7 +41,7 @@ const CartPageToolBar = ({
   };
   const buttonSelectAllState = getButtonSelectAllState();
   const handleIconSelectAllClick = () => {
-    console.log('handleIconSelectAllClick');
+    // console.log('handleIconSelectAllClick');
     const newUpdateButtonStatePart = {};
     if (!buttonSelectAllState) {
       newUpdateButtonStatePart.buttonSelectAll = 1;
@@ -75,7 +77,7 @@ const CartPageToolBar = ({
           pid2DeleteArray.push(pair[0]);
         });
         // pid2DeleteArray = pid2DeleteArray.concat(Object.keys(srcPid2DeleteObjPart));
-        console.log('pid2DeleteArray: ', pid2DeleteArray);
+        // console.log('pid2DeleteArray: ', pid2DeleteArray);
       }
     });
     deleteProductActionCart(pid2DeleteArray);
@@ -83,7 +85,10 @@ const CartPageToolBar = ({
   const handleButtonCreateOrder = async () => {
     const sidKeysArr = Object.keys(buttonState).filter((key) => /\S{20}/.test(key));
     if (!sidKeysArr.length) {
-      // 請選擇商品 modal
+      ModalMessagAddAtLeastOneItemRef.current.classList.remove('op-zero');
+      ModalMessagAddAtLeastOneItemRef.current.addEventListener('transitionend', () => {
+        ModalMessagAddAtLeastOneItemRef.current.classList.add('op-zero');        
+      }, { once: true });
       return;
     }
     const storePidsObj = {};
@@ -215,6 +220,7 @@ const CartPageToolBar = ({
               message={<span>成功新增訂單</span>}
               ModolMessageCheckedeRef={ModolCheckedCreateOrderRef}
             />
+            <ModalMessage ModolMessageRef={ModalMessagAddAtLeastOneItemRef} message={<span>選擇至少一個商品<br />以建立新訂單</span>}/>
           </div>
         );
     }

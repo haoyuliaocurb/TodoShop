@@ -1,12 +1,21 @@
 import { React } from 'react';
 import StyledProductPageToolBar from '../../styles/ProductPage/StyledProductPageToolBar';
 
-const ProductPageToolBar = ({ productAction, updateProductAction, pid }) => {
+const ProductPageToolBar = ({
+  productAction,
+  updateProductAction,
+  pid,
+  currentUid,
+  showModolMessagePleaseSignIn,
+}) => {
   const isCarted = productAction && productAction.cart ? 1 : 0;
   // console.log('isCarted: ', isCarted);
   const handleIconAdd2CartClick = () => {
     // console.log('trigger handleIconAdd2CartClick');
-
+    if (!currentUid) {
+      showModolMessagePleaseSignIn();
+      return;
+    }
     const getCurrentCart = () => {
       // console.log('isLiked: ', isLiked);
       // console.log('productAction.like: ', productAction.like);

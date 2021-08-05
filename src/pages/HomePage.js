@@ -385,6 +385,22 @@ const HomePage = ({ isSignIn }) => {
   }, [currentProductsData]);
 
   // (2) 處理 scroll
+  const sideMenuRef = useRef(null);
+  const buttonMenuRef = useRef(null);
+  const isButtonMenuClicked = useRef(0);
+  const handleButtonMenuClick = () => {
+    // console.log('isButtonMenuClicked.current: ', isButtonMenuClicked.current);
+    if (isButtonMenuClicked.current) {
+      buttonMenuRef.current.classList.remove('close');
+      sideMenuRef.current.classList.add('close');
+      isButtonMenuClicked.current = 0;
+      return;
+    }
+    buttonMenuRef.current.classList.add('close');
+    sideMenuRef.current.classList.remove('close');
+    isButtonMenuClicked.current = 1;
+  };
+
   const INIT_BARSTATE = {
     navBar: {
       content: <HomePageNavBar cartedProductAmount={cartedProductAmount} />,
@@ -455,6 +471,9 @@ const HomePage = ({ isSignIn }) => {
 
     isOnScroll.current = true;
     // isScrollBackward.current = false;
+    buttonMenuRef.current.classList.remove('close');
+    sideMenuRef.current.classList.add('close');
+    isButtonMenuClicked.current = 0;
 
     // 若滑到底
     if (
@@ -519,7 +538,11 @@ const HomePage = ({ isSignIn }) => {
         }}
       >
         <div className="scroll">
-          <Welcoming />
+          <Welcoming
+            sideMenuRef={sideMenuRef}
+            buttonMenuRef={buttonMenuRef}
+            handleButtonMenuClick={handleButtonMenuClick}
+          />
           <div className="content">
             <div className="carouselBlock">
               <div className="carouselTitle">

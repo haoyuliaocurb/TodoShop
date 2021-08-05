@@ -7,7 +7,14 @@ import { getTimeKeyGenerator } from '../../../utils/selfLibrary';
 import { StyledSearchItem } from '../../../styles/SearchPage/EasySearchMode/StyledSearchItemsComps';
 import MessageNoResult from '../MessageNoResult';
 
-const SearchItem = ({ eachSearchInfo, itemKey, itemIdx, updateSearchCardInfo }) => {
+const SearchItem = ({
+  eachSearchInfo,
+  itemKey,
+  itemIdx,
+  updateSearchCardInfo,
+  showModolMessagePleaseSignIn,
+  currentUid,
+}) => {
   const { products: productsData } = eachSearchInfo;
   // console.log('itemKey: ', itemKey);
 
@@ -27,12 +34,19 @@ const SearchItem = ({ eachSearchInfo, itemKey, itemIdx, updateSearchCardInfo }) 
         itemKey={itemKey}
         itemIdx={itemIdx}
         updateSearchCardInfo={updateSearchCardInfo}
+        showModolMessagePleaseSignIn={showModolMessagePleaseSignIn}
+        currentUid={currentUid}
       />
     </StyledSearchItem>
   );
 };
 
-const SearchItems = ({ searchInfo, updateSearchCardInfo }) => {
+const SearchItems = ({
+  searchInfo,
+  updateSearchCardInfo,
+  showModolMessagePleaseSignIn,
+  currentUid,
+}) => {
   // console.log('!searchInfo: ', !searchInfo);
   let newSearchItems = [];
 
@@ -49,6 +63,8 @@ const SearchItems = ({ searchInfo, updateSearchCardInfo }) => {
           itemIdx={index}
           eachSearchInfo={eachSearchInfo}
           updateSearchCardInfo={updateSearchCardInfo}
+          showModolMessagePleaseSignIn={showModolMessagePleaseSignIn}
+          currentUid={currentUid}
         />
       );
     });

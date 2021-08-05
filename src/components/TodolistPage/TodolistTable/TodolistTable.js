@@ -3,6 +3,8 @@ import { React, useEffect, useRef, useState } from 'react';
 // import { Link } from 'react-router-dom';
 // import { auth } from '../../../utils/firebase/firebase-services.js';
 import TodolistTableItem from './TodolistTableItem';
+import BlockMessage from '../../shared/BlockMessage';
+import IconShared from '../../../styles/shared/IconShared';
 
 import StyledTodolistTable from '../../../styles/TodolistPage/TodolistTable/StyledTodolistTable';
 
@@ -67,7 +69,7 @@ const TodolistTable = ({
   const getTodolistTableContent = () => {
     // console.log('isUpdateTodolistAfterSignIn: ', isUpdateTodolistAfterSignIn);
     if (!currentUid || !isUpdateTodolistAfterSignIn) {
-      return <p className="message">請登入以瀏覽所有購物清單</p>;
+      return <BlockMessage img={<IconShared.Info />} text={<span>請登入以瀏覽購物清單</span>} />;
     }
     if (!todolistData) {
       return <p className="message">目前無購物清單</p>;

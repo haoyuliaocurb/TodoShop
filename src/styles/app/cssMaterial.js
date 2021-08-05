@@ -117,6 +117,10 @@ export const styledVariables = {
     ButtonSubmitHeight: '30px',
     columnMarginHor: '20px',
   },
+  AuthPage: {
+    userContentDashboardWidth: '160px',
+    orderTypeBarBottom: '11px',
+  },
 };
 styledVariables.todolistTable.buttonWidthSum = `${
   removePx(styledVariables.todolistTable.selectTableItemButtonWidth) +

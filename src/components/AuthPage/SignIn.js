@@ -11,7 +11,7 @@ import {
 
 import StyledSignIn from '../../styles/AuthPage/StyledSignIn';
 
-const SignIn = ({ isSignIn }) => {
+const SignIn = ({ isSignIn, updateConfigNavBar }) => {
   const history = useHistory();
   const test = window.localStorage.getItem('TodoShopPreLocationFromSignIn');
   const [isShowSignUp, setIsShowSignUp] = useState(0);
@@ -39,6 +39,9 @@ const SignIn = ({ isSignIn }) => {
   useEffect(() => {
     // console.log('signUpInputValue: ', signUpInputValue);
   }, [signUpInputValue]);
+  useEffect(() => {
+    updateConfigNavBar({ title: '會員登入及註冊', buttonName: null, handleButtonClick: null });
+  }, []);
   return (
     <StyledSignIn>
       {!isSignIn ? (

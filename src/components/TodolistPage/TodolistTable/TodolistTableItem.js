@@ -128,7 +128,7 @@ const TodolistTableItem = ({
           }}
         >
           <p type="button" className="textIcon">
-            輕鬆選
+            搜尋去
           </p>
           <IconTodolistPages.ChevronRight />
         </Link>

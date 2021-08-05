@@ -13,6 +13,7 @@ import IconSearchPage from '../styles/SearchPage/IconSearchPage';
 
 import StyledProductPage from '../styles/ProductPage/StyledProductPage';
 import { styledVariables, removePx } from '../styles/app/cssMaterial';
+import ModalMessage from '../components/app/ModalMessage';
 
 const INIT_SCROLLOFFSET = {
   preScrollOffset: 0,
@@ -34,6 +35,7 @@ const ProductPage = ({ isSignIn }) => {
   const isLiked = productAction && productAction.like ? 1 : 0;
   const [carouselIdx, setCarouselIdx] = useState(0);
   const carouselImgAmount = useRef(null);
+  const ModolMessagePleaseSignInRef = useRef(null);
 
   // (1) fetch 商品資訊
   const fetchProductData = (pidValue) => {
@@ -105,7 +107,21 @@ const ProductPage = ({ isSignIn }) => {
         setCartedProductAmount(newCartedProductAmount);
       });
   };
+  const showModolMessagePleaseSignIn = () => {
+    ModolMessagePleaseSignInRef.current.classList.remove('op-zero');
+    ModolMessagePleaseSignInRef.current.addEventListener(
+      'transitionend',
+      () => {
+        ModolMessagePleaseSignInRef.current.classList.add('op-zero');
+      },
+      { once: true },
+    );
+  };
   const handleIconLikeClick = () => {
+    if (!currentUid) {
+      showModolMessagePleaseSignIn();
+      return;
+    }
     iconLikeRef.current.classList.add('animation');
     iconLikeRef.current.addEventListener(
       'animationend',
@@ -169,6 +185,8 @@ const ProductPage = ({ isSignIn }) => {
           productAction={productAction}
           updateProductAction={updateProductAction}
           pid={pid}
+          currentUid={currentUid}
+          showModolMessagePleaseSignIn={showModolMessagePleaseSignIn}
         />
       ),
       visibility: 1,
@@ -359,6 +377,16 @@ const ProductPage = ({ isSignIn }) => {
         </div>
       </div>
       <BottomToolBar scrollOffsetInfo={scrollOffsetInfo} tabBarState={barState.tabBar} />
+      <ModalMessage
+        message={
+          <span>
+            請登入帳戶
+            <br />
+            以進一步動作
+          </span>
+        }
+        ModolMessageRef={ModolMessagePleaseSignInRef}
+      />
     </StyledProductPage>
   );
 };

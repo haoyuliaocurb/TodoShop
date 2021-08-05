@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
 import { React, useState, useEffect, useRef } from 'react';
 import { firestore, firebase } from '../utils/firebase/firebase-services';
@@ -9,6 +11,8 @@ import CartPageNavBar from '../components/CartPage/CartPageNavBar';
 import CartPageToolBar from '../components/CartPage/CartPageToolBar';
 import GeneralTabBar from '../components/app/GeneralTabBar';
 import CartedProductGroupByStore from '../components/CartPage/CartedProductGroupByStore';
+import BlockMessage from '../components/shared/BlockMessage';
+import IconShared from '../styles/shared/IconShared';
 
 import { styledVariables, removePx } from '../styles/app/cssMaterial';
 
@@ -458,18 +462,34 @@ const CartPage = ({ isSignIn }) => {
         <div className="scroll">
           <div className="cartedBlock">
             {!cartData ? (
-              <div />
+              <BlockMessage
+                img={<IconShared.Info />}
+                text={
+                  <span>
+                    請登入帳號
+                    <br />
+                    以瀏覽購物車
+                  </span>
+                }
+              />
             ) : (
-              cartData.map((eachCartData) => {
-                return (
-                  <CartedProductGroupByStore
-                    eachCartData={eachCartData}
-                    buttonState={buttonState}
-                    updateButtonState={updateButtonState}
-                    updateProductActionCart={updateProductActionCart}
-                  />
-                );
-              })
+              cartData.length < 1 ? (
+                <BlockMessage
+                  img={<IconShared.Info />}
+                  text={<span>目前購物車內無商品</span>}
+                />
+              ) : (
+                cartData.map((eachCartData) => {
+                  return (
+                    <CartedProductGroupByStore
+                      eachCartData={eachCartData}
+                      buttonState={buttonState}
+                      updateButtonState={updateButtonState}
+                      updateProductActionCart={updateProductActionCart}
+                    />
+                  );
+                })
+              )
             )}
           </div>
         </div>

@@ -57,6 +57,9 @@ const StyledModalMessage = styled.div`
       text-align: center;
       line-height: 22px;
       color: ${styledVariables.color.gray300};
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 `;

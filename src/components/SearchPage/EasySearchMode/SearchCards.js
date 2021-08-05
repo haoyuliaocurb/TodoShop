@@ -8,6 +8,8 @@ import {
   StyledSearchCards,
   StyledSearchCard,
 } from '../../../styles/SearchPage/EasySearchMode/StyledSearchCardsComps';
+import ColumnMessage from '../../shared/ColumnMessage';
+import IconShared from '../../../styles/shared/IconShared';
 
 const SearchCard = ({
   pid,
@@ -18,6 +20,8 @@ const SearchCard = ({
   cardIdx,
   itemIdx,
   updateSearchCardInfo,
+  showModolMessagePleaseSignIn,
+  currentUid,
 }) => {
   // eslint-disable-next-line no-unused-vars
   const history = useHistory();
@@ -27,6 +31,10 @@ const SearchCard = ({
   const iconBookmarkRef = useRef(null);
   const handleIconBookmarkClick = (e) => {
     e.stopPropagation();
+    if (!currentUid) {
+      showModolMessagePleaseSignIn();
+      return;
+    }
     iconBookmarkRef.current.classList.add('animation');
     iconBookmarkRef.current.addEventListener('animationend', () => {
       iconBookmarkRef.current.classList.remove('animation');
@@ -49,6 +57,10 @@ const SearchCard = ({
   };
   const handleIconCartClick = (e) => {
     e.stopPropagation();
+    if (!currentUid) {
+      showModolMessagePleaseSignIn();
+      return;
+    }
     iconCartRef.current.classList.add('animation');
     iconCartRef.current.addEventListener('animationend', () => {
       iconCartRef.current.classList.remove('animation');
@@ -96,7 +108,14 @@ const SearchCard = ({
   );
 };
 
-const SearchCards = ({ productsData, itemKey, itemIdx, updateSearchCardInfo }) => {
+const SearchCards = ({
+  productsData,
+  itemKey,
+  itemIdx,
+  updateSearchCardInfo,
+  showModolMessagePleaseSignIn,
+  currentUid,
+}) => {
   // const [preProductsData, setPreProductsData] = useState(null);
   // const preItemKey = useRef(null);
   console.log('productsData: ', productsData);
@@ -116,6 +135,8 @@ const SearchCards = ({ productsData, itemKey, itemIdx, updateSearchCardInfo }) =
           cardIdx={index}
           itemIdx={itemIdx}
           updateSearchCardInfo={updateSearchCardInfo}
+          showModolMessagePleaseSignIn={showModolMessagePleaseSignIn}
+          currentUid={currentUid}
         />
       );
     });
@@ -130,7 +151,7 @@ const SearchCards = ({ productsData, itemKey, itemIdx, updateSearchCardInfo }) =
   return (
     <StyledSearchCards>
       {!productsData || JSON.stringify(productsData) === JSON.stringify([]) ? (
-        <p>目前無相關搜尋結果</p>
+        <ColumnMessage text="目前無相關搜尋結果" img={<IconShared.NoSearch />} />
       ) : (
         newSearchCards
       )}

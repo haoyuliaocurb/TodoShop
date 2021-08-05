@@ -8,6 +8,7 @@ import LoaderDotModal from '../shared/LoaderDotModal';
 import ModalMessageError from '../app/ModalMessageError';
 import ModalMessageChecked from '../app/ModalMessageChecked';
 import { firestore } from '../../utils/firebase/firebase-services';
+import ModalMessage from '../app/ModalMessage';
 
 const TP_FIELDS = {
   number: {
@@ -58,6 +59,7 @@ const TapPayFields = ({ orderPriceSum, orderUserInfo, orderId }) => {
   const ModolMessagErrorSubmitRef = useRef(null);
   const ModolMessagCheckedSubmitRef = useRef(null);
   const ModolMessagErrorUpdateDBRef = useRef(null);
+  const ModolMessageInputIncorrectRef = useRef(null);
   const history = useHistory();
 
   const getTPPrime = () => {
@@ -75,16 +77,24 @@ const TapPayFields = ({ orderPriceSum, orderUserInfo, orderId }) => {
   };
   const handleTapPayFieldsSubmit = async () => {
     if (!orderPriceSum) {
-      console.log('orderPriceSum is empty');
+      // console.log('orderPriceSum is empty');
       return;
     }
     if (!orderUserInfo) {
-      console.log('orderUserInfo columns is empty');
+      // console.log('orderUserInfo columns is empty');
+      ModolMessageInputIncorrectRef.current.classList.remove('op-zero');
+      ModolMessageInputIncorrectRef.current.addEventListener('transitionend', () => {
+        ModolMessageInputIncorrectRef.current.classList.add('op-zero');
+      }, { once: true });
       return;
     };
     const { phoneNumber, name, email } = orderUserInfo;
     if (!phoneNumber || !name || !email) {
-      console.log('orderUserInfo columns is empty');
+      // console.log('orderUserInfo columns is empty');
+      ModolMessageInputIncorrectRef.current.classList.remove('op-zero');
+      ModolMessageInputIncorrectRef.current.addEventListener('transitionend', () => {
+        ModolMessageInputIncorrectRef.current.classList.add('op-zero');
+      }, { once: true });
       return;
     }
     const checkCardDetailsForm = () => {
@@ -97,7 +107,11 @@ const TapPayFields = ({ orderPriceSum, orderUserInfo, orderId }) => {
       return true;
     };
     if (!checkCardDetailsForm()) {
-      console.log('cardDetails columns is empty');
+      // console.log('cardDetails columns is empty');
+      ModolMessageInputIncorrectRef.current.classList.remove('op-zero');
+      ModolMessageInputIncorrectRef.current.addEventListener('transitionend', () => {
+        ModolMessageInputIncorrectRef.current.classList.add('op-zero');
+      }, { once: true });
       return;
     }
     LoaderDotModalRef.current.classList.remove('op-zero');
@@ -181,15 +195,15 @@ const TapPayFields = ({ orderPriceSum, orderUserInfo, orderId }) => {
         <h3>信用卡資訊</h3>
       </div>
       <div className="label">
-        <p>信用卡號</p>
+        <p>*信用卡號</p>
         <div className="tpfield" id="card-number" />
       </div>
       <div className="label">
-        <p>有效期限</p>
+        <p>*有效期限</p>
         <div className="tpfield" id="card-expiration-date" />
       </div>
       <div className="label">
-        <p>驗證碼</p>
+        <p>*驗證碼</p>
         <div className="tpfield" id="card-ccv" />
       </div>
       <button type="submit">
@@ -199,6 +213,7 @@ const TapPayFields = ({ orderPriceSum, orderUserInfo, orderId }) => {
       <ModalMessageError ModolMessagErrorRef={ModolMessagErrorSubmitRef} message={<span>付款連線未成功<br />請再試一次</span>} />
       <ModalMessageError ModolMessagErrorRef={ModolMessagErrorUpdateDBRef} message={<span>資料庫連線未成功<br />請聯繫客服</span>} />
       <ModalMessageChecked ModolMessageCheckedeRef={ModolMessagCheckedSubmitRef} message={<span>付款成功</span>} />
+      <ModalMessage ModolMessageRef={ModolMessageInputIncorrectRef} message={<span>未正確填寫<br />資訊欄位</span>} />
     </StyledTapPayFields>
   );
 };

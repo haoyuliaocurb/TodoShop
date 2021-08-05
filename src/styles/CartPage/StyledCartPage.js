@@ -7,15 +7,20 @@ const StyledCartPage = styled.div`
   display: flex;
   justify-content: center;
 
+  .textNoCartItems {
+    background-color: transparent;
+    padding: 20px;
+  }
+
   > .container {
     width: 100%;
     height: 100%;
     padding-top: ${styledVariables.shared.barHeight};
     overflow-y: scroll;
+    background-color: ${styledVariables.color.gray100};
     > .scroll {
       position: relative;
       width: 100%;
-      background-color: ${styledVariables.color.gray100};
       > .cartedBlock {
         > div:last-of-type {
           margin-bottom: calc(${styledVariables.shared.barHeight} * 2);

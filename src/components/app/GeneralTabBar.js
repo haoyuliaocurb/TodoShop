@@ -148,7 +148,7 @@ const GeneralTabBar = (
       <Link to="/auth" id="auth" onClick={handleAuthTabClick}>
         <StyledIconApp disabled={iconState.disabled.auth} active={iconState.active.auth}>
           <IconApp.Auth />
-          <p className="textIcon">我的帳號</p>
+          <p className="textIcon">會員中心</p>
         </StyledIconApp>
       </Link>
       <Link to="/todolist" id="list" onClick={handleListTabClick}>

@@ -26,6 +26,8 @@ const EasySearchPage = ({
   searchInfo,
   updateSearchCardInfo,
   cartedProductAmount,
+  showModolMessagePleaseSignIn,
+  currentUid,
 }) => {
   const [scrollOffsetInfo, setScrollOffsetInfo] = useState(INIT_SCROLLOFFSET);
   const preScrollOffset = useRef(0);
@@ -138,7 +140,12 @@ const EasySearchPage = ({
         {!searchInfo ? (
           <div />
         ) : (
-          <SearchItems searchInfo={searchInfo} updateSearchCardInfo={updateSearchCardInfo} />
+          <SearchItems
+            searchInfo={searchInfo}
+            updateSearchCardInfo={updateSearchCardInfo}
+            showModolMessagePleaseSignIn={showModolMessagePleaseSignIn}
+            currentUid={currentUid}
+          />
         )}
       </div>
       <TabBar

@@ -2,6 +2,7 @@ import styled from '@emotion/styled/macro';
 import { styledVariables } from '../app/cssMaterial';
 
 const StyledWelcoming = styled.div`
+  position: relative;
   width: 100%;
   height: ${styledVariables.HomePage.welcomingHeight};
   > nav {
@@ -119,7 +120,7 @@ const StyledWelcoming = styled.div`
         @media (max-width: 600px) {
           font-size: 22px;
         }
-        ::before {
+        /* ::before {
           content: '';
           display: inline-block;
           z-index: 0;
@@ -136,7 +137,7 @@ const StyledWelcoming = styled.div`
             width: 700px;
             top: 36px;
           }
-        }
+        } */
         font-size: 26px;
         > span {
           display: inline-block;

@@ -40,7 +40,7 @@ const PaymentPage = ({ isSignIn, orderData }) => {
     const { products: productsData } = orderDataValue;
     // console.log('productsData: ', productsData);
     const updateOrderPriceSum = (flatProductsData) => {
-      console.log('flatProductsData: ', flatProductsData);
+      // console.log('flatProductsData: ', flatProductsData);
       let newOrderPriceSum = 0;
       flatProductsData.forEach((productData) => {
         const { price, amount } = productData;
@@ -62,7 +62,7 @@ const PaymentPage = ({ isSignIn, orderData }) => {
         });
       }),
     ).then((newProductsDataValue) => {
-      console.log('newProductsDataValue: ', newProductsDataValue);
+      // console.log('newProductsDataValue: ', newProductsDataValue);
       updateOrderPriceSum(newProductsDataValue);
       return newProductsDataValue;
     });
@@ -128,7 +128,7 @@ const PaymentPage = ({ isSignIn, orderData }) => {
   // (2) 處理 bar
   const INIT_BARSTATE = {
     navBar: {
-      content: <SimpleNavBar />,
+      content: <SimpleNavBar title="訂單付款" />,
       visibility: 2,
     },
     tabBar: {
@@ -218,7 +218,7 @@ const PaymentPage = ({ isSignIn, orderData }) => {
                 <h3>訂購人資訊</h3>
               </div>
               <label className="lable name" htmlFor="name">
-                <p>姓名</p>
+                <p>*姓名</p>
                 <input
                   value={orderUserInfo.name}
                   id="name"
@@ -234,7 +234,7 @@ const PaymentPage = ({ isSignIn, orderData }) => {
                 />
               </label>
               <label className="lable email" htmlFor="email">
-                <p>電子郵件</p>
+                <p>*電子郵件</p>
                 <input
                   value={orderUserInfo.email}
                   id="email"
@@ -250,7 +250,7 @@ const PaymentPage = ({ isSignIn, orderData }) => {
                 />
               </label>
               <label className="lable phoneNumber" htmlFor="phoneNumber">
-                <p>電話</p>
+                <p>*電話</p>
                 <input
                   value={orderUserInfo.phoneNumber}
                   id="phoneNumber"

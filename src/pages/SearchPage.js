@@ -8,6 +8,8 @@ import { getTimeKeyGenerator } from '../utils/selfLibrary';
 import EasySearchMode from '../components/SearchPage/EasySearchMode/EasySearchMode';
 import NormalSearchMode from '../components/SearchPage/NormalSearchMode/NormalSearchMode';
 import StyledSearchPage from '../styles/SearchPage/StyledSearchPage';
+import LoaderDotModal from '../components/shared/LoaderDotModal';
+import ModalMessage from '../components/app/ModalMessage';
 
 const SEARCH_META_INFO_TEMPLATE = {
   isEasySearchMode: 0,
@@ -293,6 +295,18 @@ const SearchPages = ({ isSignIn }) => {
   const location = useLocation();
   // console.log('currentUid in SearchPages: ', currentUid);
   // eslint-disable-next-line no-unused-vars
+  const LoaderDotModalRef = useRef(null);
+  const ModolMessagePleaseSignInRef = useRef(null);
+  const showModolMessagePleaseSignIn = () => {
+    ModolMessagePleaseSignInRef.current.classList.remove('op-zero');
+    ModolMessagePleaseSignInRef.current.addEventListener(
+      'transitionend',
+      () => {
+        ModolMessagePleaseSignInRef.current.classList.add('op-zero');
+      },
+      { once: true },
+    );
+  };
   const getSearchMetaInfo = () => {
     const source = location.search
       .match(/source=\S+&/)[0]
@@ -501,6 +515,7 @@ const SearchPages = ({ isSignIn }) => {
     return productsData;
   };
   const updateSearchInfo = async () => {
+    LoaderDotModalRef.current.classList.remove('op-zero');
     const newSearchInfo = await fetchAllSearchInfo(location);
     // console.log('newSearchInfo: ', newSearchInfo);
 
@@ -513,6 +528,7 @@ const SearchPages = ({ isSignIn }) => {
       newEachSearchInfoKeyArr.push({ key, keyword });
       addProductAction2SearchItemInfo(productActionObj, productsData);
     }
+    LoaderDotModalRef.current.classList.add('op-zero');
     setEachSearchInfoKeyArr(newEachSearchInfoKeyArr);
     setSearchInfo(newSearchInfo);
   };
@@ -677,6 +693,8 @@ const SearchPages = ({ isSignIn }) => {
           searchInfo={searchInfo}
           updateSearchCardInfo={updateSearchCardInfo}
           cartedProductAmount={cartedProductAmount}
+          showModolMessagePleaseSignIn={showModolMessagePleaseSignIn}
+          currentUid={currentUid}
         />
       ) : (
         <NormalSearchMode
@@ -692,8 +710,21 @@ const SearchPages = ({ isSignIn }) => {
           updateSearchCardInfo={updateSearchCardInfo}
           cartedProductAmount={cartedProductAmount}
           updateSearchItemInfo={updateSearchItemInfo}
+          showModolMessagePleaseSignIn={showModolMessagePleaseSignIn}
+          currentUid={currentUid}
         />
       )}
+      <LoaderDotModal LoaderDotModalRef={LoaderDotModalRef} />
+      <ModalMessage
+        message={
+          <span>
+            請登入帳戶
+            <br />
+            以進一步動作
+          </span>
+        }
+        ModolMessageRef={ModolMessagePleaseSignInRef}
+      />
     </StyledSearchPage>
   );
 };

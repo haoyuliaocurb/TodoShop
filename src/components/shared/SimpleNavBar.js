@@ -3,10 +3,17 @@ import { Link, useHistory } from 'react-router-dom';
 import IconAppContent from '../../styles/app/IconAppContent';
 import StyledSimpleNavBar from '../../styles/shared/StyledSimpleNavBar';
 
-const SimpleNavBar = () => {
+const SimpleNavBar = ({ title, buttonName, handleButtonClick }) => {
   const history = useHistory();
+  const innerButtonName = !buttonName ? null : buttonName;
   const handleChevronLeftClick = () => {
     history.go(-1);
+  };
+  const handleInnerButtonClick = () => {
+    if (!handleButtonClick) {
+      return;
+    }
+    handleButtonClick();
   };
   return (
     <StyledSimpleNavBar>
@@ -19,7 +26,14 @@ const SimpleNavBar = () => {
       >
         <IconAppContent.ChevronLeft />
       </Link>
-      <h1>訂單付款</h1>
+      <h1>{title}</h1>
+      {!innerButtonName ? (
+        <span />
+      ) : (
+        <button type="button" onClick={handleInnerButtonClick}>
+          {buttonName}
+        </button>
+      )}
     </StyledSimpleNavBar>
   );
 };

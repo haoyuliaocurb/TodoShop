@@ -5,7 +5,7 @@ import { styledVariables } from '../app/cssMaterial';
 const StyledAuthPage = styled.div`
   width: 100%;
   height: 100%;
-  background-color: ${styledVariables.color.gray100};
+  /* background-color: ${styledVariables.color.gray100}; */
 
   > form {
     width: 100%;

@@ -31,6 +31,17 @@ const StyledSimpleNavBar = styled.nav`
   > h1 {
     text-align: center;
   }
+  > button {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: ${styledVariables.shared.contentPadding};
+    margin: auto 0;
+    display: inline-block;
+    width: ${styledVariables.navBar.buttonWidth};
+    height: ${styledVariables.navBar.iconWidth};
+    // border: solid 1px black;
+  }
 `;
 
 export default StyledSimpleNavBar;

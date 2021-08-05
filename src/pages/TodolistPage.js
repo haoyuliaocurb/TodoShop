@@ -421,9 +421,13 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     deleteDBTodolistDate(listId2Delete, currentUid);
   };
   const handleNavBarChevronLeft = () => {
-    if (pathArray[1] === 'id') {
-      history.push('/todolist/table');
-      return;
+    // console.log('windowWidth <= breakpoint: ', windowWidth <= breakpoint);
+    if (windowWidth <= breakpoint) {
+      if (pathArray[1] === 'id') {
+        console.log('pathArray[1] === "id":', pathArray[1] === 'id');
+        history.push('/todolist/table');
+        return;
+      }
     }
     history.go(-1);
   };
@@ -615,7 +619,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
       };
       return newBarState;
     });
-  }, [buttonState, currentUid, isManageMode]);
+  }, [buttonState, currentUid, isManageMode, windowWidth]);
 
   useEffect(() => {
     // console.log('update barState');

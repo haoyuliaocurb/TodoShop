@@ -24,7 +24,7 @@ const StyledTodolistTable = styled.div`
     padding: 0 ${styledVariables.shared.contentPadding};
     padding-bottom: ${styledVariables.shared.barHeight};
     overflow-y: scroll;
-    > div {
+    > div:not(.BlockMessage) {
       border-bottom: solid ${styledVariables.color.gray300} 1px;
     }
     > p.message {

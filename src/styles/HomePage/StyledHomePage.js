@@ -11,6 +11,7 @@ const StyledHomePage = styled.div`
     width: 100%;
     height: 100%;
     overflow-y: scroll;
+    overflow-x: hidden;
     > .scroll {
       position: relative;
       width: 100%;

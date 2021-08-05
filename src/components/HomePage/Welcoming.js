@@ -3,39 +3,32 @@ import { useHistory } from 'react-router-dom';
 import StyledWelcoming from '../../styles/HomePage/StyledWelcoming';
 import welcomingImg from '../../styles/HomePage/images/welcoming.jpeg';
 import IconShared from '../../styles/shared/IconShared';
+import ModalMessage from '../app/ModalMessage';
 
-const Welcoming = () => {
+const Welcoming = ({ sideMenuRef, buttonMenuRef, handleButtonMenuClick }) => {
   const history = useHistory();
-  const buttonMenu = useRef(null);
-  const sideMenu = useRef(null);
-  const isButtonMenuClicked = useRef(0);
-  const handleButtonMenuClick = () => {
-    console.log('isButtonMenuClicked.current: ', isButtonMenuClicked.current);
-    if (isButtonMenuClicked.current) {
-      buttonMenu.current.classList.remove('close');
-      sideMenu.current.classList.add('close');
-      isButtonMenuClicked.current = 0;
-      return;
-    }
-    buttonMenu.current.classList.add('close');
-    sideMenu.current.classList.remove('close');
-    isButtonMenuClicked.current = 1;
-  };
+  const ModolMessageFunctionDevRef = useRef(null);
   const handleButtonTodolistClike = () => {
     history.push('/todolist');
+  };
+  const handleNavItemClick = () => {
+    ModolMessageFunctionDevRef.current.classList.remove('op-zero');
+    ModolMessageFunctionDevRef.current.addEventListener('transitionend', () => {
+      ModolMessageFunctionDevRef.current.classList.add('op-zero');
+    });
   };
 
   return (
     <StyledWelcoming>
       <nav>
-        <button type="button" className="buttonItem">
+        <button type="button" className="buttonItem" onClick={handleNavItemClick}>
           關於我們
         </button>
-        <button type="button" className="buttonItem">
+        <button type="button" className="buttonItem" onClick={handleNavItemClick}>
           服務介紹
         </button>
         <button
-          ref={buttonMenu}
+          ref={buttonMenuRef}
           type="button"
           className="buttonMenu"
           onClick={handleButtonMenuClick}
@@ -44,11 +37,11 @@ const Welcoming = () => {
           <span className="buttonMenu-second" />
           <span className="buttonMenu-thrid" />
         </button>
-        <div ref={sideMenu} className="sideMenu close">
-          <button type="button" className="sideMenuItem">
+        <div ref={sideMenuRef} className="sideMenu close">
+          <button type="button" className="sideMenuItem" onClick={handleNavItemClick}>
             關於我們
           </button>
-          <button type="button" className="sideMenuItem">
+          <button type="button" className="sideMenuItem" onClick={handleNavItemClick}>
             服務介紹
           </button>
         </div>
@@ -80,6 +73,16 @@ const Welcoming = () => {
         <h1 className="titleRight hiddenWhenSmallScreen">TODOSHOP</h1>
         <div className="line" />
       </div>
+      <ModalMessage
+        message={
+          <span>
+            相關功能開發中
+            <br />
+            敬請期待
+          </span>
+        }
+        ModolMessageRef={ModolMessageFunctionDevRef}
+      />
     </StyledWelcoming>
   );
 };
