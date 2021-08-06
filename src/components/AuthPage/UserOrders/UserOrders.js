@@ -98,8 +98,12 @@ const UserOrders = ({ currentUid, showModolMessageFunctionDev }) => {
                 .get()
                 .then((srcStoreData) => {
                   const storeData = srcStoreData.data();
-                  const { name } = storeData;
-                  const storeName = !name ? '' : name;
+                  // console.log('storeData: ', storeData);
+                  let storeName = '';
+                  if (storeData) {
+                    const { name } = storeData;
+                    storeName = !name ? '' : name;
+                  }
                   return {
                     ...srcClassifiedProductData,
                     storeName,

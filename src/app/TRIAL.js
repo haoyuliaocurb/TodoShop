@@ -21,6 +21,7 @@ const PRODUCTS_DATA = {
     price: 109,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
     categories: '美妝保健 嬰幼童與母親',
+    introduction: '產品純淨呵護，讓秀髮潔淨更健康，能溫和洗淨，使髮絲柔順不打結。專為兒童設計，配方溫和不易刺激，給秀髮溫柔呵護，潔淨舒爽。採用植物精華－天然蘋果萃取精華，溫柔輕甜的蘋果香讓每次洗髮成為身心放鬆的享受。',
   },
   '7c8f8Ab6OQFVpGaAxzCj': {
     delivery: [0, 2],
@@ -31,6 +32,7 @@ const PRODUCTS_DATA = {
     price: 600,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
     categories: '居家生活',
+    introduction: '淨世代100%採用再生紙製成，珍惜資源愛護地球。製程採用高溫殺菌消毒，紙張乾淨衛生，且採用風力發電潔淨能源生產，榮獲環保標章肯定。本產品易於水中分散，可投入馬桶。',
   },
   'CLuaEILOo0NGuBHpaP6V': {
     images:[
@@ -42,6 +44,7 @@ const PRODUCTS_DATA = {
     price: 489,
     sid: 'TMkP20NeQYklf4pcFyAZ',
     categories: '居家生活 文創商品',
+    introduction: 'BeniBear邦尼熊復古酒紅條紋抽取式衛生紙，可愛復古配色包裝，為居家增添俏皮氛圍！經高溫殺菌處理，不含螢光劑，潔淨柔順，獲得消費者高度肯定，使用好安心。親膚好觸感，不傷害細嫩肌膚。柔軟、蓬鬆、強韌，觸手可及的日用消耗品，當然要為自己和家人選擇最好的！',
   },
   'ENMagTFwTJgEaqCk4bzj': {
     images: [
@@ -52,6 +55,7 @@ const PRODUCTS_DATA = {
     price: 299,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
     categories: '美妝保健',
+    introduction: '極上美肌，吸出黑注入白！黑面膜加入的黑纖維有效承載濃潤精華液，幫助精華液導入肌膚層，有效吸附毛孔髒汙清潔肌膚並同時保養帶給肌膚光透水嫩。產品功能特色包含：充滿海洋精華的黑珍珠蘊含胺基酸、珍珠蛋白及微量元素保持肌膚水分及彈性散發宛如珍珠般璀璨迷人的亮麗光澤；黑布膜為多纖維微孔結構更貼近毛孔有效吸附髒汙恢復乾淨肌膚；黑部膜質地輕盈敷觸柔軟剪裁更貼合臉部輪廓完美釋放精華液；無添加Paraben防腐劑、酒精、礦物油。使用時，將臉部清潔後，打開面膜平貼於臉上輕按各處使其完全服貼。靜待15-20分鐘後取下面膜，可視個人情況進行清洗或輕拍吸收。',
   },
   'FgFiYn1pAYkV2gLxNSJh': {
     images: [
@@ -61,6 +65,7 @@ const PRODUCTS_DATA = {
     price: 425,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
     categories: '美妝保健',
+    introduction: 'KOSE高絲特惠組，包含雪肌精化妝水100ml+雪肌精乳液33ml*3，此組商品為本公司大量採購有償取得商品，特優惠價格回饋，保留專櫃出品原貌，無外盒及封膜，然因商品包裝上有贈品字樣，為免消費者疑惑,特此說明！',
   },
   'HyiZa79unVEQY197SEre': {
     images: [
@@ -70,6 +75,7 @@ const PRODUCTS_DATA = {
     price: 79,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
     categories: '美妝保健',
+    introduction: '日本熱銷! 每5秒賣出1瓶！注入高度保濕美容精華液，潔淨同時滋潤保濕，肌膚變得水潤飽滿。蘊含NutriumMoisture保濕美容精華液，能深入滲透徹底保濕，幫助肌膚保水。產品帶有清新花果香，喚醒肌膚一整天的活力，使用時溫和潔淨，綿密泡沫輕柔帶走髒汙。',
   },
   'IsnfDRNJcPGWezEgQ266': {
     images: [
@@ -79,6 +85,7 @@ const PRODUCTS_DATA = {
     price: 288,
     sid: 'gRIyvKUAGdMnhRzgg9RGw5tB22z2',
     categories: '美妝保健 嬰幼童與母親',
+    introduction: '產品獨特草本配方：沖繩蘆薈富含多醣體及醣蛋白，可補充肌膚水份，形成保濕膜；沖繩秋葵富含多種氨基酸，補充肌膚養份；日本紫根、艾草、蜜桃葉、櫻花葉可舒緩肌膚不適感，預防因乾燥而引起的皮膚癢。無Paraben，無色素，無酒 精，無石油系成份，提供柔嫩肌膚無添加的保護力。',
   },
   'LH6uNAwmJMWgpQOwqySz': {
     images: [
@@ -88,6 +95,7 @@ const PRODUCTS_DATA = {
     price: 119,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
     categories: '美妝保健',
+    introduction: '產品抗菌淨痘、溫和潔淨，扺抗細菌滋長。有效調理易長青春痘膚質，預防痘痘生成，使肌膚健康潔淨，恢復自然光采。產品帶有品味麝香，展現個性男人味。',
   },
   'NYUjT2vn7uKuMw02BUYT': {
     images: [
@@ -97,6 +105,7 @@ const PRODUCTS_DATA = {
     price: 69,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
     categories: '居家生活',
+    introduction: '產品添加澳洲茶樹精油，創新超濃縮環保油切因子，快速潔淨0油漬。環境友善成分，生物分解度達95%，中性配方不傷手，成分安心洗得放心！',
   },
   'SWUNApoWStoWaW7RP4hh': {
     delivery: [0, 10, 11],
@@ -107,6 +116,7 @@ const PRODUCTS_DATA = {
     price: 829,
     sid: 'TMkP20NeQYklf4pcFyAZ',
     categories: '居家生活',
+    introduction: '產品包裝為療癒的極地動物包裝，陪伴您日常使用。紙張具超細柔壓花，觸感超柔膚，使用100%原生紙漿，不含螢光劑。適量使用後可衝入馬桶，易分散不堵塞。',
   },
   'SeFCJJMAzLXBxbJ2MdI1': {
     delivery: [0, 10, 11],
@@ -117,6 +127,7 @@ const PRODUCTS_DATA = {
     price: 659,
     sid: 'TMkP20NeQYklf4pcFyAZ',
     categories: '居家生活',
+    introduction: '產品100%再生紙漿，不含雙酚A，友善環境並榮獲環保標章、碳標籤認證、FSC三重認證。製程中使用400度高溫殺菌，紙張潔淨不漂白。紙張易分解，可直接丟棄馬桶不堵塞。',
   },
   'SiQ8ExzVc2VzXs4jCXA0': {
     images: [
@@ -126,6 +137,7 @@ const PRODUCTS_DATA = {
     price: 670,
     sid: 'TMkP20NeQYklf4pcFyAZ',
     categories: '居家生活',
+    introduction: '產品獨家外袋包覆，張張乾淨安心，單手抽取超便利。特殊包裝使得一包可抵兩捲廚紙，魔法大空間。100%原生紙漿製造，首創HACCP食品級驗證，使您安心使用紙張接觸生熟食。',
   },
   'SnnWbfqOFz0Z5CIMdglT': {
     images: [
@@ -147,6 +159,7 @@ const PRODUCTS_DATA = {
       },
     ],
     categories: '美妝保健',
+    introduction: '產品獨家技術，纖維在牙縫中遇到唾液等水分後膨脹，增加與牙齒的接觸面，幫助更有效的清除牙縫處的牙菌斑，同時牙線觸感柔軟，不易傷害牙齦，。此外，窗口式牙線盒包裝，牙線的剩餘量可以一目瞭然。使用時，請以兩手的中指纏繞40cm牙線，並留取大約15cm的牙線在兩指之間，分別以兩手的大拇指和食指抓取1-2cm牙線，用牙線在齒縫間輕柔的前後移動。',
   },
   'WstK2EjRmnTBp8fGHNtR': {
     images: [
@@ -156,6 +169,7 @@ const PRODUCTS_DATA = {
     price: 348,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
     categories: '美妝保健',
+    introduction: '產品深入肌膚深層美白、潤澤，創造柔嫩與彈力感的雪白肌膚。獨特的「保濕均衡聚合物」能因應季節與膚質，夏天（多濕）時水嫩保養，冬季（乾燥）時潤澤呵護。此外，產品能有效抑制黑色素的生成，防止因日曬形成黑斑，並全面防止肌膚乾燥、粗燥。使用時請按壓噴嘴1至2回的量，均勻地點延展於全臉。',
   },
   'aOHwl9peu1BQI7Bq7Kt0': {
     images: [
@@ -165,6 +179,7 @@ const PRODUCTS_DATA = {
     price: 199,
     sid: 'TMkP20NeQYklf4pcFyAZ',
     categories: '美妝保健',
+    introduction: '產品使用200條平行纖維棉線，扁線加寬設計，易吸附齒垢、牙菌膜，提升潔牙效率，預防齲齒、減少牙周問題發生。寬扁纖維設計，適合一般牙縫、牙縫較大者使用。產品為台灣製造，更經過SGS檢驗合格 無塑化劑、無雙酚A、無螢光劑，品質安全，讓您安心入口清潔齒縫。',
   },
   'hzLK7rDYOAIQWx5C5OkI': {
     images: [
@@ -174,6 +189,7 @@ const PRODUCTS_DATA = {
     price: 659,
     sid: 'TMkP20NeQYklf4pcFyAZ',
     categories: '居家生活',
+    introduction: '產品獨家交織技術，柔軟度升級。紙張不染色，不含螢光劑，不含有害化學物質，製程中400度高溫殺菌處理，五重保證實在真安心。本衛生紙可安心丟入馬桶，能迅速分散於水中。',
   },
   'l43uxe5pY1Accmi6OPqW': {
     images: [
@@ -183,6 +199,7 @@ const PRODUCTS_DATA = {
     price: 149,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
     categories: '美妝保健',
+    introduction: '產品獨家成分，無酒精、溫和不刺激，並降低牙周病發生率，減少牙齦問題發生率：ASP+有效去除牙周病菌、GAC深層修護牙齦問題。帶有沁涼薄荷香，舒適宜人，幫助預防改善口腔異味！',
   },
   'rnMzEpgykhBfNWOmsNFd': {
     images: [
@@ -192,6 +209,7 @@ const PRODUCTS_DATA = {
     price: 289,
     sid: 'TMkP20NeQYklf4pcFyAZ',
     categories: '居家生活',
+    introduction: '產品不含環境賀爾蒙、塑化劑。採用獨家技術，空心矽膠的防水圈、4面環扣結構，使產品密實不外漏！上蓋密封矽膠圈可拆洗，此外，矽膠條可有效抗菌高達99.9%！',
   },
   'uym9FbUNRTPpE11GRTwk': {
     images: [
@@ -201,6 +219,7 @@ const PRODUCTS_DATA = {
     price: 229,
     sid: 'ZcpPQBq3Sji2xHcD79g0',
     categories: '居家生活',
+    introduction: '超乎想像的厚實滑順感！產品使用專利立體技術，氣旋絨織工藝，革命性一抽搞定，安心不透手。紙張可丟入馬桶，敬請安心使用。',
   },
 };
 
