@@ -327,7 +327,7 @@ const HomePage = ({ isSignIn }) => {
             'transitionend',
             () => {
               window.localStorage.setItem('TodoShopIsAskedForward2SignIn', '1');
-              history.push('/auth/signIn');
+              // history.push('/auth/signIn');
             },
             { once: true },
           );
