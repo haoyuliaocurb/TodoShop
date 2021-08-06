@@ -127,7 +127,7 @@ const CartPageToolBar = ({
     // console.log('newOrderProductsData.length: ', newOrderProductsData.length);
     // console.log('newOrderProductsData: ', newOrderProductsData);
     const newDocId = firestore.collection('orders').doc().id;
-    console.log('newDocId: ', newDocId);
+    // console.log('newDocId: ', newDocId);
     const isOrderBuilded = await firestore
       .collection('orders')
       .doc(newDocId)
@@ -135,6 +135,8 @@ const CartPageToolBar = ({
         products: newOrderProductsData,
         uid: currentUid,
         status: 0,
+        updateTime: firebase.firestore.Timestamp.now(),
+        orderPriceSum: cartedProductPriceSum,
       })
       .then(() => {
         return firestore
@@ -142,9 +144,9 @@ const CartPageToolBar = ({
           .doc(newDocId)
           .get()
           .then((srcData) => {
-            console.log('srcData.exists: ', srcData.exists);
+            // console.log('srcData.exists: ', srcData.exists);
             const data = srcData.data();
-            console.log('data.status: ', data.status);
+            // console.log('data.status: ', data.status);
             if (!srcData.exists || data.status !== 0) {
               // 未成功建立 order
               return 0;

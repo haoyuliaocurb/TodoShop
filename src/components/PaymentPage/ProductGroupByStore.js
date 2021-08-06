@@ -13,7 +13,7 @@ const ProductGroupByStore = ({
 }) => {
   const { storeName, products, sid } = eachCartData;
   return (
-    <StyledProductGroupByStore visibility={visibility}>
+    <StyledProductGroupByStore visibility={visibility} className="ProductGroupByStore">
       <StoreTitle
         sid={sid}
         productsData={products}

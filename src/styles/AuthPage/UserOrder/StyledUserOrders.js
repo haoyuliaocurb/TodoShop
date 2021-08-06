@@ -10,21 +10,27 @@ const StyledUserOrders = styled.div`
     position: relative;
     bottom: ${styledVariables.AuthPage.orderTypeBarBottom};
     /* border: black solid 1px; */
-    > button {
-      padding: 10px;
-      height: 100%;
-      &.selected {
-        border-bottom: ${styledVariables.color.pink400} solid 2px;
-      }
-      &:not(button:first-of-type) {
-        margin-left: 20px;
+    overflow-x: scroll;
+    .orderTypeBarScroll {
+      display: flex;
+      > button {
+        flex-shrink: 0;
+        padding: 10px;
+        height: 100%;
+        &.selected {
+          border-bottom: ${styledVariables.color.pink400} solid 2px;
+        }
+        &:not(button:first-of-type) {
+          margin-left: 20px;
+        }
       }
     }
   }
   .OrderCardsContainer {
     width: 100%;
     height: calc(100% - ${styledVariables.AuthPage.orderTypeBarBottom} - 20px);
-    border: blue solid 1px;
+    /* border: blue solid 1px; */
+    overflow-y: scroll;
   }
 `;
 

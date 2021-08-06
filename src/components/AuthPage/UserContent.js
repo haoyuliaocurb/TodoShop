@@ -4,7 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import StyledUserContent from '../../styles/AuthPage/StyledUserContent';
 import UserOrders from './UserOrders/UserOrders';
 
-const UserContent = () => {
+const UserContent = ({ currentUid, showModolMessageFunctionDev }) => {
   return (
     <StyledUserContent className="UserContent">
       <Switch>
@@ -12,7 +12,10 @@ const UserContent = () => {
           <p>account</p>
         </Route>
         <Route path="/auth/uid/:uid/orders">
-          <UserOrders />
+          <UserOrders
+            currentUid={currentUid}
+            showModolMessageFunctionDev={showModolMessageFunctionDev}
+          />
         </Route>
       </Switch>
     </StyledUserContent>

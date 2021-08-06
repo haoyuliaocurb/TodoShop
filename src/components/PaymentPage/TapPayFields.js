@@ -7,7 +7,7 @@ import StyledTapPayFields from '../../styles/PaymentPage/StyledTapPayFields';
 import LoaderDotModal from '../shared/LoaderDotModal';
 import ModalMessageError from '../app/ModalMessageError';
 import ModalMessageChecked from '../app/ModalMessageChecked';
-import { firestore } from '../../utils/firebase/firebase-services';
+import { firestore, firebase } from '../../utils/firebase/firebase-services';
 import ModalMessage from '../app/ModalMessage';
 
 const TP_FIELDS = {
@@ -145,13 +145,23 @@ const TapPayFields = ({ orderPriceSum, orderUserInfo, orderId }) => {
       }, { once: true })
       return;
     }
-    const checkStatus = await firestore.collection('orders').doc(orderId).update({ status: 1 }).then(async () => {
-      const srcCheckStatus = await firestore.collection('orders').doc(orderId).get();
-      if (!srcCheckStatus.exists) {
-        return 0;
-      }
-      return srcCheckStatus.data();
-    });
+    const checkStatus = await firestore.collection('orders').doc(orderId).update({
+        status: 1,
+        updateTime: firebase.firestore.Timestamp.now(),
+        orderPriceSum,
+        purchaserInfo: {
+          name,
+          email,
+          phoneNumber,
+        },
+      })
+        .then(async () => {
+          const srcCheckStatus = await firestore.collection('orders').doc(orderId).get();
+          if (!srcCheckStatus.exists) {
+            return 0;
+          }
+          return srcCheckStatus.data();
+        });
     if (!checkStatus) {
       LoaderDotModalRef.current.classList.add('op-zero');
       LoaderDotModalRef.current.addEventListener('transitionend', () => {

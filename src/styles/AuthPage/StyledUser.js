@@ -38,6 +38,29 @@ const StyledUser = styled.div`
       border-radius: 100px;
       background-color: ${styledVariables.color.gray300};
     }
+    > .img {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      margin: auto 0;
+      left: 16px;
+      width: 40px;
+      height: 40px;
+      border-radius: 100px;
+      background-color: ${styledVariables.color.gray270};
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      > svg {
+        width: 26px;
+        height: 26px;
+        fill: ${styledVariables.color.pink100};
+
+        * {
+          fill: ${styledVariables.color.pink100};
+        }
+      }
+    }
     > .textUserInfo {
       width: 100%;
       height: 100%;

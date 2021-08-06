@@ -1,11 +1,12 @@
 /* eslint-disable consistent-return */
 // eslint-disable-next-line no-unused-vars
-import { React, useEffect } from 'react';
+import { React, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { auth } from '../../utils/firebase/firebase-services';
 import UserContent from './UserContent';
 
 import IconShared from '../../styles/shared/IconShared';
+import ModalMessage from '../app/ModalMessage';
 import StyledUser from '../../styles/AuthPage/StyledUser';
 
 const USER_CONTENT_DASHBOARD_OBJ = {
@@ -34,6 +35,8 @@ const User = ({ isSignIn, updateConfigNavBar }) => {
   // console.log('isSignIn: ', isSignIn);
   const history = useHistory();
   const { pathname } = useLocation();
+  const currentUid = isSignIn;
+  const ModolMessageFunctionDevRef = useRef(null);
   const redirect2SiginIn = () => {
     history.push('/auth/signIn');
   };
@@ -42,6 +45,12 @@ const User = ({ isSignIn, updateConfigNavBar }) => {
   const handleButtonClick = async () => {
     await auth.signOut();
     redirect2SiginIn();
+  };
+  const showModolMessageFunctionDev = () => {
+    ModolMessageFunctionDevRef.current.classList.remove('op-zero');
+    ModolMessageFunctionDevRef.current.addEventListener('transitionend', () => {
+      ModolMessageFunctionDevRef.current.classList.add('op-zero');
+    });
   };
   const getUserContentDashboardItems = () => {
     return Object.keys(USER_CONTENT_DASHBOARD_OBJ).map((pathKey) => {
@@ -56,6 +65,10 @@ const User = ({ isSignIn, updateConfigNavBar }) => {
             srcPathArr.pop();
             const newPath = srcPathArr.join('/').concat(path);
             // console.log('newPath: ', newPath);
+            if (path === '/account') {
+              showModolMessageFunctionDev();
+              return;
+            }
             history.push(newPath);
           }}
         >
@@ -74,7 +87,10 @@ const User = ({ isSignIn, updateConfigNavBar }) => {
       ) : (
         <div className="userContentContainer">
           <div className="userInfoBar">
-            <img alt="" />
+            {/* <img alt="" src={IconLogoMono} /> */}
+            <div className="img">
+              <IconShared.LogoMono />
+            </div>
             <div className="textUserInfo">
               <h3>{isSignIn}</h3>
               <p className="textMemberType">
@@ -84,10 +100,23 @@ const User = ({ isSignIn, updateConfigNavBar }) => {
           </div>
           <div>
             <div className="userContentDashboard">{getUserContentDashboardItems()}</div>
-            <UserContent />
+            <UserContent
+              currentUid={currentUid}
+              showModolMessageFunctionDev={showModolMessageFunctionDev}
+            />
           </div>
         </div>
       )}
+      <ModalMessage
+        message={
+          <span>
+            相關功能開發中
+            <br />
+            敬請期待
+          </span>
+        }
+        ModolMessageRef={ModolMessageFunctionDevRef}
+      />
     </StyledUser>
   );
 };

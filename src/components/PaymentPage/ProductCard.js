@@ -15,7 +15,7 @@ const ProductCard = ({ productData, sid }) => {
     history.push(`/product/${pid}`);
   };
   return (
-    <StyledProductCard onClick={handleSelfClick}>
+    <StyledProductCard onClick={handleSelfClick} className="ProductCard">
       <div className="imgProduct">
         <img alt="" src={images[0]} />
       </div>
