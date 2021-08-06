@@ -35,7 +35,7 @@ const BUTTON_ORDER_TYPE_ARR = [
 const UserOrders = ({ currentUid, showModolMessageFunctionDev }) => {
   // eslint-disable-next-line no-unused-vars
   const [ordersData, setOrdersData] = useState(null);
-  const currentButtonOrderTypeIdx = useRef(0);
+  const [currentButtonOrderTypeIdx, setCurrentButtonOrderTypeIdx] = useState(0);
   const LoaderDotModalRef = useRef(null);
   const ColumnMessageRef = useRef(null);
 
@@ -197,13 +197,13 @@ const UserOrders = ({ currentUid, showModolMessageFunctionDev }) => {
       }),
     );
     LoaderDotModalRef.current.classList.add('op-zero');
-    if (ColumnMessageRef.current) {
-      ColumnMessageRef.current.classList.remove('op-zero');
-    }
+    // if (ColumnMessageRef.current) {
+    //   ColumnMessageRef.current.classList.remove('op-zero');
+    // }
     setOrdersData(newConvertedOrdersData);
   };
   const handleButtonOrderTypeClck = (indexValue, statusValue) => {
-    currentButtonOrderTypeIdx.current = indexValue;
+    setCurrentButtonOrderTypeIdx(indexValue);
     updateOrdersData(statusValue);
   };
 
@@ -219,7 +219,7 @@ const UserOrders = ({ currentUid, showModolMessageFunctionDev }) => {
         <div className="orderTypeBarScroll">
           {BUTTON_ORDER_TYPE_ARR.map((buttonData, index) => {
             const { name, status } = buttonData;
-            if (index === currentButtonOrderTypeIdx.current) {
+            if (index === currentButtonOrderTypeIdx) {
               return (
                 <button
                   className="selected"

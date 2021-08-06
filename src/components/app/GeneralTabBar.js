@@ -49,12 +49,12 @@ const GeneralTabBar = (
 
   const [iconState, setIconState] = useState(() => getNewIconState());
 
-  const handleSearchTabClick = (e) => {
-    const targetId = e.currentTarget.id;
-    // console.log('targetId: ', targetId);
-    // handleTabBarSearchTabClick();
-    setIconState(getNewIconState(targetId));
-  };
+  // const handleSearchTabClick = (e) => {
+  //   const targetId = e.currentTarget.id;
+  //   // console.log('targetId: ', targetId);
+  //   // handleTabBarSearchTabClick();
+  //   setIconState(getNewIconState(targetId));
+  // };
 
   const handleHomeTabClick = (e) => {
     const targetId = e.currentTarget.id;
@@ -133,12 +133,12 @@ const GeneralTabBar = (
           <p className="textIcon">首頁</p>
         </StyledIconApp>
       </Link>
-      <Link to="/payment/3kQyb943mbk9bv57uNs5" id="payment" onClick={handleSearchTabClick}>
+      {/* <Link to="/payment/3kQyb943mbk9bv57uNs5" id="payment" onClick={handleSearchTabClick}>
         <StyledIconApp disabled={iconState.disabled.activity} active={iconState.active.activity}>
           <IconApp.Activity />
           <p className="textIcon">優惠活動</p>
         </StyledIconApp>
-      </Link>
+      </Link> */}
       <Link to="/cart" id="cart" onClick={handleCartTabClick}>
         <StyledIconApp disabled={iconState.disabled.cart} active={iconState.active.cart}>
           <IconApp.Cart />
