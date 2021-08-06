@@ -8,6 +8,8 @@ import UserContent from './UserContent';
 import IconShared from '../../styles/shared/IconShared';
 import ModalMessage from '../app/ModalMessage';
 import StyledUser from '../../styles/AuthPage/StyledUser';
+// eslint-disable-next-line no-unused-vars
+import IconAppContent from '../../styles/app/IconAppContent';
 
 const USER_CONTENT_DASHBOARD_OBJ = {
   account: {
@@ -87,7 +89,7 @@ const User = ({ isSignIn, updateConfigNavBar }) => {
       ) : (
         <div className="userContentContainer">
           <div className="userInfoBar">
-            {/* <img alt="" src={IconLogoMono} /> */}
+            {/* <img alt="" src={} /> */}
             <div className="img">
               <IconShared.LogoMono />
             </div>

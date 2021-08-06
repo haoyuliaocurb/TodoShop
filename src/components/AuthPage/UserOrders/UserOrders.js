@@ -4,6 +4,7 @@ import StyledUserOrders from '../../../styles/AuthPage/UserOrder/StyledUserOrder
 import { firestore } from '../../../utils/firebase/firebase-services';
 import ColumnMessage from '../../shared/ColumnMessage';
 import LoaderDotModal from '../../shared/LoaderDotModal';
+// eslint-disable-next-line no-unused-vars
 import IconShared from '../../../styles/shared/IconShared';
 
 const BUTTON_ORDER_TYPE_ARR = [
