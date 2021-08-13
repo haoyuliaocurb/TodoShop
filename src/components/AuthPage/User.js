@@ -145,7 +145,7 @@ const User = ({ isSignIn, updateConfigNavBar }) => {
               closeSideMenu={closeSideMenu}
             />
           </div>
-          <div ref={sideMenuRef} className="sideMenu">
+          <div ref={sideMenuRef} className="sideMenu close">
             <button
               type="button"
               className="buttonClose"
