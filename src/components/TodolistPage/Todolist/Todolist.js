@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { React, useState, useEffect, useRef } from 'react';
+import { React, useState, useRef } from 'react';
 // import { firestore } from '../../../utils/firebase/firebase-services';
 import { useParams } from 'react-router-dom';
 
@@ -21,7 +20,7 @@ const convertTodolistItemsContent = (todolistItemsContentValue) => {
 const Todolist = ({
   currentTodolistData,
   handleTodolistClick,
-  readDBTodolistsData,
+  readDBTodolistData,
   currentUid,
   updateDBTodolistData,
   // currentTodolistIdx,
@@ -69,7 +68,7 @@ const Todolist = ({
     if (!currentUid) {
       const newLocalStorageTodolistData = [{ items: newTodolistDataItems }];
       window.localStorage.setItem('TodoShopTodolist', JSON.stringify(newLocalStorageTodolistData));
-      readDBTodolistsData();
+      readDBTodolistData();
       return;
     }
     const newTodolistDataPart = {
@@ -126,7 +125,6 @@ const Todolist = ({
     e.preventDefault();
   };
   const handleTodolistInputKeyUp = (e) => {
-    // console.log('trigger handleTodolistInputKeyUp');
     // console.log('isKeyUpTriggered.current: ', isKeyUpTriggered.current);
     // console.log('e: ', e);
     if (e.key !== 'Enter') {
@@ -150,7 +148,7 @@ const Todolist = ({
     if (!currentUid) {
       const newLocalStorageTodolistData = [{ items: newTodolistDataItems }];
       window.localStorage.setItem('TodoShopTodolist', JSON.stringify(newLocalStorageTodolistData));
-      readDBTodolistsData();
+      readDBTodolistData();
       return;
     }
 
@@ -167,8 +165,7 @@ const Todolist = ({
         //   pathListId,
         // );
 
-        console.log('readDBTodolistsData: ', readDBTodolistsData);
-        readDBTodolistsData(currentUid, pageAmount);
+        readDBTodolistData(currentUid, pageAmount);
         isKeyUpTriggered.current = 0;
       });
   };
@@ -216,6 +213,7 @@ const Todolist = ({
           // ifClrTransparent={ifClrTransparent}
           handleTodolistInputInput={handleTodolistInputInput}
           handleTodolistInputKeyUp={handleTodolistInputKeyUp}
+          readDBTodolistData={readDBTodolistData}
         />
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor="input" />

@@ -89,3 +89,7 @@ h1, h2, h3, button {
 ::-webkit-scrollbar {
     display: none;
 }
+
+[type=button], [type=reset], [type=submit], button {
+    -webkit-appearance: none;
+}

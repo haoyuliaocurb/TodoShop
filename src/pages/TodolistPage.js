@@ -90,7 +90,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     });
     return fetchDBTodolistDataPromise;
   };
-  const readDBTodolistsData = async (currentUidValue, pageAmountValue = 1) => {
+  const readDBTodolistData = async (currentUidValue, pageAmountValue = 1) => {
     const newLocalStorageTodolistData = JSON.parse(window.localStorage.getItem('TodoShopTodolist'));
     // console.log('newLocalStorageTodolistData: ', newLocalStorageTodolistData);
     if (!isSignIn) {
@@ -432,7 +432,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     history.go(-1);
   };
   const handleTodolistTableScroll = (containerRef) => {
-    // readDBTodolistsData(currentUid, pageAmount);
+    // readDBTodolistData(currentUid, pageAmount);
     // console.log('isOnTodolistTableScroll: ', isOnTodolistTableScroll);
     const containerValue = containerRef;
     // console.log('trigger handleTodolistTableScroll');
@@ -474,7 +474,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     if (isAllTodolist) {
       return;
     }
-    readDBTodolistsData(currentUid, pageAmount);
+    readDBTodolistData(currentUid, pageAmount);
   }, [isSignIn, pageAmount]);
   useEffect(() => {
     // console.log('todolistData: ', todolistData);
@@ -662,7 +662,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               currentUid={currentUid}
               handleTodolistClick={handleTodolistClick}
               initTableItemsButtonState={initTableItemsButtonState}
-              readDBTodolistsData={readDBTodolistsData}
+              readDBTodolistData={readDBTodolistData}
               currentTodolistData={currentTodolistData}
               isUpdateTodolistAfterSignIn={isUpdateTodolistAfterSignIn}
             />
@@ -685,7 +685,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               currentUid={currentUid}
               handleTodolistClick={handleTodolistClick}
               initTableItemsButtonState={initTableItemsButtonState}
-              readDBTodolistsData={readDBTodolistsData}
+              readDBTodolistData={readDBTodolistData}
               currentTodolistData={currentTodolistData}
               isUpdateTodolistAfterSignIn={isUpdateTodolistAfterSignIn}
             />
@@ -710,6 +710,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
               initTableItemsButtonState={initTableItemsButtonState}
               currentTodolistIdx={currentTodolistIdx}
               isUpdateTodolistAfterSignIn={isUpdateTodolistAfterSignIn}
+              readDBTodolistData={readDBTodolistData}
             />
           </Route>
           <Route exact path="/todolist/table">
@@ -754,7 +755,7 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
             <Todolist
               currentUid={currentUid}
               pageAmount={pageAmount}
-              readDBTodolistsData={readDBTodolistsData}
+              readDBTodolistData={readDBTodolistData}
               updateDBTodolistData={updateDBTodolistData}
               currentTodolistData={currentTodolistData}
               currentListIdx={currentTodolistIdx}

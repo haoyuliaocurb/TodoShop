@@ -87,4 +87,8 @@ h1, h2, h3, button {
   display: none;
 }
 
+[type=button], [type=reset], [type=submit], button {
+  -webkit-appearance: none;
+}
+
 /*# sourceMappingURL=general.css.map */
