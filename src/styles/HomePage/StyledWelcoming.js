@@ -155,7 +155,7 @@ const StyledWelcoming = styled.div`
           }
         }
         > .textStart {
-          font-weight: 600;
+          font-weight: 500;
           /* @media (max-width: 600px) {
             width: 100%;
             position: relative;

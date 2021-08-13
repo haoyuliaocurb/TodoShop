@@ -11,7 +11,7 @@ const StyledSearchCard = styled.div`
   /* border: black solid 1px; */
 
   @media (max-width: 432px) {
-    width: 50%;
+    width: 46%;
     min-width: 164px;
   }
 
@@ -38,7 +38,8 @@ const StyledSearchCard = styled.div`
     padding: 0 ${styledVariables.NormalSearchMode.SearchCard.SelfPaddingHor};
     // border: black solid 1px;
     font-size: 14px;
-    width: 200px;
+    /* min-width: 200px; */
+    width: 100%;
     /* height: 146px; */
     height: 70px;
 

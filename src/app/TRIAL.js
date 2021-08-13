@@ -1,6 +1,7 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
-import { React, useEffect } from 'react';
+import { React, useState, useEffect, memo } from 'react';
 import { firestore } from '../utils/firebase/firebase-services';
 
 const PRODUCT_KEY = '2mS9J1zTXPXX604zb4ik';
@@ -222,30 +223,48 @@ const PRODUCTS_DATA = {
     introduction: '超乎想像的厚實滑順感！產品使用專利立體技術，氣旋絨織工藝，革命性一抽搞定，安心不透手。紙張可丟入馬桶，敬請安心使用。',
   },
 };
+const startToSearch = async (searchStr, page, option) => {
+  return new Promise((resolve, reject) => {
+    const getBody = () => {
+      const newBody = { searchStr, };
+      newBody.page = !page ? 0 : page;
+      if (option) {
+        newBody.option = option;
+      }
+      return JSON.stringify(newBody);
+    };
+    fetch('https://us-central1-todoshop-5fd25.cloudfunctions.net/widgets/searchProducts', {
+      method: 'POST',
+      headers: {"Content-Type": "application/json"},
+      body: getBody(),
+    })
+    .then((res) => res.json()).then((searchResult) => {
+      if(Array.length !== 0){
+          console.log(searchResult)
+      }
+    });
+  });
+};
+
+const Child = ({ index }) => {
+  console.log('render Child', 'index: ', index);
+  useEffect(() => {
+    return () => {
+      console.log(`Child ${index} unmount`);
+    };
+  }, []);  
+  return <p>{index}</p>;
+};
 
 const TRIAL = () => {
-  const startToSearch = async (searchStr, page, option) => {
-    return new Promise((resolve, reject) => {
-      const getBody = () => {
-        const newBody = { searchStr, };
-        newBody.page = !page ? 0 : page;
-        if (option) {
-          newBody.option = option;
-        }
-        return JSON.stringify(newBody);
-      };
-      fetch('https://us-central1-todoshop-5fd25.cloudfunctions.net/widgets/searchProducts', {
-        method: 'POST',
-        headers: {"Content-Type": "application/json"},
-        body: getBody(),
-      })
-      .then((res) => res.json()).then((searchResult) => {
-        if(Array.length !== 0){
-            console.log(searchResult)
-        }
-      });
-    });
-  };
+
+  console.log('render TRIAL');
+  const [state, setState] = useState([1, 2, 3]);
+  useEffect(() => {
+    setTimeout(() => {
+      setState([0, 1]);
+    }, 1000);
+  }, []);
   // useEffect(() => {
   //   const req = {
   //     body: {
@@ -338,7 +357,11 @@ const TRIAL = () => {
     //     });
     //   });
   }, []);
-  return <div />;
+  return (
+    <div>
+      {state.map((value) => <Child index={value} />)}
+    </div>
+  );
 };
 
 export default TRIAL;
