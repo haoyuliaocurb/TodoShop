@@ -35,6 +35,7 @@ const USER_CONTENT_DASHBOARD_OBJ = {
 // eslint-disable-next-line no-unused-vars
 const User = ({ isSignIn, updateConfigNavBar }) => {
   // console.log('isSignIn: ', isSignIn);
+  const sideMenuRef = useRef(null);
   const history = useHistory();
   const { pathname } = useLocation();
   const currentUid = isSignIn;
@@ -79,8 +80,34 @@ const User = ({ isSignIn, updateConfigNavBar }) => {
       );
     });
   };
+  // eslint-disable-next-line no-unused-vars
+  const handleNavItemClick = () => {};
+  const closeSideMenu = () => {
+    if (!sideMenuRef.current) {
+      return;
+    }
+    // console.log('sideMenuRef.current.classList[1]: ', sideMenuRef.current.classList[1]);
+    sideMenuRef.current.classList.add('close');
+  };
+  const handleButtonMenuClick = () => {
+    if (!sideMenuRef.current) {
+      return;
+    }
+    // console.log('sideMenuRef.current.classList[1]: ', sideMenuRef.current.classList[1]);
+    const isSideMenuClose = sideMenuRef.current.classList[1];
+    if (!isSideMenuClose) {
+      sideMenuRef.current.classList.add('close');
+      return;
+    }
+    sideMenuRef.current.classList.remove('close');
+  };
   useEffect(() => {
     updateConfigNavBar({ title: '會員中心', buttonName: '登出', handleButtonClick });
+  }, []);
+  useEffect(() => {
+    window.addEventListener('click', () => {
+      closeSideMenu();
+    });
   }, []);
   return (
     <StyledUser>
@@ -99,13 +126,42 @@ const User = ({ isSignIn, updateConfigNavBar }) => {
                 <span>普通會員</span>
               </p>
             </div>
+            <button
+              type="button"
+              className="buttonMenu"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleButtonMenuClick();
+              }}
+            >
+              <IconShared.Menu />
+            </button>
           </div>
           <div>
             <div className="userContentDashboard">{getUserContentDashboardItems()}</div>
             <UserContent
               currentUid={currentUid}
               showModolMessageFunctionDev={showModolMessageFunctionDev}
+              closeSideMenu={closeSideMenu}
             />
+          </div>
+          <div ref={sideMenuRef} className="sideMenu">
+            <button
+              type="button"
+              className="buttonClose"
+              onClick={() => {
+                handleButtonMenuClick();
+              }}
+            >
+              <IconShared.Close />
+            </button>
+            {getUserContentDashboardItems()}
+            {/* <button type="button" className="sideMenuItem" onClick={handleNavItemClick}>
+              關於我們
+            </button>
+            <button type="button" className="sideMenuItem" onClick={handleNavItemClick}>
+              服務介紹
+            </button> */}
           </div>
         </div>
       )}

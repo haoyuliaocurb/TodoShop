@@ -46,8 +46,16 @@ const StyledProductCard = styled.div`
     }
     > .textName {
       position: absolute;
+      width: calc(100% - (${styledVariables.cartPage.cartedProductCard.productContentPaddingHor} * 2));
       top: 0;
       line-height: 18px;
+      overflow:hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      white-space: normal;
     }
     > .textPrice {
       color: ${styledVariables.color.pink400};

@@ -33,7 +33,7 @@ const BUTTON_ORDER_TYPE_ARR = [
     status: 4,
   },
 ];
-const UserOrders = ({ currentUid, showModolMessageFunctionDev }) => {
+const UserOrders = ({ currentUid, showModolMessageFunctionDev, closeSideMenu }) => {
   // eslint-disable-next-line no-unused-vars
   const [ordersData, setOrdersData] = useState(null);
   const [currentButtonOrderTypeIdx, setCurrentButtonOrderTypeIdx] = useState(0);
@@ -220,7 +220,12 @@ const UserOrders = ({ currentUid, showModolMessageFunctionDev }) => {
   }, [ordersData]);
   return (
     <StyledUserOrders>
-      <div className="orderTypeBar">
+      <div
+        className="orderTypeBar"
+        onScroll={() => {
+          closeSideMenu();
+        }}
+      >
         <div className="orderTypeBarScroll">
           {BUTTON_ORDER_TYPE_ARR.map((buttonData, index) => {
             const { name, status } = buttonData;
@@ -250,7 +255,12 @@ const UserOrders = ({ currentUid, showModolMessageFunctionDev }) => {
           })}
         </div>
       </div>
-      <div className="OrderCardsContainer">
+      <div
+        className="OrderCardsContainer"
+        onScroll={() => {
+          closeSideMenu();
+        }}
+      >
         {!ordersData ? (
           <ColumnMessage
             text="目前無相關購買訂單"

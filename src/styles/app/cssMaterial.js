@@ -120,6 +120,8 @@ export const styledVariables = {
   AuthPage: {
     userContentDashboardWidth: '160px',
     orderTypeBarBottom: '11px',
+    buttonMenuWidth: '22px',
+    userInfoBarPaddingHor: '16px',
   },
 };
 styledVariables.todolistTable.buttonWidthSum = `${

@@ -566,8 +566,8 @@ const HomePage = ({ isSignIn }) => {
               <div className="activityTitle">
                 <h2 className="divider">SALES 強檔商品</h2>
               </div>
+              <div className="background" />
               <div className="activityBar">
-                <div className="background" />
                 <div className="ActivityTags">
                   {!activitiesData ? (
                     <div />

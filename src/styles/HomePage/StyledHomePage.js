@@ -74,6 +74,7 @@ const StyledHomePage = styled.div`
           }
         }
         > .activityBlock {
+          position: relative;
           > .activityTitle {
             width: 100%;
             height: ${styledVariables.shared.barHeight};
@@ -82,8 +83,14 @@ const StyledHomePage = styled.div`
             align-items: center;
             margin-bottom: 16px;
           }
+          > .background {
+            position: absolute;
+            width: 100%;
+            height: ${styledVariables.shared.barHeight};
+            background-color: ${styledVariables.color.gray100};
+          }
           > .activityBar {
-            width: calc(100% - (10px * 2));
+            width: calc(100% - 20px);
             height: ${styledVariables.shared.barHeight};
             /* border: black solid 1px; */
             display: flex;
@@ -91,14 +98,7 @@ const StyledHomePage = styled.div`
             align-items: center;
             margin: 0 10px;
             overflow-y: scroll;
-            background-color: ${styledVariables.color.gray100};
-
-            /* > .background {
-              position: absolute;
-              width: 100%;
-              height: ${styledVariables.shared.barHeight};
-              background-color: ${styledVariables.color.gray100};
-            } */
+            /* background-color: ${styledVariables.color.gray100}; */
             > .ActivityTags {
               position: relative;
               display: flex;

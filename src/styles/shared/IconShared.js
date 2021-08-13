@@ -9,6 +9,7 @@ import { ReactComponent as Order } from './images/icon-order.svg';
 import { ReactComponent as NoOrder } from './images/icon-noOrder.svg';
 import { ReactComponent as Account } from './images/icon-account.svg';
 import { ReactComponent as LogoMono } from './images/icon-logo-mono.svg';
+import { ReactComponent as Close } from './images/icon-close.svg';
 
 export default {
   ChenvronLeft,
@@ -22,4 +23,5 @@ export default {
   NoOrder,
   Account,
   LogoMono,
+  Close,
 };

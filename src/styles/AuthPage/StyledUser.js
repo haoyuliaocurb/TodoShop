@@ -10,7 +10,8 @@ const StyledUser = styled.div`
     width: 100%;
     height: 100%;
     /* border: black solid 1px; */
-    > div:not(.userInfoBar) {
+    overflow-x: hidden;
+    > div:not(.userInfoBar, .sideMenu) {
       position: relative;
       width: 100%;
       height: calc(100% - ${styledVariables.shared.barHeight});
@@ -22,7 +23,7 @@ const StyledUser = styled.div`
   .userInfoBar {
     position: absolute;
     width: 100%;
-    height: ${styledVariables.shared.barHeight};
+    height: 70px;
     top: 0;
     background-color: ${styledVariables.color.gray100};
     padding: 10px 0;
@@ -41,9 +42,9 @@ const StyledUser = styled.div`
     > .img {
       position: absolute;
       top: 0;
-      bottom: 0;
+      bottom: 10px;
       margin: auto 0;
-      left: 16px;
+      left: ${styledVariables.AuthPage.userInfoBarPaddingHor};
       width: 40px;
       height: 40px;
       border-radius: 100px;
@@ -69,8 +70,16 @@ const StyledUser = styled.div`
       display: flex;
       align-items: center;
       flex-wrap: wrap;
+      @media (max-width: 400px) {
+        width: calc(100% - ${styledVariables.AuthPage.buttonMenuWidth} - 40px);
+      }
       > * {
         width: 100%;
+      }
+      > h3 {
+        overflow-x: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
       > .textMemberType {
         margin-top: 8px;
@@ -80,6 +89,75 @@ const StyledUser = styled.div`
           border-radius: 100px;
           background-color: ${styledVariables.color.pink400};
           color: ${styledVariables.color.white};
+        }
+      }
+    }
+    > .buttonMenu {
+      display: none;
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 10px;
+      right: calc(${styledVariables.AuthPage.userInfoBarPaddingHor} + 6px);
+      @media (max-width: 600px) {
+        display: block;
+      }
+    }
+  }
+  .sideMenu {
+    position: absolute;
+    z-index: 5;
+    right: 0;
+    top: 0;
+    /* border: black 1px solid; */
+    width: 160px;
+    height: calc(100vh - ${styledVariables.shared.barHeight} * 2);
+    /* background-color: ${styledVariables.color.transGray80}; */
+    background-color: ${styledVariables.color.pink100};
+    box-shadow: -1px 3px 5px 2px ${styledVariables.color.gray200};
+    padding-top: 80px;
+    padding-left: 10px;
+    padding-right: 10px;
+    transition: all 0.3s;
+    &.close {
+      width: 0px;
+      opacity: 0;
+      * {
+        /* width: 0; */
+        visibility: hidden;
+      }
+    }
+    > .buttonClose {
+      position: absolute;
+      top: 10px;
+      right: calc(${styledVariables.AuthPage.userInfoBarPaddingHor} + 6px);
+      width: 20px;
+      height: 20px;
+    }
+    > .item {
+      &.item:last-of-type {
+        border-bottom: none;
+      }
+      width: 100%;
+      height: 40px;
+      /* border: red solid 1px; */
+      padding: 0 10px;
+      border-bottom: 1px solid ${styledVariables.color.gray250};
+      > span {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        > svg {
+          width: 22px;
+          height: 22px;
+          margin-right: 10px;
+          fill: ${styledVariables.color.gray300};
+          * {
+            fill: ${styledVariables.color.gray300};
+          }
         }
       }
     }
@@ -118,6 +196,9 @@ const StyledUser = styled.div`
         }
       }
     }
+    @media (max-width: 600px) {
+      display: none;
+    }
   }
   .UserContent {
     width: calc(100% - ${styledVariables.AuthPage.userContentDashboardWidth});
@@ -125,8 +206,11 @@ const StyledUser = styled.div`
     /* border: red solid 1px; */
     background-color: ${styledVariables.color.white};
     padding: 20px 10px;
-    padding-left: 40px;
+    padding-left: 20px;
     padding-right: 20px;
+    @media (max-width: 600px) {
+      width: 100%;
+    }
   }
 `;
 
