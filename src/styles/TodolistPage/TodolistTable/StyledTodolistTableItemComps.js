@@ -16,11 +16,11 @@ export const StyledIcon2Search = styled.span`
   height: 30px;
   // border: black solid 1px;
 
-  > a:hover {
+  > button:hover {
     background-color: ${styledVariables.color.pink400};
   }
 
-  > a {
+  > button {
     position: relative;
     width: 100%;
     height: 100%;

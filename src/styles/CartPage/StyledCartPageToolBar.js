@@ -6,7 +6,8 @@ const StyledCartPageToolBar = styled.div`
   width: 100%;
   height: 100%;
   z-index: 10;
-  padding: 0 ${styledVariables.shared.contentPadding};
+  padding-right: ${styledVariables.shared.contentPadding};
+  padding-left: calc(${styledVariables.shared.contentPadding} + 1%);
   background-color: ${styledVariables.color.white};
 
   button {

@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 
 import { React, useState, useEffect, useRef } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { firestore, firebase } from '../../../utils/firebase/firebase-services';
 import IconTodolistPages from '../../../styles/TodolistPage/IconTodolistPage';
 
@@ -120,8 +120,8 @@ const TodolistTableItem = ({
         <p>{getTodolistTableItemSpan(productItems)}</p>
       </div>
       <StyledIcon2Search disabled={false}>
-        <Link
-          to="/search"
+        <button
+          type="button"
           onClick={(event) => {
             event.preventDefault();
             handleIcon2SearchClick(currentUid, productItems, 1);
@@ -131,7 +131,7 @@ const TodolistTableItem = ({
             搜尋去
           </p>
           <IconTodolistPages.ChevronRight />
-        </Link>
+        </button>
       </StyledIcon2Search>
     </StyledTodolistTableItem>
   );

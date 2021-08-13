@@ -56,7 +56,7 @@ const StyledSearchCard = styled.div`
   > p.SearchCardPrice {
     position: absolute;
     left: calc(${styledVariables.NormalSearchMode.SearchCard.SelfPaddingHor} - 6px);
-    bottom: ${styledVariables.NormalSearchMode.SearchCard.SelfPaddingBottom};
+    bottom: calc(${styledVariables.NormalSearchMode.SearchCard.SelfPaddingBottom} + 4px);
     font-size: 14px;
 
     color: ${styledVariables.color.pink400};
