@@ -68,9 +68,9 @@ const EasySearchPage = ({
       isScrollBackward.current = true;
       // console.log('trigger backward scrollTarget');
       // console.log('before: scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
-      setTimeout(() => {
-        scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight);
-      }, 300);
+      // setTimeout(() => {
+      //   scrollTarget.current.scrollTop -= removePx(styledVariables.shared.barHeight);
+      // }, 300);
       // scrollTarget.scrollTo(0, scrollTarget.scrollTop - styledVariables.shared.barHeight);
       // console.log('after: scrollTarget.current.scrollTop: ', scrollTarget.current.scrollTop);
 

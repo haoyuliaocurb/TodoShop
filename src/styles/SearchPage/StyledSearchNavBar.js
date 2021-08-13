@@ -165,8 +165,7 @@ const StyledSearchNavBar = styled.nav`
       right: 0;
       width: 12px;
       height: 12px;
-      font-size: 6px;
-      line-height: 6px;
+      font-size: 9px;
       color: ${styledVariables.color.white};
       background-color: ${styledVariables.color.pink400};
       border-radius: 100px;

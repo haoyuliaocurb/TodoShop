@@ -37,7 +37,7 @@ const HomePageNavBar = ({ cartedProductAmount }) => {
       <IconHomePage.ChenvronLeft className="iconChenvronLeft" />
       <button type="button" className="iconCart" onClick={handleIconCartClick}>
         <IconHomePage.Cart />
-        <span>{cartedProductAmount}</span>
+        <span>{cartedProductAmount > 9 ? '+' : cartedProductAmount}</span>
       </button>
     </StyledHomePageNavBar>
   );

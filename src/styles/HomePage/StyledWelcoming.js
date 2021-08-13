@@ -106,7 +106,7 @@ const StyledWelcoming = styled.div`
     top: 16px;
     left: 60px;
     @media (max-width: 600px) {
-      left: 0px;
+      left: 20px;
     }
     > h1 {
       font-weight: 100;
@@ -118,26 +118,8 @@ const StyledWelcoming = styled.div`
       }
       > .textStartFrom {
         @media (max-width: 600px) {
-          font-size: 22px;
+          font-size: 20px;
         }
-        /* ::before {
-          content: '';
-          display: inline-block;
-          z-index: 0;
-          position: absolute;
-          top: 26px;
-          left: 50px;
-          width: 400px;
-          height: 8px;
-          background-color: white;
-          transform: scale(1.8, 0.5) skew(15deg, 15deg);
-          transition: all 0.3s;
-          @media (max-width: 1000px) {
-            transform: scale(1.7, 0.5) skew(15deg, 15deg);
-            width: 700px;
-            top: 36px;
-          }
-        } */
         font-size: 26px;
         > span {
           display: inline-block;
@@ -149,13 +131,13 @@ const StyledWelcoming = styled.div`
           z-index: 5;
           margin-left: 32px;
           margin-right: 80px;
-          font-weight: 600;
+          /* font-weight: 600; */
           @media (max-width: 600px) {
             margin-right: 0;
           }
         }
         > .textStart {
-          font-weight: 500;
+          /* font-weight: 400; */
           /* @media (max-width: 600px) {
             width: 100%;
             position: relative;
@@ -165,7 +147,7 @@ const StyledWelcoming = styled.div`
       }
       > .textTodoShop {
         margin-top: 40px;
-        font-size: 60px;
+        font-size: 56px;
         letter-spacing: 4px;
         > .textTodo {
         }
@@ -177,6 +159,7 @@ const StyledWelcoming = styled.div`
       }
       > .textInnovation {
         margin-left: 40px;
+        font-size: 36px;
         /* margin-top: 10px; */
         @media (max-width: 800px) {
           font-size: 26px;

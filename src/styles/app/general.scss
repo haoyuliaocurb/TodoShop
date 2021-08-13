@@ -14,6 +14,10 @@ html {
     box-sizing: inherit;
 }
 
+#root {
+    min-width: 360px;
+}
+
 /* property class */
 .clr-transparent {
     color: transparent;
