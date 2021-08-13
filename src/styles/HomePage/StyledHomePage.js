@@ -91,16 +91,13 @@ const StyledHomePage = styled.div`
             align-items: center;
             margin: 0 10px;
             overflow-y: scroll;
-            /* background-color: ${styledVariables.color.gray100}; */
 
-            &::before {
+            > .background {
               position: absolute;
-              content: '';
               width: 100%;
               height: ${styledVariables.shared.barHeight};
               background-color: ${styledVariables.color.gray100};
             }
-
             > .ActivityTags {
               position: relative;
               display: flex;
