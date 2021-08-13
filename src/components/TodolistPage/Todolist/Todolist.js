@@ -167,6 +167,7 @@ const Todolist = ({
         //   pathListId,
         // );
 
+        console.log('readDBTodolistsData: ', readDBTodolistsData);
         readDBTodolistsData(currentUid, pageAmount);
         isKeyUpTriggered.current = 0;
       });

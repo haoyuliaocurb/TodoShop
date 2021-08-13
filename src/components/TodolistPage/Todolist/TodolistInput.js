@@ -13,8 +13,12 @@ const TodolistInput = ({
         type="text"
         id="input"
         // className={`${ifClrTransparent ? ' clr-transparent ' : ''}`}
-        onInput={handleTodolistInputInput}
-        onKeyUp={handleTodolistInputKeyUp}
+        onInput={(e) => {
+          handleTodolistInputInput(e);
+        }}
+        onKeyUp={(e) => {
+          handleTodolistInputKeyUp(e);
+        }}
         value={inputDisplayContent}
       />
     </StyledTodolistInput>
