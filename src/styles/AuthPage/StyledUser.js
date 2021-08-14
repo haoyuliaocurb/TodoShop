@@ -119,12 +119,13 @@ const StyledUser = styled.div`
     padding-left: 10px;
     padding-right: 10px;
     transition: all 0.3s;
+    overflow: hidden;
     &.close {
-      width: 0px;
+      width: 0;
       opacity: 0;
+      cursor: pointer;
       * {
-        /* width: 0; */
-        visibility: hidden;
+        opacity: 0;
       }
     }
     > .buttonClose {
@@ -144,12 +145,29 @@ const StyledUser = styled.div`
       padding: 0 10px;
       border-bottom: 1px solid ${styledVariables.color.gray250};
       > span {
+        position: relative;
         display: inline-block;
         width: 100%;
         height: 100%;
+        /* border: 1px solid black; */
         display: flex;
         align-items: center;
         justify-content: center;
+
+        .container {
+          position: relative;
+          display: inline-block;
+          width: 100%;
+          height: 20px;
+          overflow: hidden;
+          > span {
+            position: absolute;
+            left: 0;
+            display: inline-block;
+            width: 200px;
+            text-align: left;
+          }
+        }
         > svg {
           width: 22px;
           height: 22px;

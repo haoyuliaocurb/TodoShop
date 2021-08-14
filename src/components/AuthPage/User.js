@@ -16,7 +16,9 @@ const USER_CONTENT_DASHBOARD_OBJ = {
     name: (
       <span>
         <IconShared.Account />
-        我的帳戶
+        <span className="container">
+          <span>我的帳戶</span>
+        </span>
       </span>
     ),
     path: '/account',
@@ -25,7 +27,9 @@ const USER_CONTENT_DASHBOARD_OBJ = {
     name: (
       <span>
         <IconShared.Order />
-        購買訂單
+        <span className="container">
+          <span>購買訂單</span>
+        </span>
       </span>
     ),
     path: '/orders',
