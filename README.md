@@ -4,7 +4,7 @@
 ![](https://github.com/haoyuliaocurb/TodoShop/blob/develop/src/styles/HomePage/images/banners/banner1.jpeg)
 ## 開發簡介
 ### 技術架構及摘要
-![](https://github.com/haoyuliaocurb/TodoShop/tree/main/images/TodoShop 前後端架構.jpeg)
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/TodoShop%20%E5%89%8D%E5%BE%8C%E7%AB%AF%E6%9E%B6%E6%A7%8B.jpeg)
 ### 目錄架構
 以 [Create-react-app](#Create-react-app) 建立專案目錄基礎分立 src、public，其中 src 之中分立 app、components、pages、styles、utils 等子目錄
 * app、components、pages：放置 React component 檔案；root component App.js 放置 app 目錄；HomePage、SearchPage 等頁面 component 放置 pages 目錄，其餘者依照所屬 page 分類在 components 目錄
