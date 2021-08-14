@@ -1,6 +1,8 @@
 # TodoShop
 ## 目錄
 ## 專案簡介
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/AuthPage-orders-lg.png.jpeg)
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/AuthPage-orders-sm.png.jpeg)
 ## 專案展示
 - 專案網址：https://todoshop-5fd25.web.app
 - 測試帳號：trial@gmail.com
