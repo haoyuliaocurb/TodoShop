@@ -1,8 +1,20 @@
 # TodoShop
 ## 目錄
 ## 專案簡介
-![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/AuthPage-orders-lg.png.jpeg)
-![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/AuthPage-orders-sm.png.jpeg)
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/HomePage-lg.png)
+- ### 購物清單頁
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/TodolistPage-lg.png)
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/TodolistPage-sm.png)
+在購物清單頁中，使用者可以瀏覽、新增、刪除購物清單，並進一步編輯購物清單內容，新增、刪除清單項目。於手機螢幕中，瀏覽購物清單、編輯購物清單會分為兩個頁面呈現。
+- ### 搜尋頁：輕鬆模式、普通模式
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/SearchPage-EasySearchMode-lg.png)
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/SearchPage-NormalSearchMode-lg.png)
+- ### 購物車
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/CartPage-lg.png)
+- ### 付款頁
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/PaymentPage-lg.png)
+- ### 會員中心
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/AuthPage-orders-lg.png)
 ## 專案展示
 - 專案網址：https://todoshop-5fd25.web.app
 - 測試帳號：trial@gmail.com
