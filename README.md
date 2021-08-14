@@ -1,9 +1,31 @@
 # TodoShop
 ## 目錄
+1. [專案展示](#專案展示)
+2. [專案簡介](#專案簡介)
+    - [購物清單頁](#購物清單頁)
+    - [搜尋頁：輕鬆模式、普通模式](#搜尋頁輕鬆模式普通模式)
+    - [購物車、付款頁、會員中心](#購物車付款頁會員中心)
+3. [開發簡介](#開發簡介)
+    - [技術架構及摘要](#技術架構及摘要)
+        - 前端開發
+        - 後端開發
+        - 開發工具
+    - [目錄架構](#目錄架構)
+    - [開發流程](#開發流程)
+    - [程式設計摘要](#程式設計摘要)
+        1. [SPA Routing](#SPA-Routing)
+        2. [會員系統建立、登入狀態管理](#會員系統建立登入狀態管理)
+        3. [登入狀態驗證、redirect](#登入狀態驗證redirect)
+        4. [composition 概念、reusable component](composition-概念reusable-component)
+        5. [Imperative operation：useRef、ref 屬性](#imperative-operationuserefref-屬性)
+4. [附錄](#附錄)
+    - [技術介紹](#技術介紹)
+
 ## 專案展示
 - 專案網址：https://todoshop-5fd25.web.app
 - 測試帳號：trial@gmail.com
 - 測試帳號：trialtrial
+
 ## 專案簡介
 「TodoShop 從購物清單開始：創新電商網站」，其創新之處在於可以讓使用者從建立購物清單開始，並將購物清單無縫地轉換，進一步搜尋清單中的所有商品，簡單的在一個頁面中呈現
 
@@ -39,13 +61,19 @@
 ## 開發簡介
 ### 技術架構及摘要
 ![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/TodoShop%20%E5%89%8D%E5%BE%8C%E7%AB%AF%E6%9E%B6%E6%A7%8B.jpeg)
+
+- 更多細節可見附錄 [技術介紹](#技術介紹)
+- 前端開發：使用 [Sass/SCSS](#sassscss)、[React 生態系]((#react)) 獨立開發，沒有使用任何前端 UI 套件
+- 後端開發：使用 [Firebase](#Firebase-Firestore) 服務開發資料庫、web server、會員系統等，其中為了串接兩個第三方服務：[TapPay](#第三方服務) (金流)、[Algolia](#第三方服務) (Full-text search 套件)，需要使用 [Firebase Cloud Functions](#Firebase-Cloud-Functions) 自訂兩個跨網域 API，以 [Node.js、Express.js、Axios](#nodejsexpressjsaxios) 技術撰寫程式碼，使前端與 API、API 與第三方服務 req/res
+- 開發工具：使用 [Git/GitHub](#gitgithub) 做版本控管，並迭代進行 QA，更多細節可見 [開發流程](#開發流程)
+
 ### 目錄架構
 以 [Create-react-app](#Create-react-app) 建立專案目錄基礎分立 src、public，其中 src 之中分立 app、components、pages、styles、utils 等子目錄
 * app、components、pages：放置 React component 檔案；root component App.js 放置 app 目錄；HomePage、SearchPage 等頁面 component 放置 pages 目錄，其餘者依照所屬 page 分類在 components 目錄
 * styles：放置 Styled components 檔案，依照所屬 page 分類；general.scss 具有全域 styles，cssMaterials.js 存放 styles 相關變數及跨頁面邏輯 
 * utils：放置 Firebase config script、開發者自身 Library 等
 ### 開發流程
-以 Git Flow 為基礎進行開發，並迭代進行 QA
+以 [Git Flow](#gitgithub) 為基礎進行開發，並迭代進行 QA
 * 初始化專案時，具有 main、develop branch
 * 開發新頁面、新功能時，則新增 branch feature/featureName 進行開發
 * 開發完成後以 develop merge  feature/featureName branch
@@ -70,9 +98,9 @@
 5. #### Imperative operation：useRef、ref 屬性
 - 操作組件 modal 等視覺效果時，若以 ref 屬性直接操作該 DOM element，而非透過 React state 來觸發 re-render，可以帶來開發方便、節省效能的益處。
 - 開發中多直接控制 React element tree 末端者的 classList，以操作 css 並控制組件的視覺效果
-## 優化方向
+<!-- ## 優化方向 -->
 ## 附錄
-### 功能介紹
+<!-- ### 功能介紹 -->
 ### 技術介紹
 #### 前端
 - ##### Sass/SCSS
@@ -92,11 +120,11 @@
   - 使用 React Router、Firebase Auth UI 對於會員、付款頁面做輸入驗證、登入狀態驗證、Redirect
   - 實踐 CRUD、Composition 概念，建立 reusable React component
 #### 後端
-- ##### Firestore
+- ##### Firebase Firestore
   使用 Firestore 作為非關聯式資料庫
-- ##### Auth
+- ##### Firebase Auth
   使用 Auth 建立會員系統，實踐輸入驗證、即時監聽會員登入狀態改變前端畫面
-- ##### Hosting
+- ##### Firebase Hosting
   使用 Hosting 建立 Web server
 - ##### 第三方服務
   串接兩個第三方服務：TapPay 金流、Algolia Full-text search 套件
@@ -114,7 +142,7 @@
   使用 NPM、ES6 module system、Create-re-act-app 導入套件、將前端程式碼模組化
 - ##### USB Debugging
   透過 USB Debugging 技術在開發者工具中呈現手機版網頁運作狀況，包含 Console、styles 等
-### 程式設計
+<!-- ### 程式設計
 ### 組件開發總覽
 #### \<App />
-* ##### \<Main />
+* ##### \<Main /> -->
