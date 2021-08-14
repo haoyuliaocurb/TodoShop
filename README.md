@@ -41,44 +41,44 @@
 ### 功能介紹
 ### 技術介紹
 #### 前端
-－ ##### Sass/SCSS
+- ##### Sass/SCSS
   使用 Sass/SCSS 預處理、開發全域 styling 樣式
-－ ##### Styled Components
+- ##### Styled Components
   使用 Styled Components 配合 React 開發
-－ ##### Normalize.css
+- ##### Normalize.css
   使用 Normalize.css 作跨瀏覽器 CSS 問題處理
 * ##### React Router
   使用 React Router 實踐 SPA 的 router 管理，見 [SPA Routing](#SPA-Routing)
-－ ##### ES6 JavaScript
+- ##### ES6 JavaScript
   使用 ES6 JavaScript 語法做開發
-－ ##### ESLint/Prettier
+- ##### ESLint/Prettier
   導入 ESLint/Prettier 統一開發風格
-－ ##### 專案細節
-  － 實踐 RWD、Infinite scroll、Event throttle and debounce、Loader 、Modal、Carousel 等
-  － 使用 React Router、Firebase Auth UI 對於會員、付款頁面做輸入驗證、登入狀態驗證、Redirect
-  － 實踐 CRUD、Composition 概念，建立 reusable React component
+- ##### 專案細節
+  - 實踐 RWD、Infinite scroll、Event throttle and debounce、Loader 、Modal、Carousel 等
+  - 使用 React Router、Firebase Auth UI 對於會員、付款頁面做輸入驗證、登入狀態驗證、Redirect
+  - 實踐 CRUD、Composition 概念，建立 reusable React component
 #### 後端
-－ ##### Firestore
+- ##### Firestore
   使用 Firestore 作為非關聯式資料庫
-－ ##### Auth
+- ##### Auth
   使用 Auth 建立會員系統，實踐輸入驗證、即時監聽會員登入狀態改變前端畫面
-－ ##### Hosting
+- ##### Hosting
   使用 Hosting 建立 Web server
-－ ##### 第三方服務
+- ##### 第三方服務
   串接兩個第三方服務：TapPay 金流、Algolia Full-text search 套件
-－ ##### Firebase Cloud Functions
+- ##### Firebase Cloud Functions
   使用 Firebase Cloud Functions 自訂兩個跨網域 API
-－ ##### Node.js、Express.js、Axios
+- ##### Node.js、Express.js、Axios
   使用 Node.js、Express.js、Axios 技術撰寫 API 使前端與 API、API 與第三方服務 req/res
-－ ##### 環境變數
+- ##### 環境變數
   使用 functions config 設置環境變數：App ID、App key 等敏感資料
 
 #### 開發工具
-－ ##### Git/GitHub
+- ##### Git/GitHub
   使用 Git/GitHub 做版本控管，嘗試實踐 Git Flow
 * ##### Create-react-app
   使用 NPM、ES6 module system、Create-re-act-app 導入套件、將前端程式碼模組化
-－ ##### USB Debugging
+- ##### USB Debugging
   透過 USB Debugging 技術在開發者工具中呈現手機版網頁運作狀況，包含 Console、styles 等
 ### 程式設計
 ### 組件開發總覽
