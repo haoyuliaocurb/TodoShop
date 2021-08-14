@@ -78,7 +78,7 @@
 * 開發新頁面、新功能時，則新增 branch feature/featureName 進行開發
 * 開發完成後以 develop merge  feature/featureName branch
 * 階段性發行版本則以 release/versionName 紀錄
-* 配合 QA 表格測試、Debug，搭配使用 [USB Debugging](#USB-ebugging) 等技術
+* 配合 QA 表格測試、Debug，搭配使用 [USB Debugging](#USB-debugging) 等技術
 ### 程式設計摘要
 1. #### SPA Routing
 * 使用 [React Router](#React-Router) 為 SPA Routing 技術基礎
