@@ -1,7 +1,10 @@
 # TodoShop
 ## 目錄
 ## 專案簡介
-![](https://github.com/haoyuliaocurb/TodoShop/blob/develop/src/styles/HomePage/images/banners/banner1.jpeg)
+## 專案展示
+- 專案網址：https://todoshop-5fd25.web.app
+- 測試帳號：trial@gmail.com
+- 測試帳號：trialtrial
 ## 開發簡介
 ### 技術架構及摘要
 ![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/TodoShop%20%E5%89%8D%E5%BE%8C%E7%AB%AF%E6%9E%B6%E6%A7%8B.jpeg)

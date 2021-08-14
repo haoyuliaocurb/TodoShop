@@ -80,9 +80,10 @@ const StyledUser = styled.div`
         overflow-x: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+        height: 20px;
       }
       > .textMemberType {
-        margin-top: 8px;
+        margin-top: 2px;
         > span {
           display: inline-block;
           padding: 4px 12px;
