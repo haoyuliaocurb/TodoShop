@@ -421,10 +421,8 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
     deleteDBTodolistDate(listId2Delete, currentUid);
   };
   const handleNavBarChevronLeft = () => {
-    // console.log('windowWidth <= breakpoint: ', windowWidth <= breakpoint);
     if (windowWidth <= breakpoint) {
-      if (pathArray[1] === 'id') {
-        console.log('pathArray[1] === "id":', pathArray[1] === 'id');
+      if (pathArray[1] === 'id' || !pathArray[1]) {
         history.push('/todolist/table');
         return;
       }
@@ -533,7 +531,6 @@ const TodolistPages = ({ windowWidth, isSignIn }) => {
   const [barState, setBarState] = useState(INIT_BARSTATE);
 
   // eslint-disable-next-line no-unused-vars
-  const location = useLocation();
   // useEffect(() => {
   //   const updateBarStateByPath = () => {
   //     // console.log('trigger updateBarStateByPath');
