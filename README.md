@@ -1,7 +1,7 @@
 # TodoShop
 ## 目錄
 ## 專案簡介
-
+![](https://github.com/haoyuliaocurb/TodoShop/blob/develop/src/styles/HomePage/images/banners/banner1.jpeg)
 ## 開發簡介
 ### 技術架構及摘要
 ![](https://github.com/haoyuliaocurb/TodoShop/tree/main/images/TodoShop 前後端架構.jpeg)
