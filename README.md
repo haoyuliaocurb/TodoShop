@@ -18,13 +18,22 @@
 ### 程式設計摘要
 #### SPA Routing
 * 使用 [React Router](#React-Router) 為 SPA Routing 技術基礎
-* 骨幹 Routing 實現於 [\<Main />](#Main-) 中，以 \<Switch>、\<Route> 來轉址對應的 URL path /pageName，並 render 的 page component
+* 骨幹 Routing 實現於 \<Main /> 中，以 \<Switch>、\<Route> 來轉址對應的 URL path /pageName，並 render 的 page component
   * 例如：/todolist 即 render \<TodolistPage />，/cart 即 render \<CartPage />
   * 配合帶入 \<Main /> 中的 isSignIn、windowWidth 兩個 state 給 page components
 #### 會員系統建立、登入狀態管理
+- 使用 Firebase Auth 建立後端會員系統
+- 前端以 \<Main /> 中的 isSignIn state 觸發，render 不同登入狀態的頁面功能及畫面
+- 使用 Firebase Auth 提供的 onAuthStateChanged 監聽器，當登入狀態改變，onAuthStateChanged 會呼叫 callback 函式以改變 isSignIn，進而 re-render 畫面
+- isSignIn 預設為未登入，值為 null；登入時，值為後端會員系統的識別碼 uid，可配合 fetch 資料庫資料使用
 #### 登入狀態驗證、redirect
+- 包含敏感資料頁面，如 \<Paymentpage />、\<Authpage />，render 時會自 URL path 取得相關資料識別碼，與登入狀態比對，如不符合即 redirect 至前一頁面
+  - 例如：在 /auth/uid/:UserId 頁面中會使用 UserId 變數取得會員相關資料並 render \<AuthPage />，然而在這之前，會先將 UserId 值與 isSignIn 作比對，若不符合，則視為非法瀏覽頁面，跳轉至 /auth/signIn 登入頁面
 #### composition 概念、reusable component
+- 運用 Composition 概念，將跨頁面功能相似者，例如：各種 button、modal、scrollable bar、Carousel 等，保留其事件 callback、圖文內容、state 等位置為空白，就像一個容器，並於使用時傳入對應的 props 彈性地呈現特定內容，藉此達到 reuse 程式碼的目的
 #### Imperative operation：useRef、ref 屬性
+- 操作組件 modal 等視覺效果時，若以 ref 屬性直接操作該 DOM element，而非透過 React state 來觸發 re-render，可以帶來開發方便、節省效能的益處。
+- 開發中多直接控制 React element tree 末端者的 classList，以操作 css 並控制組件的視覺效果
 ## 優化方向
 ## 附錄
 ### 功能介紹
