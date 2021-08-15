@@ -39,7 +39,7 @@
 ![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/TodolistPage-lg.png)
 
 - ### 搜尋頁：輕鬆模式、普通模式
-在搜尋頁中可以任意切換輕鬆模式、普通模式，在輕鬆模式中，多種商品被集合在一個頁面中，讓使用者可以透過橫欄的方式選購商品；TodoShop 創新之處便在於可以從建立購物清單開始，並將購物清單無縫地轉換，至輕鬆模式中搜尋清單中的所有商品
+在搜尋頁中可以任意切換輕鬆模式、普通模式，輸入關鍵字搜尋商品，依價格排序搜尋結果。頁面中允許搜尋多個關鍵字，形成分頁，並可自由地新增、刪除分頁。在輕鬆模式中，多種商品被集合在一個頁面中，讓使用者可以透過橫欄的方式選購商品；TodoShop 創新之處便在於可以從建立購物清單開始，並將購物清單無縫地轉換，至輕鬆模式中搜尋清單中的所有商品
 
 圖左：普通模式，搜尋結果以價格高至低排序<br>
 圖右：輕鬆模式，可用來搜尋購物清單中羅列的多種商品
@@ -63,7 +63,7 @@
 ![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/TodoShop%20%E5%89%8D%E5%BE%8C%E7%AB%AF%E6%9E%B6%E6%A7%8B.jpeg)
 
 - 更多細節可見附錄 [技術介紹](#技術介紹)
-- 前端開發：使用 [Sass/SCSS](#sassscss)、[React 生態系]((#react)) 獨立開發，沒有使用任何前端 UI 套件
+- 前端開發：使用 [React 生態系]((#react))、[Sass/SCSS](#sassscss)、[Normalize.css]((#Normalizecss)) 等獨立開發，並實踐 [RWD、AJAX、reusable React component](#專案細節) 等，沒有使用任何前端 UI 套件
 - 後端開發：使用 [Firebase](#Firebase-Firestore) 服務開發資料庫、web server、會員系統等，其中為了串接兩個第三方服務：[TapPay](#第三方服務) (金流)、[Algolia](#第三方服務) (Full-text search 套件)，需要使用 [Firebase Cloud Functions](#Firebase-Cloud-Functions) 自訂兩個跨網域 API，以 [Node.js、Express.js、Axios](#nodejsexpressjsaxios) 技術撰寫程式碼，使前端與 API、API 與第三方服務 req/res
 - 開發工具：使用 [Git/GitHub](#gitgithub) 做版本控管，並迭代進行 QA，更多細節可見 [開發流程](#開發流程)
 
