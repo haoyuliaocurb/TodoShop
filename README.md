@@ -5,7 +5,7 @@
     - [購物清單頁](#購物清單頁)
     - [搜尋頁：輕鬆模式、普通模式](#搜尋頁輕鬆模式普通模式)
     - [購物車、付款頁、會員中心](#購物車付款頁會員中心)
-3. [開發簡介](#開發簡介)
+3. [開發介紹](#開發介紹)
     - [技術架構及摘要](#技術架構及摘要)
         - 前端開發
         - 後端開發
@@ -32,7 +32,7 @@
 
 ![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/HomePage-lg.png)
 
-## 開發簡介
+## 開發介紹
 ### 技術架構及摘要
 ![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/TodoShop%20%E5%89%8D%E5%BE%8C%E7%AB%AF%E6%9E%B6%E6%A7%8B.jpeg)
 
@@ -116,7 +116,7 @@
   使用 NPM、ES6 module system、Create-re-act-app 導入套件、將前端程式碼模組化
 - ##### USB Debugging
   透過 USB Debugging 技術在開發者工具中呈現手機版網頁運作狀況，包含 Console、styles 等
-### 專案摘要
+### 專案介紹
 「TodoShop 從購物清單開始：創新電商網站」，其創新之處在於可以讓使用者從建立購物清單開始，並將購物清單無縫地轉換，進一步搜尋清單中的所有商品，簡單的在一個頁面中呈現
 
 ![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/HomePage-lg.png)
