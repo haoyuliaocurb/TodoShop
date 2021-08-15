@@ -1,7 +1,7 @@
 # TodoShop
 ## 目錄
 1. [專案展示](#專案展示)
-2. [專案簡介](#專案簡介)
+2. [專案摘要](#專案摘要)
     - [購物清單頁](#購物清單頁)
     - [搜尋頁：輕鬆模式、普通模式](#搜尋頁輕鬆模式普通模式)
     - [購物車、付款頁、會員中心](#購物車付款頁會員中心)
@@ -20,43 +20,17 @@
         5. [Imperative operation：useRef、ref 屬性](#imperative-operationuserefref-屬性)
 4. [附錄](#附錄)
     - [技術介紹](#技術介紹)
+    - [專案介紹](#專案介紹)
 
 ## 專案展示
 - 專案網址：https://todoshop-5fd25.web.app
 - 測試帳號：trial@gmail.com
 - 測試帳號：trialtrial
 
-## 專案簡介
+## 專案摘要
 「TodoShop 從購物清單開始：創新電商網站」，其創新之處在於可以讓使用者從建立購物清單開始，並將購物清單無縫地轉換，進一步搜尋清單中的所有商品，簡單的在一個頁面中呈現
 
 ![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/HomePage-lg.png)
-
-- ### 購物清單頁
-在購物清單頁中，使用者可以瀏覽、新增、刪除購物清單，並進一步編輯購物清單內容，新增、刪除清單項目。於手機螢幕中，瀏覽購物清單、編輯購物清單會分為兩個頁面呈現。
-
-圖：購物清單頁左半部所被選取的購物清單，其內容會顯示於右半部
-
-![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/TodolistPage-lg.png)
-
-- ### 搜尋頁：輕鬆模式、普通模式
-在搜尋頁中可以任意切換輕鬆模式、普通模式，輸入關鍵字搜尋商品，依價格排序搜尋結果。頁面中允許搜尋多個關鍵字，形成分頁，並可自由地新增、刪除分頁。在輕鬆模式中，多種商品被集合在一個頁面中，讓使用者可以透過橫欄的方式選購商品；TodoShop 創新之處便在於可以從建立購物清單開始，並將購物清單無縫地轉換，至輕鬆模式中搜尋清單中的所有商品
-
-圖左：普通模式，搜尋結果以價格高至低排序<br>
-圖右：輕鬆模式，可用來搜尋購物清單中羅列的多種商品
-
-![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/SearchPage-sm.png)
-
-- ### 購物車、付款頁、會員中心
-在購物車中，使用者可以選取特定的商品，並點選「結帳」轉換成訂單，其後於付款頁中填入相關資訊，串接第三方金流，完成付款。訂單狀態可於會員中心「購買訂單」中瀏覽。
-
-圖左：購物車，工具列即時顯示所點選的商品總價，點選「結帳」跳轉付款頁<br>
-圖右：付款頁，串接第三方金流 TapPay
-
-![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/CartPageNPaymentPage-sm.png)
-
-圖：會員中心頁，「購買訂單」區塊顯示所有訂單狀態及相關資訊
-
-![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/AuthPage-orders-lg.png)
 
 ## 開發簡介
 ### 技術架構及摘要
@@ -142,6 +116,37 @@
   使用 NPM、ES6 module system、Create-re-act-app 導入套件、將前端程式碼模組化
 - ##### USB Debugging
   透過 USB Debugging 技術在開發者工具中呈現手機版網頁運作狀況，包含 Console、styles 等
+### 專案摘要
+「TodoShop 從購物清單開始：創新電商網站」，其創新之處在於可以讓使用者從建立購物清單開始，並將購物清單無縫地轉換，進一步搜尋清單中的所有商品，簡單的在一個頁面中呈現
+
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/HomePage-lg.png)
+
+- #### 購物清單頁
+在購物清單頁中，使用者可以瀏覽、新增、刪除購物清單，並進一步編輯購物清單內容，新增、刪除清單項目。於手機螢幕中，瀏覽購物清單、編輯購物清單會分為兩個頁面呈現。
+
+圖：購物清單頁左半部所被選取的購物清單，其內容會顯示於右半部
+
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/TodolistPage-lg.png)
+
+- #### 搜尋頁：輕鬆模式、普通模式
+在搜尋頁中可以任意切換輕鬆模式、普通模式，輸入關鍵字搜尋商品，依價格排序搜尋結果。頁面中允許搜尋多個關鍵字，形成分頁，並可自由地新增、刪除分頁。在輕鬆模式中，多種商品被集合在一個頁面中，讓使用者可以透過橫欄的方式選購商品；TodoShop 創新之處便在於可以從建立購物清單開始，並將購物清單無縫地轉換，至輕鬆模式中搜尋清單中的所有商品
+
+圖左：普通模式，搜尋結果以價格高至低排序<br>
+圖右：輕鬆模式，可用來搜尋購物清單中羅列的多種商品
+
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/SearchPage-sm.png)
+
+- #### 購物車、付款頁、會員中心
+在購物車中，使用者可以選取特定的商品，並點選「結帳」轉換成訂單，其後於付款頁中填入相關資訊，串接第三方金流，完成付款。訂單狀態可於會員中心「購買訂單」中瀏覽。
+
+圖左：購物車，工具列即時顯示所點選的商品總價，點選「結帳」跳轉付款頁<br>
+圖右：付款頁，串接第三方金流 TapPay
+
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/CartPageNPaymentPage-sm.png)
+
+圖：會員中心頁，「購買訂單」區塊顯示所有訂單狀態及相關資訊
+
+![](https://github.com/haoyuliaocurb/TodoShop/blob/main/images/AuthPage-orders-lg.png)
 <!-- ### 程式設計
 ### 組件開發總覽
 #### \<App />
