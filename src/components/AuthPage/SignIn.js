@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   uiConfig,
@@ -8,32 +8,83 @@ import {
   firebase,
   auth,
 } from '../../utils/firebase/firebase-services';
+import ModalMessageError from '../app/ModalMessageError';
 
 import StyledSignIn from '../../styles/AuthPage/StyledSignIn';
+import ModalMessageChecked from '../app/ModalMessageChecked';
 
 const SignIn = ({ isSignIn, updateConfigNavBar }) => {
   const history = useHistory();
   const test = window.localStorage.getItem('TodoShopPreLocationFromSignIn');
   const [isShowSignUp, setIsShowSignUp] = useState(0);
   const [signUpInputValue, setSignUpInputValue] = useState({ email: '', password: '' });
+  const ModalRefSuccessfullyCreateAccount = useRef(null);
+  const ModalRefWeakPassword = useRef(null);
+  const ModalRefEmailInUse = useRef(null);
+  const ModalRefInvalidEmail = useRef(null);
+  const ModalRefOperationNotAllowed = useRef(null);
   const handleButtonSignUp = (e) => {
     e.preventDefault();
     const { email, password } = signUpInputValue;
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
-        console.log('successfully sign up');
+        ModalRefSuccessfullyCreateAccount.current.classList.remove('op-zero');
+        ModalRefSuccessfullyCreateAccount.current.addEventListener(
+          'transitionend',
+          () => {
+            ModalRefSuccessfullyCreateAccount.current.classList.add('op-zero');
+          },
+          { once: true },
+        );
       })
       .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
-        if (errorCode === 'auth/weak-password') {
-          console.log('The password is too weak.');
-        } else {
-          console.log(errorMessage);
+        switch (errorCode) {
+          case 'auth/email-already-in-use':
+            ModalRefEmailInUse.current.classList.remove('op-zero');
+            ModalRefEmailInUse.current.addEventListener(
+              'transitionend',
+              () => {
+                ModalRefEmailInUse.current.classList.add('op-zero');
+              },
+              { once: true },
+            );
+            break;
+          case 'auth/invalid-email':
+            ModalRefInvalidEmail.current.classList.remove('op-zero');
+            ModalRefInvalidEmail.current.addEventListener(
+              'transitionend',
+              () => {
+                ModalRefInvalidEmail.current.classList.add('op-zero');
+              },
+              { once: true },
+            );
+            break;
+          case 'auth/operation-not-allowed':
+            ModalRefOperationNotAllowed.current.classList.remove('op-zero');
+            ModalRefOperationNotAllowed.current.addEventListener(
+              'transitionend',
+              () => {
+                ModalRefOperationNotAllowed.current.classList.add('op-zero');
+              },
+              { once: true },
+            );
+            break;
+          case 'auth/weak-password':
+            ModalRefWeakPassword.current.classList.remove('op-zero');
+            ModalRefWeakPassword.current.addEventListener(
+              'transitionend',
+              () => {
+                ModalRefWeakPassword.current.classList.add('op-zero');
+              },
+              { once: true },
+            );
+            break;
+          default:
         }
-        console.log(error);
       });
   };
   useEffect(() => {
@@ -119,6 +170,44 @@ const SignIn = ({ isSignIn, updateConfigNavBar }) => {
       ) : (
         <p>redirect ...</p>
       )}
+      <ModalMessageError
+        ModolMessagErrorRef={ModalRefEmailInUse}
+        message={
+          <span>
+            該 Email
+            <br />
+            已被註冊
+          </span>
+        }
+      />
+      <ModalMessageError
+        ModolMessagErrorRef={ModalRefInvalidEmail}
+        message={
+          <span>
+            Email 格式
+            <br />
+            不正確
+          </span>
+        }
+      />
+      <ModalMessageError
+        ModolMessagErrorRef={ModalRefOperationNotAllowed}
+        message={
+          <span>
+            帳戶操作未成功
+            <br />
+            請聯繫客服
+          </span>
+        }
+      />
+      <ModalMessageError
+        ModolMessagErrorRef={ModalRefWeakPassword}
+        message={<span>請設定 6 個字元以上的密碼</span>}
+      />
+      <ModalMessageChecked
+        ModolMessageCheckedeRef={ModalRefSuccessfullyCreateAccount}
+        message={<span>已成功建立帳戶</span>}
+      />
     </StyledSignIn>
   );
 };
